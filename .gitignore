@@ -1,0 +1,59 @@
+# Java build artifacts
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs / crash dumps
+*.log
+hs_err_pid*.log
+
+# Editor/OS
+*.swp
+*.swo
+*.tmp
+.DS_Store
+
+# Native build artifacts
+*.o
+*.a
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+
+# Build/output directories
+/.cache/
+/cache/
+/out/
+/build/
+/build_ipopt/
+/bin/
+
+# Bundled/native libs (keep repo lightweight)
+/lib/
+/lib_arm64/
+/lib_arm64_legacy/
+/install_arm64/
+
+# CMake / Ninja
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.ninja
+.ninja_*
+compile_commands.json
+
+# Vendored third-party sources/binaries (not pushing in initial repo)
+/.vscode/thirdP/
+/thirdPartySrc/
+/docker/thirdPartySrc/
+/prebuilt/
+
+# Archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z

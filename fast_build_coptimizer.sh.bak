@@ -1,0 +1,60 @@
+#!/bin/bash
+set -e
+
+# 项目路径
+WORKSPACE_DIR=$(pwd)
+OUTPUT_DIR="$WORKSPACE_DIR/out/linux-arm64-legacy"
+# Ipopt 头文件路径 (根据之前的 ls 结果，在 install_arm64/include)
+IPOPT_INCLUDE_DIR="$WORKSPACE_DIR/install_arm64/include" 
+# Ipopt 库文件路径 (根据之前的 ls 结果，在 install_arm64/lib)
+IPOPT_LIB_DIR="$WORKSPACE_DIR/install_arm64/lib"
+# ADOL-C 头文件路径
+ADOLC_INCLUDE_DIR="$WORKSPACE_DIR/thirdPartySrc/ADOL-C/ADOL-C/include"
+
+mkdir -p "$OUTPUT_DIR"
+
+echo ">>> 启动极速编译 (使用 alignment-legacy-env 镜像)..."
+
+# 注意：这里我们挂载了 .vs/AlignmentCore 到 /source，这是您的源代码位置
+# 同时挂载了 install_arm64 到 /libs 和 /includes，以便 CMake 找到 Ipopt
+docker run --rm \
+    -v "$WORKSPACE_DIR:/work" \
+    -v "/home/albalest/.vs/AlignmentCore:/source" \
+    -v "$OUTPUT_DIR:/output" \
+    -v "$IPOPT_LIB_DIR:/libs" \
+    -v "$IPOPT_INCLUDE_DIR:/includes" \
+    -v "$ADOLC_INCLUDE_DIR:/includes/adolc_src" \
+    alignment-legacy-env \
+    /bin/bash -c '
+    set -e
+    
+    # 确保输出目录存在
+    mkdir -p /work/out/build/fast-legacy
+    cd /work/out/build/fast-legacy
+    
+    echo ">>> Running CMake..."
+    # 使用新版 CMake (3.20+)
+    cmake -G Ninja \
+        -DCMAKE_SYSTEM_NAME=Linux \
+        -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+        -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc \
+        -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DIPOPT_INCLUDE_DIR="/includes;/includes/adolc_src" \
+        -DLIB_IPOPT="/libs/libipopt.so" \
+        -DJAVA_AWT_LIBRARY=/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so \
+        -DJAVA_JVM_LIBRARY=/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so \
+        -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-11-openjdk-amd64/include \
+        -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-11-openjdk-amd64/include/linux \
+        -DJAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/java-11-openjdk-amd64/include \
+        -DCMAKE_INSTALL_RPATH="\$ORIGIN" \
+        /source
+    
+    echo ">>> Compiling..."
+    ninja COptimizer
+    
+    echo ">>> Copying artifacts..."
+    # 库文件生成在源代码目录下的 lib 文件夹中
+    cp /source/lib/libCOptimizer.so /output/
+    echo "SUCCESS: libCOptimizer.so copied to $OUTPUT_DIR"
+    '

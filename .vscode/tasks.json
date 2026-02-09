@@ -1,0 +1,86 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Sync Native Libs (from ~/.vs)",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "mkdir -p \"${workspaceFolder}/lib\"; src=\"$HOME/.vs/AlignmentCore/lib\"; if [ -d \"$src\" ]; then cp -a \"$src\"/* \"${workspaceFolder}/lib/\" 2>/dev/null || true; echo \"Synced .so from $src\"; else echo \"WARN: missing $src (skip sync)\"; fi"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start Main (JDWP suspend :5005)",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "export LD_LIBRARY_PATH=\"${workspaceFolder}/lib\"; /usr/lib/jvm/java-11-openjdk-amd64/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:5005 -Djava.library.path=\"${workspaceFolder}/lib\" -cp \"${workspaceFolder}\" Main"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "dependsOn": [
+                "Sync Native Libs (from ~/.vs)",
+                "Build Java (javac)"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Java (javac)",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "javac -encoding UTF-8 -d . AlignmentCore/*.java Main.java DemoFrame.java"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Native Library (C++)",
+            "type": "shell",
+            "command": "./build_native_lib.sh",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run AlignmentTest",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-Djava.library.path=./lib",
+                "-cp",
+                ".",
+                "Main"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "dependsOn": [
+                "Sync Native Libs (from ~/.vs)",
+                "Build Java (javac)"
+            ]
+        }
+    ]
+}

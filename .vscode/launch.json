@@ -1,0 +1,72 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (classpath .)",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "Main",
+            "classPaths": [
+                "${workspaceFolder}"
+            ],
+            "sourcePaths": [
+                "${workspaceFolder}"
+            ],
+            "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
+            "env": {
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib"
+            },
+            "preLaunchTask": "Build Java (javac)"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "AlignmentTest_82b1920b"
+        },
+        {
+            "type": "java",
+            "name": "Run AlignmentTest",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "AlignmentTest",
+            "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
+            "env": {
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Attach JDWP (5005)",
+            "request": "attach",
+            "hostName": "127.0.0.1",
+            "port": 5005,
+            "timeout": 30000
+        },
+        {
+            "name": "Attach C++ to Java (gdb)",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
+            "processId": "${command:pickProcess}",
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing"
+                },
+                {
+                    "description": "Allow GDB auto-load scripts (pretty-printers)",
+                    "text": "-interpreter-exec console \"set auto-load safe-path /\""
+                },
+                {
+                    "description": "Load libstdc++ pretty-printers for STL containers",
+                    "text": "-interpreter-exec console \"python import glob,gdb; [gdb.execute('source %s' % p) for p in glob.glob('/usr/share/gdb/auto-load/**/libstdc++.so.*-gdb.py', recursive=True)]\""
+                }
+            ],
+            "miDebuggerArgs": "-iex \"set auto-load safe-path /\" -iex \"set auto-load python-scripts on\" -iex \"python import glob,gdb; [gdb.execute('source %s' % p) for p in glob.glob('/usr/share/gdb/auto-load/**/libstdc++.so.*-gdb.py', recursive=True)]\""
+        }
+    ]
+}

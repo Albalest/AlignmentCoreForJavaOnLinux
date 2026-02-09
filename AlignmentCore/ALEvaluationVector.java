@@ -8,7 +8,7 @@
 
 package AlignmentCore;
 
-public class ALEvaluationVector extends java.util.AbstractList<Integer> implements java.util.RandomAccess {
+public class ALEvaluationVector extends java.util.AbstractList<int> implements java.util.RandomAccess {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -57,33 +57,33 @@ public class ALEvaluationVector extends java.util.AbstractList<Integer> implemen
     }
   }
 
-  public ALEvaluationVector(Iterable<Integer> initialElements) {
+  public ALEvaluationVector(Iterable<int> initialElements) {
     this();
     for (int element : initialElements) {
       add(element);
     }
   }
 
-  public Integer get(int index) {
+  public int get(int index) {
     return doGet(index);
   }
 
-  public Integer set(int index, Integer e) {
+  public int set(int index, int e) {
     return doSet(index, e);
   }
 
-  public boolean add(Integer e) {
+  public boolean add(int e) {
     modCount++;
     doAdd(e);
     return true;
   }
 
-  public void add(int index, Integer e) {
+  public void add(int index, int e) {
     modCount++;
     doAdd(index, e);
   }
 
-  public Integer remove(int index) {
+  public int remove(int index) {
     modCount++;
     return doRemove(index);
   }

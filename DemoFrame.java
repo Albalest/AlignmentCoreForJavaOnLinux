@@ -51,33 +51,65 @@ public class DemoFrame extends JFrame {
         btn10.addActionListener(e -> handleBtn10Click());
 
         JButton btnOpt = new JButton("轨道优化演示");
-        btnOpt.addActionListener(e -> new OptimizationDemoFrame().setVisible(true));
+        btnOpt.addActionListener(e -> handleBtnOptClick());
 
         JButton btnUndo = new JButton("Undo");
         btnUndo.addActionListener(e -> handleUndoClick());
 
         JButton btnRedo = new JButton("Redo");
         btnRedo.addActionListener(e -> handleRedoClick());
+        // --- 分堆按钮区（会随窗口宽度自动换行） ---
+        JPanel root = new JPanel(new WrapLayout(FlowLayout.LEFT, 8, 6));
+        root.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-        JPanel panel = new JPanel();
-        panel.add(btn1);
-        panel.add(btn2);
-        panel.add(btn3);
-        panel.add(btnComCurve);
-        panel.add(btn4);
-        panel.add(btn5);
-        panel.add(btn6);
-        panel.add(btn7);
-        panel.add(btn8);
-        panel.add(btn9);
-        panel.add(btn10);
-        panel.add(btnOpt);
-        panel.add(btnUndo);
-        panel.add(btnRedo);
-        
+        // 1. 导入测量数据
+        JPanel g1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g1.setBorder(BorderFactory.createTitledBorder("1. 导入测量数据"));
+        g1.add(btn1);
 
-        add(panel);
-        setSize(420, 260);
+        // 2. 平面拟合/输出
+        JPanel g2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g2.setBorder(BorderFactory.createTitledBorder("2. 平面拟合/输出"));
+        g2.add(btn2);
+        g2.add(btn3);
+        g2.add(btnComCurve);
+        g2.add(btn4);
+        g2.add(btn5);
+
+        // 3. 纵断面拟合/输出
+        JPanel g3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g3.setBorder(BorderFactory.createTitledBorder("3. 纵断面拟合/输出"));
+        g3.add(btn6);
+        g3.add(btn7);
+        g3.add(btn8);
+
+        // 4. 导入/导出
+        JPanel g4 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g4.setBorder(BorderFactory.createTitledBorder("4. 导入/导出"));
+        g4.add(btn9);
+        g4.add(btn10);
+
+        // 5. Undo/Redo
+        JPanel g5 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g5.setBorder(BorderFactory.createTitledBorder("5. Undo/Redo"));
+        g5.add(btnUndo);
+        g5.add(btnRedo);
+
+        // 6. 轨道优化演示
+        JPanel g6 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g6.setBorder(BorderFactory.createTitledBorder("6. 轨道优化演示"));
+        g6.add(btnOpt);
+
+        root.add(g1);
+        root.add(g2);
+        root.add(g3);
+        root.add(g4);
+        root.add(g5);
+        root.add(g6);
+
+        add(root);
+        setSize(860, 320);
+        setMinimumSize(new Dimension(520, 260));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         /// 初始化数据
@@ -102,6 +134,7 @@ public class DemoFrame extends JFrame {
         }
     }
 
+    // 按钮「Undo」
     private void handleUndoClick() {
         if (undoManager == null) {
             System.out.println("UndoManager 未初始化!");
@@ -116,6 +149,7 @@ public class DemoFrame extends JFrame {
         System.out.println(ok ? "Undo 成功!" : "Undo 失败!");
     }
 
+    // 按钮「Redo」
     private void handleRedoClick() {
         if (undoManager == null) {
             System.out.println("UndoManager 未初始化!");
@@ -130,20 +164,28 @@ public class DemoFrame extends JFrame {
         System.out.println(ok ? "Redo 成功!" : "Redo 失败!");
     }
 
+    // 按钮「复曲线拟合」
     private void handleBtnComCurveClick() {
         if (mySurveyDatas == null || mySurveyDatas.getM_SurveyImfos() == null || mySurveyDatas.getM_SurveyImfos().size() < 3) {
             System.out.println("请先导入测量数据（至少3点）!");
             return;
         }
+        saveSnapshot("复曲线拟合");
         if (myAlignmentFitting != null) {
             new ComCurveFitDialog(this, myAlignmentFitting, undoManager).setVisible(true);
             return;
-        }
-
+        }       
         new ComCurveFitDialog(this, mySurveyDatas).setVisible(true);
     }
 
+
+    // 按钮「轨道优化演示」
+    private void handleBtnOptClick() {
+        new OptimizationDemoFrame().setVisible(true);
+    }
+
     // 自定义的按钮1响应函数
+    // 按钮「导入测量数据」
     private void handleBtn1Click() {
        // JOptionPane.showMessageDialog(this, "按钮1自定义响应");
         String filePath =openFileDialog(this);
@@ -161,6 +203,7 @@ public class DemoFrame extends JFrame {
     }
 
     // 自定义的按钮2响应函数
+    // 按钮「夹直线拟合」
     private void handleBtn2Click() {
         //System.out.println("按钮2自定义响应");
         // 夹直线拟合前可以保存当前状态
@@ -183,6 +226,7 @@ public class DemoFrame extends JFrame {
          System.out.println("夹直线定位成功!");
     }
 
+    // 按钮「曲线参数匹配」
     private void handleBtn3Click() {
         //System.out.println("按钮2自定义响应");
         // 保存当前状态
@@ -196,6 +240,7 @@ public class DemoFrame extends JFrame {
         System.out.println("曲线参数匹配成功!");
     }
 
+    // 按钮「输出平面交点」
     private void handleBtn4Click() {
         //System.out.println("按钮2自定义响应");
         // 这里可以写你自己的业务逻辑
@@ -209,7 +254,7 @@ public class DemoFrame extends JFrame {
         }
     }
 
-
+    // 按钮「输出平面偏差量」
     private void handleBtn5Click() {
         //System.out.println("按钮2自定义响应");
         // 这里可以写你自己的业务逻辑
@@ -221,7 +266,7 @@ public class DemoFrame extends JFrame {
 
     }
 
-
+    // 按钮「纵断面拟合」
     private void handleBtn6Click() {
         //System.out.println("按钮2自定义响应");
         // 保存当前状态
@@ -236,6 +281,7 @@ public class DemoFrame extends JFrame {
 
     }
 
+    // 按钮「输出坡长坡率」
     private void handleBtn7Click() {
         //System.out.println("按钮2自定义响应");
         // 这里可以写你自己的业务逻辑
@@ -258,7 +304,7 @@ public class DemoFrame extends JFrame {
 
     }
 
-
+    // 按钮「输出高程偏差量」
     private void handleBtn8Click() {
        // System.out.println("按钮2自定义响应");
         // 这里可以写你自己的业务逻辑
@@ -277,7 +323,7 @@ public class DemoFrame extends JFrame {
 
     }
 
-    
+    // 按钮「导出线形文件」
     private void handleBtn9Click() {
         //System.out.println("按钮2自定义响应");
         // 这里可以写你自己的业务逻辑
@@ -293,8 +339,8 @@ public class DemoFrame extends JFrame {
         }
     }
 
-
-      private void handleBtn10Click() {
+    // 按钮「导入线形并计算偏差量测试」
+    private void handleBtn10Click() {
         //System.out.println("按钮2自定义响应");
         // 这里可以写你自己的业务逻辑
         saveSnapshot("导入线形并计算偏差量测试");
@@ -464,5 +510,81 @@ public class DemoFrame extends JFrame {
     }
 
 
+
+
+    /**
+     * FlowLayout 默认的 preferredSize 不考虑‘换行’，会导致组件在窗口变窄时被右侧裁切。
+     * WrapLayout 会根据当前容器宽度计算换行后的首选尺寸，从而让分组面板自动折行显示。
+     */
+    private static final class WrapLayout extends FlowLayout {
+        public WrapLayout() {
+            super();
+        }
+
+        public WrapLayout(int align) {
+            super(align);
+        }
+
+        public WrapLayout(int align, int hgap, int vgap) {
+            super(align, hgap, vgap);
+        }
+
+        @Override
+        public Dimension preferredLayoutSize(Container target) {
+            return layoutSize(target, true);
+        }
+
+        @Override
+        public Dimension minimumLayoutSize(Container target) {
+            Dimension minimum = layoutSize(target, false);
+            minimum.width -= (getHgap() + 1);
+            return minimum;
+        }
+
+        private Dimension layoutSize(Container target, boolean preferred) {
+            synchronized (target.getTreeLock()) {
+                int targetWidth = target.getSize().width;
+                if (targetWidth <= 0) {
+                    Container parent = target.getParent();
+                    targetWidth = parent != null ? parent.getWidth() : 0;
+                }
+
+                int hgap = getHgap();
+                int vgap = getVgap();
+                Insets insets = target.getInsets();
+                int horizontalInsetsAndGap = insets.left + insets.right + (hgap * 2);
+                int maxWidth = Math.max(targetWidth - horizontalInsetsAndGap, 0);
+
+                Dimension dim = new Dimension(0, 0);
+                int rowWidth = 0;
+                int rowHeight = 0;
+
+                int componentCount = target.getComponentCount();
+                for (int i = 0; i < componentCount; i++) {
+                    Component component = target.getComponent(i);
+                    if (!component.isVisible()) continue;
+
+                    Dimension compSize = preferred ? component.getPreferredSize() : component.getMinimumSize();
+                    if (rowWidth + compSize.width > maxWidth && rowWidth > 0) {
+                        dim.width = Math.max(dim.width, rowWidth);
+                        dim.height += rowHeight + vgap;
+                        rowWidth = 0;
+                        rowHeight = 0;
+                    }
+
+                    if (rowWidth != 0) rowWidth += hgap;
+                    rowWidth += compSize.width;
+                    rowHeight = Math.max(rowHeight, compSize.height);
+                }
+
+                dim.width = Math.max(dim.width, rowWidth);
+                dim.height += rowHeight;
+
+                dim.width += horizontalInsetsAndGap;
+                dim.height += insets.top + insets.bottom + (vgap * 2);
+                return dim;
+            }
+        }
+    }
 
 }

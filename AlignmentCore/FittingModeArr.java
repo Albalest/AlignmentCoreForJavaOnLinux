@@ -8,7 +8,7 @@
 
 package AlignmentCore;
 
-public class FittingModeArr extends java.util.AbstractList<SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type> implements java.util.RandomAccess {
+public class FittingModeArr extends java.util.AbstractList<int> implements java.util.RandomAccess {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -48,42 +48,42 @@ public class FittingModeArr extends java.util.AbstractList<SWIGTYPE_p_std__vecto
     }
   }
 
-  public FittingModeArr(SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type[] initialElements) {
+  public FittingModeArr(int[] initialElements) {
     this();
     reserve(initialElements.length);
 
-    for (SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type element : initialElements) {
+    for (int element : initialElements) {
       add(element);
     }
   }
 
-  public FittingModeArr(Iterable<SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type> initialElements) {
+  public FittingModeArr(Iterable<int> initialElements) {
     this();
-    for (SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type element : initialElements) {
+    for (int element : initialElements) {
       add(element);
     }
   }
 
-  public SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type get(int index) {
+  public int get(int index) {
     return doGet(index);
   }
 
-  public SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type set(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type e) {
+  public int set(int index, int e) {
     return doSet(index, e);
   }
 
-  public boolean add(SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type e) {
+  public boolean add(int e) {
     modCount++;
     doAdd(e);
     return true;
   }
 
-  public void add(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type e) {
+  public void add(int index, int e) {
     modCount++;
     doAdd(index, e);
   }
 
-  public SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type remove(int index) {
+  public int remove(int index) {
     modCount++;
     return doRemove(index);
   }

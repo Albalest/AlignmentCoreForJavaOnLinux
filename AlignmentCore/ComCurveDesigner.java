@@ -96,8 +96,8 @@ public class ComCurveDesigner {
     return AlignmentAllJNI.ComCurveDesigner_InitKeyPts(swigCPtr, this, IntArr.getCPtr(keyPts), keyPts);
   }
 
-  public boolean CheckResult() {
-    return AlignmentAllJNI.ComCurveDesigner_CheckResult(swigCPtr, this);
+  public boolean CalHoriMargin() {
+    return AlignmentAllJNI.ComCurveDesigner_CalHoriMargin(swigCPtr, this);
   }
 
 }

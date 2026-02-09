@@ -61,7 +61,9 @@ public class ComCurveFitDialog extends JDialog {
         this.undoManager = new ComCurveDesignerUndoManager();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setSize(1100, 780);
+        // 默认窗口稍大一些，避免底部“分堆”按钮被挤出可视区
+        setSize(1280, 860);
+        setMinimumSize(new Dimension(980, 720));
         setLayout(new BorderLayout());
 
         plot = new PlotPanel();
@@ -78,10 +80,10 @@ public class ComCurveFitDialog extends JDialog {
     }
 
     private JPanel buildControlsPanel() {
-        JPanel root = new JPanel();
-        root.setLayout(new BorderLayout());
+        // 使用可换行布局：当窗口宽度不足时，分组面板会自动折行，避免“第3堆/最后一堆”跑到右侧不可见
+        JPanel root = new JPanel(new WrapLayout(FlowLayout.LEFT, 8, 6));
 
-        JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // --- Buttons ---
         JButton btnAdd = new JButton("插入关键点");
         JButton btnDel = new JButton("删除关键点");
         JButton btnMove = new JButton("移动关键点");
@@ -95,17 +97,13 @@ public class ComCurveFitDialog extends JDialog {
         JButton btnUndo = new JButton("Undo");
         JButton btnRedo = new JButton("Redo");
 
-        row1.add(btnAdd);
-        row1.add(btnDel);
-        row1.add(btnMove);
-        row1.add(btnAuto);
-        row1.add(btnInit);
-        row1.add(btnInitByKey);
-        row1.add(btnShowMargin);
-        row1.add(btnRound);
-        row1.add(btnUndo);
-        row1.add(btnRedo);
+        JButton btnManualOpt = new JButton("按照约定缓和曲线优化半径");
+        JButton btnFilter = new JButton("按照交点序号筛选测量数据");
+        JButton btnMerge = new JButton("拟合结果并入");
+        JButton btnOk = new JButton("OK");
+        JButton btnCancel = new JButton("Cancel");
 
+        // --- Actions ---
         btnAdd.addActionListener(e -> editType = 1);
         btnDel.addActionListener(e -> editType = 2);
         btnMove.addActionListener(e -> {
@@ -117,6 +115,7 @@ public class ComCurveFitDialog extends JDialog {
         btnInitByKey.addActionListener(e -> onInitByKeyPts());
         btnShowMargin.addActionListener(e -> onCalAndShowMarginWithExport());
         btnRound.addActionListener(e -> onRoundOptimize());
+        btnManualOpt.addActionListener(e -> onManualOptimize());
 
         btnUndo.addActionListener(e -> {
             if (undoManager.CanUndo()) {
@@ -132,39 +131,8 @@ public class ComCurveFitDialog extends JDialog {
             }
         });
 
-        JPanel row2 = new JPanel();
-        row2.setLayout(new BorderLayout());
-
-        JPanel row2Top = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        row2Top.add(new JLabel("第一缓长长度"));
-        row2Top.add(txtLen1);
-        row2Top.add(new JLabel("第二缓长长度"));
-        row2Top.add(txtLen2);
-        row2Top.add(new JLabel("第三缓长长度"));
-        row2Top.add(txtLen3);
-
-        JButton btnManualOpt = new JButton("按照约定缓和曲线优化半径");
-        row2Top.add(btnManualOpt);
-        btnManualOpt.addActionListener(e -> onManualOptimize());
-
-        row2Top.add(new JLabel("前交点序号"));
-        row2Top.add(txtStInter);
-        row2Top.add(new JLabel("后交点序号"));
-        row2Top.add(txtEdInter);
-
-        JPanel row2Bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton btnFilter = new JButton("按照交点序号筛选测量数据");
-        JButton btnMerge = new JButton("拟合结果并入");
-        JButton btnOk = new JButton("OK");
-        JButton btnCancel = new JButton("Cancel");
-
         btnFilter.setEnabled(fittingData != null);
         btnMerge.setEnabled(fittingData != null && alUndoManager != null);
-
-        row2Bottom.add(btnFilter);
-        row2Bottom.add(btnMerge);
-        row2Bottom.add(btnOk);
-        row2Bottom.add(btnCancel);
 
         btnFilter.addActionListener(e -> onFilterByInterIndex());
         btnMerge.addActionListener(e -> onMergeIntoFitting());
@@ -177,11 +145,58 @@ public class ComCurveFitDialog extends JDialog {
             dispose();
         });
 
-        row2.add(row2Top, BorderLayout.NORTH);
-        row2.add(row2Bottom, BorderLayout.SOUTH);
+        // --- Group 1: 交点序号 & 筛选 ---
+        JPanel g1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        g1.setBorder(BorderFactory.createTitledBorder("交点筛选"));
+        g1.add(new JLabel("前交点序号"));
+        g1.add(txtStInter);
+        g1.add(new JLabel("后交点序号"));
+        g1.add(txtEdInter);
+        g1.add(btnFilter);
 
-        root.add(row1, BorderLayout.NORTH);
-        root.add(row2, BorderLayout.SOUTH);
+        // --- Group 2: 关键点编辑 & 撤销重做 ---
+        JPanel g2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        g2.setBorder(BorderFactory.createTitledBorder("关键点编辑"));
+        g2.add(btnAdd);
+        g2.add(btnDel);
+        g2.add(btnMove);
+        g2.add(btnUndo);
+        g2.add(btnRedo);
+
+        // --- Group 3: 分段/初始化/计算 ---
+        JPanel g3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        g3.setBorder(BorderFactory.createTitledBorder("分段/初始化"));
+        g3.add(btnAuto);
+        g3.add(btnInit);
+        g3.add(btnInitByKey);
+        g3.add(btnShowMargin);
+
+        // --- Group 4: 缓长长度 & 优化 ---
+        JPanel g4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        g4.setBorder(BorderFactory.createTitledBorder("长度/优化"));
+        g4.add(new JLabel("第一缓长长度"));
+        g4.add(txtLen1);
+        g4.add(new JLabel("第二缓长长度"));
+        g4.add(txtLen2);
+        g4.add(new JLabel("第三缓长长度"));
+        g4.add(txtLen3);
+        g4.add(btnManualOpt);
+        g4.add(btnRound);
+
+        // --- Group 5: 并入/关闭 ---
+        JPanel g5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        g5.setBorder(BorderFactory.createTitledBorder("并入/关闭"));
+        g5.add(btnMerge);
+        g5.add(btnOk);
+        g5.add(btnCancel);
+
+        // --- Rows ---
+        root.add(g1);
+        root.add(g2);
+        root.add(g3);
+        root.add(g4);
+        root.add(g5);
+
         return root;
     }
 
@@ -248,7 +263,7 @@ public class ComCurveFitDialog extends JDialog {
             System.out.println("GetCurvation 失败: " + t.getMessage());
         }
     }
-
+    // 按钮「Undo / Redo」：撤销/重做后刷新设计器数据与曲线显示
     private void refreshPlotFromDesigner() {
         try {
             // 设计器内部数据可能变化（尤其是 margin），重新刷新
@@ -290,7 +305,7 @@ public class ComCurveFitDialog extends JDialog {
     private void refreshPlot() {
         plot.setSeries(miles, curv, keyPts, marginMiles, marginMm);
     }
-
+    // 按钮「插入关键点 / 删除关键点 / 移动关键点」：在图上点击执行对应编辑操作
     private void onPlotClick(double x, double y) {
         if (editType == 0) return;
 
@@ -386,30 +401,75 @@ public class ComCurveFitDialog extends JDialog {
         }
         return indexs;
     }
-
-    //自动进行复曲线分界点的分段
+    // 按钮「自动分段」：自动进行复曲线分界点的分段
     private void onAutoSegment() {
         if (comCurve == null) return;
         try {
+            // keys 的 index 来自 comCurve 内部测点序列，取值也应尽量使用同一份数据，避免错位
+            SurveyVector vec = null;
+            try {
+                vec = comCurve.GetSurveyDatas();
+                if (vec != null) {
+                    if (datas != null) {
+                        datas.setM_SurveyImfos(vec);
+                    } else {
+                        datas = new SurveyDatas(vec, SURVEYTYPE.CENTER);
+                    }
+                    refreshOriginCurvature();
+                }
+            } catch (Throwable ignored) {
+            }
+
             IntArr keys = comCurve.AutoKeyPts();
             System.out.println("[ComCurveFitDialog] AutoKeyPts keys=" + intArrDebug(keys, 50));
             if (keys == null || keys.size() == 0) return;
 
+            ALPoint3dArr curvPts = null;
+            try {
+                curvPts = comCurve.GetCurvation();
+            } catch (Throwable ignored) {
+            }
+
+            if (vec == null) {
+                vec = datas != null ? datas.getM_SurveyImfos() : null;
+            }
+
             keyPts.clear();
             for (int i = 0; i < keys.size(); i++) {
                 int idx = keys.get(i);
-                double x = idx >= 0 && idx < miles.length ? miles[idx] : Double.NaN;
-                double y = idx >= 0 && idx < curv.length ? curv[idx] : Double.NaN;
 
+                double x = Double.NaN;
+                double y = Double.NaN;
+
+                // 优先使用设计器返回的曲率点列（通常与测点 index 一一对应）
+                if (curvPts != null && idx >= 0 && idx < curvPts.size()) {
+                    AL_Point3d p = curvPts.get(idx);
+                    if (p != null) {
+                        x = p.getX();
+                        y = p.getY();
+                    }
+                }
+
+                // 兜底：从当前缓存数组 / SurveyVector 取 mileage
                 if (!Double.isFinite(x)) {
-                    SurveyVector vec = datas != null ? datas.getM_SurveyImfos() : null;
-                    if (vec != null && idx >= 0 && idx < vec.size()) {
+                    if (idx >= 0 && idx < miles.length) {
+                        x = miles[idx];
+                    }
+                    if (!Double.isFinite(x) && vec != null && idx >= 0 && idx < vec.size()) {
                         SurveyImfo it = vec.get(idx);
                         x = it != null ? it.getM_mileage() : Double.NaN;
                     }
                 }
 
+                // 兜底：从当前缓存数组取曲率
                 if (!Double.isFinite(y)) {
+                    if (idx >= 0 && idx < curv.length) {
+                        y = curv[idx];
+                    }
+                }
+
+                // 最终兜底：按 x 在曲率序列中找最近有效点
+                if (!Double.isFinite(y) && Double.isFinite(x)) {
                     y = interpolateCurvatureAtX(x);
                 }
 
@@ -424,8 +484,7 @@ public class ComCurveFitDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "自动分段失败: " + t.getMessage());
         }
     }
-
-    //自动初始化复曲线的分界点
+    // 按钮「初始化直线和圆」：仅初始化复曲线分界点
     private void onInitKeyPtsOnly() {
         if (comCurve == null) return;
         undoManager.SaveSnapshot("初始化复曲线");
@@ -436,8 +495,7 @@ public class ComCurveFitDialog extends JDialog {
         }
         JOptionPane.showMessageDialog(this, "初始化成功!");
     }
-
-    //根据分界点初始化复曲线
+    // 按钮「根据分界点初始化」：根据分界点初始化并拟合复曲线
     private void onInitByKeyPts() {
         if (comCurve == null) return;
         undoManager.SaveSnapshot("复曲线初始化");
@@ -455,20 +513,19 @@ public class ComCurveFitDialog extends JDialog {
         refreshPlotFromDesigner();
         JOptionPane.showMessageDialog(this, "复曲线初始化完成!");
     }
-
-    ///对已经计算的复曲线参数进行取整优化
+    // 按钮「取整优化」：对已计算的复曲线参数进行取整优化
     private void onRoundOptimize() {
         if (comCurve == null) return;
         undoManager.SaveSnapshot("复曲线最佳缓和曲线取整优化");
-        if (!comCurve.ComCurveOpting(0, 0, 0, false)) {
+        if (!comCurve.ComCurveOpting(0, 0, 0, false)  ||  !comCurve.CalHoriMargin()) {
+           
             JOptionPane.showMessageDialog(this, "取整优化失败");
             return;
         }
         refreshPlotFromDesigner();
         JOptionPane.showMessageDialog(this, "取整优化完成!");
     }
-
-    //根据输入的缓和曲线长度重新优化复曲线
+    // 按钮「按照约定缓和曲线优化半径」：按输入的三段缓长重新优化复曲线
     private void onManualOptimize() {
         if (comCurve == null) return;
         double d1 = parseDouble(txtLen1.getText());
@@ -481,23 +538,19 @@ public class ComCurveFitDialog extends JDialog {
         }
 
         undoManager.SaveSnapshot("复曲线分段长度调整");
-        if (!comCurve.ComCurveOpting(d1, d2, d3, true)) {
+        if (!comCurve.ComCurveOpting(d1, d2, d3, true)||  !comCurve.CalHoriMargin()) {
             JOptionPane.showMessageDialog(this, "优化失败");
             return;
         }
 
         refreshPlotFromDesigner();
-        exportMarginAndInterPts();
+        //exportMarginAndInterPts();
     }
-
-
-    //计算并显示偏差值
+    // 按钮「计算并显示偏差值」：计算偏差并刷新显示（可导出）
     private void onCalAndShowMarginWithExport() {
         if (comCurve == null) return;
         undoManager.SaveSnapshot("计算并显示偏差值");
-
-        IntArr idx = getKeyPtIndexs();
-        if (!comCurve.StartComCurveFitting(idx)) {
+        if (!comCurve.CalHoriMargin()) {
             JOptionPane.showMessageDialog(this, "StartComCurveFitting 失败");
             return;
         }
@@ -579,8 +632,7 @@ public class ComCurveFitDialog extends JDialog {
     private static double safeY(AL_Point3d p) {
         return p != null ? p.getY() : Double.NaN;
     }
-
-    //通过输入的交点序号更新测量数据
+    // 按钮「按照交点序号筛选测量数据」：按交点序号筛选并更新本窗口测点
     private void onFilterByInterIndex() {
         if (fittingData == null) return;
 
@@ -614,8 +666,7 @@ public class ComCurveFitDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "筛选失败: " + t.getMessage());
         }
     }
-
-    //将复曲线拟合结果并入整个曲线
+    // 按钮「拟合结果并入」：将复曲线拟合结果并入整体拟合数据
     private void onMergeIntoFitting() {
         if (fittingData == null || alUndoManager == null) return;
 
@@ -938,6 +989,85 @@ public class ComCurveFitDialog extends JDialog {
 
         interface PlotClickHandler {
             void onClick(double x, double y);
+        }
+    }
+
+
+    /**
+     * FlowLayout 默认的 preferredSize 不考虑“换行”，导致 BorderLayout.SOUTH 里组件会被右侧裁切。
+     * WrapLayout 会根据当前容器宽度计算换行后的首选尺寸，从而让分组面板在窗口变窄时自动折行显示。
+     */
+    private static final class WrapLayout extends FlowLayout {
+        public WrapLayout() {
+            super();
+        }
+
+        public WrapLayout(int align) {
+            super(align);
+        }
+
+        public WrapLayout(int align, int hgap, int vgap) {
+            super(align, hgap, vgap);
+        }
+
+        @Override
+        public Dimension preferredLayoutSize(Container target) {
+            return layoutSize(target, true);
+        }
+
+        @Override
+        public Dimension minimumLayoutSize(Container target) {
+            Dimension minimum = layoutSize(target, false);
+            minimum.width -= (getHgap() + 1);
+            return minimum;
+        }
+
+        private Dimension layoutSize(Container target, boolean preferred) {
+            synchronized (target.getTreeLock()) {
+                int targetWidth = target.getSize().width;
+                if (targetWidth <= 0) {
+                    // 还未布局时，先按父容器宽度估算
+                    Container parent = target.getParent();
+                    targetWidth = parent != null ? parent.getWidth() : 0;
+                }
+
+                int hgap = getHgap();
+                int vgap = getVgap();
+                Insets insets = target.getInsets();
+                int horizontalInsetsAndGap = insets.left + insets.right + (hgap * 2);
+                int maxWidth = Math.max(targetWidth - horizontalInsetsAndGap, 0);
+
+                Dimension dim = new Dimension(0, 0);
+                int rowWidth = 0;
+                int rowHeight = 0;
+
+                int componentCount = target.getComponentCount();
+                for (int i = 0; i < componentCount; i++) {
+                    Component component = target.getComponent(i);
+                    if (!component.isVisible()) continue;
+
+                    Dimension compSize = preferred ? component.getPreferredSize() : component.getMinimumSize();
+                    if (rowWidth + compSize.width > maxWidth && rowWidth > 0) {
+                        // 换行
+                        dim.width = Math.max(dim.width, rowWidth);
+                        dim.height += rowHeight + vgap;
+                        rowWidth = 0;
+                        rowHeight = 0;
+                    }
+
+                    if (rowWidth != 0) rowWidth += hgap;
+                    rowWidth += compSize.width;
+                    rowHeight = Math.max(rowHeight, compSize.height);
+                }
+
+                // 最后一行
+                dim.width = Math.max(dim.width, rowWidth);
+                dim.height += rowHeight;
+
+                dim.width += horizontalInsetsAndGap;
+                dim.height += insets.top + insets.bottom + (vgap * 2);
+                return dim;
+            }
         }
     }
 

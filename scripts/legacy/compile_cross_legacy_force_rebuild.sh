@@ -23,12 +23,12 @@ rm -rf "$INSTALL_PREFIX/include/mumps" 2>/dev/null || true
 echo ">>> [force-rebuild] Building standalone libpord.a into $INSTALL_PREFIX/lib"
 MUMPS_TAR=""
 for p in \
-  "/build/thirdPartySrc/Ipopt/ThirdParty/Mumps/MUMPS_5.4.1.tar.gz" \
-  "/build/thirdPartySrc/MUMPS_5.4.1.tar.gz"; do
+  "/build/thirdPartySrc/Ipopt/ThirdParty/Mumps/MUMPS_5.5.1.tar.gz" \
+  "/build/thirdPartySrc/MUMPS_5.5.1.tar.gz"; do
   if [ -f "$p" ]; then MUMPS_TAR="$p"; break; fi
 done
 if [ -z "$MUMPS_TAR" ]; then
-  echo "ERROR: MUMPS_5.4.1.tar.gz not found (needed to build libpord.a)"
+  echo "ERROR: MUMPS_5.5.1.tar.gz not found (needed to build libpord.a)"
   exit 1
 fi
 
@@ -61,5 +61,5 @@ echo ">>> [force-rebuild] Cleaning previous exported artifacts in /output"
 rm -f /output/*.so* 2>/dev/null || true
 
 # 4) Delegate to the original build script
-echo ">>> [force-rebuild] Delegating to /scripts/legacy/compile_cross_legacy.sh"
-exec /bin/bash /scripts/legacy/compile_cross_legacy.sh
+echo ">>> [force-rebuild] Delegating to /build/scripts/legacy/compile_cross_legacy.sh"
+exec /bin/bash /build/scripts/legacy/compile_cross_legacy.sh

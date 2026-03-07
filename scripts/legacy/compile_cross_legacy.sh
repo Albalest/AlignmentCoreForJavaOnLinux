@@ -36,18 +36,12 @@ export PATH="/opt/cmake-3.20.0-linux-x86_64/bin:$PATH"
 
 # Install JDK 11 (ARM64)
 if [ ! -d "/opt/jdk-11" ]; then
-    echo ">>> Installing JDK 11 (ARM64)..."
-    if [ -f "/build/thirdPartySrc/jdk-11-arm64.tar.gz" ]; then
-        echo "Using local JDK tarball..."
-        mkdir -p /opt/jdk-11
-        tar -xzf /build/thirdPartySrc/jdk-11-arm64.tar.gz -C /opt/jdk-11 --strip-components=1
-    else
-        echo "Downloading JDK 11 from Aliyun mirror..."
-        wget -q https://mirrors.tuna.tsinghua.edu.cn/Adoptium/11/jdk/aarch64/linux/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.21_9.tar.gz -O jdk.tar.gz
-        mkdir -p /opt/jdk-11
-        tar -xzf jdk.tar.gz -C /opt/jdk-11 --strip-components=1
-        rm jdk.tar.gz
+    echo ">>> Installing JDK 11..."
+    if [ ! -d "/usr/lib/jvm/java-11-openjdk-amd64" ]; then
+        apt-get update
+        apt-get install -y openjdk-11-jdk-headless
     fi
+    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 fi
 
 echo ">>> Debugging JDK Installation..."
@@ -66,7 +60,13 @@ export FC=$HOST_ARCH-gfortran
 export AR=$HOST_ARCH-ar
 export RANLIB=$HOST_ARCH-ranlib
 export LD=$HOST_ARCH-ld
-export JAVA_HOME=/opt/jdk-11
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+# 核心优化：强制 64KB 页面对齐并显式指定 C++11 ABI 以适配银河麒麟
+export COMMON_FLAGS="-O3 -fPIC -Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536 -D_GLIBCXX_USE_CXX11_ABI=1"
+export CFLAGS="$COMMON_FLAGS"
+export CXXFLAGS="$COMMON_FLAGS"
+export LDFLAGS="-Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536"
 
 export INSTALL_PREFIX=/usr/local/$HOST_ARCH
 mkdir -p $INSTALL_PREFIX
@@ -77,15 +77,13 @@ build_lib() {
     local NAME=$2
     local CONFIGURE_ARGS=$3
     
-    echo ">>> Building $NAME (Cross)..."
+    echo ">>> Building $NAME (Cross) with 64KB Alignment..."
     rm -rf "/tmp/$NAME"
     cp -r "$SRC_DIR" "/tmp/$NAME"
     cd "/tmp/$NAME"
     
-    # Only run autoreconf if configure is missing, to avoid breaking vendor scripts (like CoinHSL)
-    if [ ! -f configure ] && ([ -f configure.ac ] || [ -f configure.in ]); then
-        autoreconf -vif || true
-    fi
+    # Always run autoreconf to regenerate auto-tools scripts inside the Docker container
+    autoreconf -vif || true
     
     # Clean up
     rm -f config.cache
@@ -97,7 +95,8 @@ build_lib() {
         make distclean || true
     fi
     
-    ./configure --host=$HOST_ARCH --prefix=$INSTALL_PREFIX $CONFIGURE_ARGS
+    ./configure --host=$HOST_ARCH --prefix=$INSTALL_PREFIX $CONFIGURE_ARGS \
+        CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS"
     make -j$(nproc)
     make install
 }
@@ -116,12 +115,12 @@ else
     echo ">>> ADOL-C already built, skipping."
 fi
 
-# 2.5 CoinHSL
-if [ ! -f "$INSTALL_PREFIX/lib/libcoinhsl.so" ]; then
-    build_lib "/build/thirdPartySrc/coinhsl" "CoinHSL" ""
-else
-    echo ">>> CoinHSL already built, skipping."
-fi
+# 2.5 CoinHSL (Disabled per user request)
+#if [ ! -f "$INSTALL_PREFIX/lib/libcoinhsl.so" ]; then
+#    build_lib "/build/thirdPartySrc/coinhsl" "CoinHSL" ""
+#else
+#    echo ">>> CoinHSL already built, skipping."
+#fi
 
 # 2.6 MUMPS (Manual Build - Sequential)
 if [ ! -f "$INSTALL_PREFIX/lib/libdmumps.a" ]; then
@@ -130,12 +129,12 @@ if [ ! -f "$INSTALL_PREFIX/lib/libdmumps.a" ]; then
     mkdir -p "/tmp/MUMPS"
     # Try multiple possible locations for the tarball
     MUMPS_TAR=""
-    for p in "/build/thirdPartySrc/Ipopt/ThirdParty/Mumps/MUMPS_5.4.1.tar.gz" "/build/thirdPartySrc/MUMPS_5.4.1.tar.gz"; do
+    for p in "/build/thirdPartySrc/Ipopt/ThirdParty/Mumps/MUMPS_5.5.1.tar.gz" "/build/thirdPartySrc/MUMPS_5.5.1.tar.gz"; do
         if [ -f "$p" ]; then MUMPS_TAR="$p"; break; fi
     done
     
     if [ -z "$MUMPS_TAR" ]; then
-        echo "ERROR: MUMPS_5.4.1.tar.gz not found!"
+        echo "ERROR: MUMPS_5.5.1.tar.gz not found!"
         exit 1
     fi
     
@@ -191,8 +190,11 @@ if [ ! -f "$INSTALL_PREFIX/lib/libdmumps.a" ]; then
     cp include/*.h $INSTALL_PREFIX/include/mumps/
     # Also install libseq MPI headers for sequential MUMPS (Ipopt includes <mpi.h>)
     cp -f libseq/mpi.h libseq/mpif.h $INSTALL_PREFIX/include/mumps/ 2>/dev/null || true
-    cp lib/*.a $INSTALL_PREFIX/lib/
-    cp libseq/*.a $INSTALL_PREFIX/lib/
+    cp lib/*.a $INSTALL_PREFIX/lib/ 2>/dev/null || true
+    cp libseq/*.a $INSTALL_PREFIX/lib/ 2>/dev/null || true
+    if [ -f PORD/lib/libpord.a ]; then
+        cp PORD/lib/libpord.a $INSTALL_PREFIX/lib/ 2>/dev/null || true
+    fi
 else
     echo ">>> MUMPS already built, skipping."
 fi
@@ -203,7 +205,7 @@ echo ">>> Building Ipopt (Cross)..."
 rm -rf "/tmp/Ipopt"
 # Try multiple possible source locations for Ipopt (build environment may mount different paths)
 IPOPT_SRC=""
-for p in "/source/docker/thirdPartySrc/Ipopt" "/home/albalest/AlignmentTest/docker/thirdPartySrc/Ipopt" "/build/thirdPartySrc/Ipopt" "/source/thirdPartySrc/Ipopt" "/home/albalest/AlignmentTest/thirdPartySrc/Ipopt"; do
+for p in "${PROJECT_ROOT}/docker/thirdPartySrc/Ipopt" "/home/albalest/AlignmentTest/docker/thirdPartySrc/Ipopt" "/build/thirdPartySrc/Ipopt" "${PROJECT_ROOT}/thirdPartySrc/Ipopt" "/home/albalest/AlignmentTest/thirdPartySrc/Ipopt"; do
     if [ -d "$p" ]; then IPOPT_SRC="$p"; break; fi
 done
 if [ -z "$IPOPT_SRC" ]; then
@@ -241,9 +243,7 @@ fi
 ../configure --host=$HOST_ARCH --prefix=$INSTALL_PREFIX \
     --disable-java --disable-f77 \
     --with-mumps-cflags="-I$INSTALL_PREFIX/include/mumps" \
-    --with-mumps-lflags="-L$INSTALL_PREFIX/lib -ldmumps -lmumps_common -lpord -lmpiseq" \
-    --with-hsl-cflags="-I$INSTALL_PREFIX/include/coin-or/hsl -I$INSTALL_PREFIX/include" \
-    --with-hsl-lflags="-L$INSTALL_PREFIX/lib -lcoinhsl -llapack -lblas" \
+    --with-mumps-lflags="-L$INSTALL_PREFIX/lib -ldmumps -lmumps_common -lpord -lmpiseq -llapack -lblas" \
     --enable-static --enable-shared
 
 make -j$(nproc)
@@ -261,7 +261,7 @@ fi
 ln -sf "$INSTALL_PREFIX/include/coin-or" "$INSTALL_PREFIX/include/coin"
 
 # If we only want to rebuild/export third-party libraries (e.g., Ipopt) and do NOT want to
-# compile the main project mounted at /source, allow skipping that phase.
+# compile the main project mounted at ${PROJECT_ROOT}, allow skipping that phase.
 if [ "${SKIP_PROJECT_BUILD:-0}" = "1" ]; then
     echo ">>> SKIP_PROJECT_BUILD=1: exporting third-party artifacts to /output and exiting"
     mkdir -p /output
@@ -279,9 +279,9 @@ fi
 
 # 4. Project
 echo ">>> Compiling Project (Cross)..."
-rm -rf /source/out/build/linux-arm64
-mkdir -p /source/out/build/linux-arm64
-cd /source/out/build/linux-arm64
+rm -rf ${PROJECT_ROOT}/out/build/linux-arm64
+mkdir -p ${PROJECT_ROOT}/out/build/linux-arm64
+cd ${PROJECT_ROOT}/out/build/linux-arm64
 cmake -G Ninja \
     -DCMAKE_SYSTEM_NAME=Linux \
     -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
@@ -290,19 +290,19 @@ cmake -G Ninja \
     -DCMAKE_FIND_ROOT_PATH=$INSTALL_PREFIX \
     -DCMAKE_PREFIX_PATH=$INSTALL_PREFIX \
     -DJAVA_HOME=$JAVA_HOME \
-    -DJNI_INCLUDE_PATH=$JAVA_HOME/include \
-    -DJNI_INCLUDE_PATH2=$JAVA_HOME/include/linux \
+    -DJAVA_AWT_LIBRARY=NotNeeded -DJAVA_AWT_INCLUDE_PATH=NotNeeded -DJAVA_JVM_LIBRARY=NotNeeded -DJAVA_INCLUDE_PATH=$JAVA_HOME/include \
+    -DJAVA_INCLUDE_PATH2=$JAVA_HOME/include/linux \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_RPATH="\$ORIGIN" \
     -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-    /source
+    ${PROJECT_ROOT}
 
 ninja
 
 # Copy results to output
 echo ">>> Exporting artifacts to /output..."
 mkdir -p /output
-cp -P /source/lib/*.so /output/
+cp -P ${PROJECT_ROOT}/lib/*.so /output/
 # Copy third-party libs from both lib and lib64
 for dir in "$INSTALL_PREFIX/lib" "$INSTALL_PREFIX/lib64"; do
     if [ -d "$dir" ]; then

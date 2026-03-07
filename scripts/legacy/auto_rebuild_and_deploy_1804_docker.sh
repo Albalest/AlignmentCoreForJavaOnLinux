@@ -10,7 +10,7 @@ TARGET_API_DIR="${TARGET_API_DIR:-/mnt/d/ARDevelop/ALCoreForLinux/API/Linux_Arm_
 
 WORKSPACE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUT_DIR="$WORKSPACE_DIR/out/linux-arm64-legacy"
-THIRD_PARTY_SRC="$WORKSPACE_DIR/thirdPartySrc"
+THIRD_PARTY_SRC="${THIRD_PARTY_SRC:-$WORKSPACE_DIR/thirdPartySrc}"
 
 if ! command -v docker >/dev/null 2>&1; then
   echo "ERROR: docker not found in PATH"
@@ -28,8 +28,8 @@ if [ ! -d "$THIRD_PARTY_SRC" ]; then
 fi
 
 # Ensure MUMPS tarball exists where compile_cross_legacy.sh expects it.
-if [ ! -f "$THIRD_PARTY_SRC/MUMPS_5.4.1.tar.gz" ]; then
-  echo "ERROR: missing thirdPartySrc/MUMPS_5.4.1.tar.gz"
+if [ ! -f "$THIRD_PARTY_SRC/MUMPS_5.5.1.tar.gz" ]; then
+  echo "ERROR: missing thirdPartySrc/MUMPS_5.5.1.tar.gz"
   exit 1
 fi
 

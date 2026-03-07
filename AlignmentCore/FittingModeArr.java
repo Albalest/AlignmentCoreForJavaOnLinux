@@ -8,7 +8,7 @@
 
 package AlignmentCore;
 
-public class FittingModeArr extends java.util.AbstractList<int> implements java.util.RandomAccess {
+public class FittingModeArr extends java.util.AbstractList<Integer> implements java.util.RandomAccess {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -57,35 +57,38 @@ public class FittingModeArr extends java.util.AbstractList<int> implements java.
     }
   }
 
-  public FittingModeArr(Iterable<int> initialElements) {
+  public FittingModeArr(Iterable<Integer> initialElements) {
     this();
-    for (int element : initialElements) {
+    for (Integer element : initialElements) {
       add(element);
     }
   }
 
-  public int get(int index) {
-    return doGet(index);
+  public Integer get(int index) {
+    long cptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doGet(index));
+    return (int)cptr;
   }
 
-  public int set(int index, int e) {
-    return doSet(index, e);
+  public Integer set(int index, Integer e) {
+    long oldCptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doSet(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false)));
+    return (int)oldCptr;
   }
 
-  public boolean add(int e) {
+  public boolean add(Integer e) {
     modCount++;
-    doAdd(e);
+    doAdd(new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false));
     return true;
   }
 
-  public void add(int index, int e) {
+  public void add(int index, Integer e) {
     modCount++;
-    doAdd(index, e);
+    doAdd(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false));
   }
 
-  public int remove(int index) {
+  public Integer remove(int index) {
     modCount++;
-    return doRemove(index);
+    long cptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doRemove(index));
+    return (int)cptr;
   }
 
   protected void removeRange(int fromIndex, int toIndex) {

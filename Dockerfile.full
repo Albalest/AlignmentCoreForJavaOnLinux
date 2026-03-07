@@ -1,0 +1,11 @@
+FROM alignment-legacy-env:latest
+
+# 预设工作目录
+WORKDIR /build
+
+# 挂载本地 thirdPartySrc 并预编译所有第三方库
+# 注意：在容器内编译并安装到 /usr/local/aarch64-linux-gnu
+# 这样镜像就会自带编译好的 Ipopt, ADOL-C, ColPack, MUMPS, CoinHSL
+
+# 我们需要将 compile_cross_legacy.sh 的逻辑集成进来，
+# 但 Dockerfile 构建时不能直接挂载卷，所以我们先完成基础编译脚本的优化

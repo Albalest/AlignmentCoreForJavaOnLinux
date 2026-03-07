@@ -57,3 +57,9 @@ compile_commands.json
 *.tgz
 *.zip
 *.7z
+
+# Temporary/Local
+MUMPS/
+scripts/ThirdParty-Mumps-stable-3.0/
+nohup.out
+daemon.json

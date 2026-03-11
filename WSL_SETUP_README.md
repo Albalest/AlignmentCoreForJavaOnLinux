@@ -76,3 +76,7 @@ A:
 
 **Q: VS Code 找不到 C++ 源码目录?**
 A: 默认配置假设 C++ 源码位于 `~/.vs/AlignmentCore`。如果位置改变，请修改 `build_native_lib.sh` 中的 `CPP_SOURCE_ROOT` 变量。
+static {
+        String libPath = System.getProperty("user.dir") + "/lib/";
+        System.load(libPath + "libAlignmentCoreJava.so");
+    }

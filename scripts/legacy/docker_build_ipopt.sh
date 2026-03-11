@@ -147,11 +147,11 @@ EOF
         -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
         -DCMAKE_PREFIX_PATH="/usr/share/eigen3/cmake;/work/install_arm64" \
-        -DJAVA_AWT_LIBRARY=/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so \
-        -DJAVA_JVM_LIBRARY=/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so \
-        -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-11-openjdk-amd64/include \
-        -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-11-openjdk-amd64/include/linux \
-        -DJAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/java-11-openjdk-amd64/include \
+        -DJAVA_AWT_LIBRARY=/usr/lib/jvm/java-17-openjdk-amd64/lib/server/libjvm.so \
+        -DJAVA_JVM_LIBRARY=/usr/lib/jvm/java-17-openjdk-amd64/lib/server/libjvm.so \
+        -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-17-openjdk-amd64/include \
+        -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-17-openjdk-amd64/include/linux \
+        -DJAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/java-17-openjdk-amd64/include \
         -DIPOPT_INCLUDE_DIR=/work/install_arm64/include \
         -DLIB_IPOPT=/work/install_arm64/lib/libipopt.so
 

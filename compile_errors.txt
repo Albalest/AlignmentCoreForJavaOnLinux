@@ -1,0 +1,91 @@
+AlignmentCore/FittingModeArr.java:143: error: cannot find symbol
+  private void doAdd(SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type x) {
+                     ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:147: error: cannot find symbol
+  private void doAdd(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type x) {
+                                ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:151: error: cannot find symbol
+  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doRemove(int index) {
+          ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:155: error: cannot find symbol
+  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doGet(int index) {
+          ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:159: error: cannot find symbol
+  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doSet(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type val) {
+                                                                                                 ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:159: error: cannot find symbol
+  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doSet(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type val) {
+          ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:68: error: cannot find symbol
+    long cptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doGet(index));
+                ^
+  symbol:   variable SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:73: error: cannot find symbol
+    long oldCptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doSet(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false)));
+                   ^
+  symbol:   variable SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:73: error: cannot find symbol
+    long oldCptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doSet(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false)));
+                                                                                                                  ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:79: error: cannot find symbol
+    doAdd(new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false));
+              ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:85: error: cannot find symbol
+    doAdd(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false));
+                     ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:90: error: cannot find symbol
+    long cptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doRemove(index));
+                ^
+  symbol:   variable SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:144: error: cannot find symbol
+    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_0(swigCPtr, this, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(x));
+                                                                 ^
+  symbol:   variable SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:148: error: cannot find symbol
+    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_1(swigCPtr, this, index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(x));
+                                                                        ^
+  symbol:   variable SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:152: error: cannot find symbol
+    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doRemove(swigCPtr, this, index), true);
+               ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:156: error: cannot find symbol
+    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doGet(swigCPtr, this, index), false);
+               ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:160: error: cannot find symbol
+    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doSet(swigCPtr, this, index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(val)), true);
+               ^
+  symbol:   class SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+AlignmentCore/FittingModeArr.java:160: error: cannot find symbol
+    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doSet(swigCPtr, this, index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(val)), true);
+                                                                                                                                                 ^
+  symbol:   variable SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type
+  location: class FittingModeArr
+18 errors

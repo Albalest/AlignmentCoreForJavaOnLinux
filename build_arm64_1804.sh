@@ -99,8 +99,8 @@ fi
 
 # thirdparty 构建需要 MUMPS tarball
 if [[ "$MODE" != "project" ]]; then
-  if [ ! -f "$THIRD_PARTY_SRC/MUMPS_5.4.1.tar.gz" ]; then
-    echo "ERROR: missing thirdPartySrc/MUMPS_5.4.1.tar.gz (required for third-party rebuild)"
+  if [ ! -f "$THIRD_PARTY_SRC/MUMPS_5.5.1.tar.gz" ]; then
+    echo "ERROR: missing thirdPartySrc/MUMPS_5.5.1.tar.gz (required for third-party rebuild)"
     exit 1
   fi
 fi
@@ -194,6 +194,11 @@ if [ "$DO_DEPLOY" = "1" ]; then
   rm -f "$DEPLOY_DIR"/*.so* 2>/dev/null || true
   cp -a "$OUT_DIR"/*.so* "$DEPLOY_DIR"/
   echo "DONE: deployed to $DEPLOY_DIR"
+
+  # 打包部署后的文件
+  echo ">>> Creating compressed package in $DEPLOY_DIR..."
+  (cd "$DEPLOY_DIR" && tar -czvf ALCore_ARM64_Deployment_$(date +%Y%m%d).tar.gz ./*.so*)
+  echo "DONE: Package created."
 else
   echo "DONE: artifacts in $OUT_DIR"
 fi

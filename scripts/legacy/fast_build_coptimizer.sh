@@ -58,11 +58,11 @@ docker run --rm \
         -DCMAKE_BUILD_TYPE=Release \
         -DIPOPT_INCLUDE_DIR="/includes;/includes/adolc_src" \
         -DLIB_IPOPT="/libs/libipopt.so" \
-        -DJAVA_AWT_LIBRARY=/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so \
-        -DJAVA_JVM_LIBRARY=/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so \
-        -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-11-openjdk-amd64/include \
-        -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-11-openjdk-amd64/include/linux \
-        -DJAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/java-11-openjdk-amd64/include \
+        -DJAVA_AWT_LIBRARY=/usr/lib/jvm/java-17-openjdk-amd64/lib/server/libjvm.so \
+        -DJAVA_JVM_LIBRARY=/usr/lib/jvm/java-17-openjdk-amd64/lib/server/libjvm.so \
+        -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-17-openjdk-amd64/include \
+        -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-17-openjdk-amd64/include/linux \
+        -DJAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/java-17-openjdk-amd64/include \
         -DCMAKE_INSTALL_RPATH="\$ORIGIN" \
         /source
     

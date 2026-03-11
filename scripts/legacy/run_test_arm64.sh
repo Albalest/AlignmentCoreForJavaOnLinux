@@ -12,7 +12,7 @@ docker run --rm --platform linux/arm64 \
     /bin/bash -c "
         echo '>>> Installing Runtime Dependencies (JRE, Fortran, Lapack, X11)...'
         apt-get update >/dev/null 2>&1
-        apt-get install -y openjdk-11-jre libgfortran5 libgomp1 liblapack3 libblas3 libxext6 libxrender1 libxtst6 libxi6 libx11-6 >/dev/null 2>&1
+        apt-get install -y openjdk-17-jre libgfortran5 libgomp1 liblapack3 libblas3 libxext6 libxrender1 libxtst6 libxi6 libx11-6 >/dev/null 2>&1
         
         echo '>>> Verifying Libraries...'
         ls -F lib/

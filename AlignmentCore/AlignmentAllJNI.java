@@ -10,15 +10,8 @@ package AlignmentCore;
 
 public class AlignmentAllJNI {
   static {
-    String libPath = System.getProperty("user.dir") + "/lib/";
-    System.load(libPath + "libCMatrixByEigen.so");
-    System.load(libPath + "libAlignmentCore.so");
-    System.load(libPath + "libSurveyingCore.so");
-    System.load(libPath + "libTQICal.so");
-    System.load(libPath + "libAlignmentFittingCore.so");
-    System.load(libPath + "libAlignmentCoreJava.so");
+    System.loadLibrary("AlignmentCoreJava");
   }
-
   public final static native int InterType_ELE_NULL_get();
   public final static native int InterType_ELE_PRE_get();
   public final static native int InterType_ELE_SUB_get();
@@ -687,11 +680,11 @@ public class AlignmentAllJNI {
   public final static native int FittingModeArr_doCapacity(long jarg1, FittingModeArr jarg1_);
   public final static native void FittingModeArr_doReserve(long jarg1, FittingModeArr jarg1_, int jarg2);
   public final static native int FittingModeArr_doSize(long jarg1, FittingModeArr jarg1_);
-  public final static native void FittingModeArr_doAdd__SWIG_0(long jarg1, FittingModeArr jarg1_, long jarg2);
-  public final static native void FittingModeArr_doAdd__SWIG_1(long jarg1, FittingModeArr jarg1_, int jarg2, long jarg3);
-  public final static native long FittingModeArr_doRemove(long jarg1, FittingModeArr jarg1_, int jarg2);
-  public final static native long FittingModeArr_doGet(long jarg1, FittingModeArr jarg1_, int jarg2);
-  public final static native long FittingModeArr_doSet(long jarg1, FittingModeArr jarg1_, int jarg2, long jarg3);
+  public final static native void FittingModeArr_doAdd__SWIG_0(long jarg1, FittingModeArr jarg1_, int jarg2);
+  public final static native void FittingModeArr_doAdd__SWIG_1(long jarg1, FittingModeArr jarg1_, int jarg2, int jarg3);
+  public final static native int FittingModeArr_doRemove(long jarg1, FittingModeArr jarg1_, int jarg2);
+  public final static native int FittingModeArr_doGet(long jarg1, FittingModeArr jarg1_, int jarg2);
+  public final static native int FittingModeArr_doSet(long jarg1, FittingModeArr jarg1_, int jarg2, int jarg3);
   public final static native void FittingModeArr_doRemoveRange(long jarg1, FittingModeArr jarg1_, int jarg2, int jarg3);
   public final static native void delete_FittingModeArr(long jarg1);
   public final static native long new_TQIValueVector__SWIG_0();
@@ -720,6 +713,16 @@ public class AlignmentAllJNI {
   public final static native boolean SingleAlignmentBase_IsBaseLine(long jarg1, SingleAlignmentBase jarg1_);
   public final static native String SingleAlignmentBase_GetBaseLineName(long jarg1, SingleAlignmentBase jarg1_);
   public final static native long SingleAlignmentBase_Get3DPoints(long jarg1, SingleAlignmentBase jarg1_, double jarg2);
+  public final static native boolean SingleAlignmentBase_Init__SWIG_0(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, GradeChangePointArr jarg3_, long jarg4, ChainArr jarg4_, int jarg5, boolean jarg6, int jarg7);
+  public final static native boolean SingleAlignmentBase_Init__SWIG_1(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, GradeChangePointArr jarg3_, long jarg4, ChainArr jarg4_, int jarg5, boolean jarg6);
+  public final static native boolean SingleAlignmentBase_Init__SWIG_2(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, GradeChangePointArr jarg3_, long jarg4, ChainArr jarg4_, int jarg5);
+  public final static native boolean SingleAlignmentBase_Init__SWIG_3(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ALElementPtrArr jarg3_, long jarg4, ChainArr jarg4_, boolean jarg5, int jarg6);
+  public final static native boolean SingleAlignmentBase_Init__SWIG_4(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ALElementPtrArr jarg3_, long jarg4, ChainArr jarg4_, boolean jarg5);
+  public final static native boolean SingleAlignmentBase_Init__SWIG_5(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ALElementPtrArr jarg3_, long jarg4, ChainArr jarg4_);
+  public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_0(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_, boolean jarg4, int[] jarg5);
+  public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_1(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_, boolean jarg4);
+  public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_2(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_);
+  public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_3(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_);
   public final static native boolean SingleAlignmentBase_CreateHoriByElement(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ChainArr jarg3_);
   public final static native boolean SingleAlignmentBase_CreateVertByElement(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_);
   public final static native boolean SingleAlignmentBase_ReplaceChains(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ChainArr jarg2_);
@@ -807,6 +810,7 @@ public class AlignmentAllJNI {
   public final static native boolean SingleAlignmentBase_GetMilageMarksbyPoint(long jarg1, SingleAlignmentBase jarg1_, long jarg2, IntArr jarg2_, long jarg3, ALVector3dArr jarg3_, long jarg4, ALPoint3dArr jarg4_, long jarg5, StringArr jarg5_);
   public final static native long AlignmentManager_GetInstance();
   public final static native boolean AlignmentManager_RegisterAlignment(long jarg1, AlignmentManager jarg1_, long jarg2, SingleAlignmentBase jarg2_);
+  public final static native boolean AlignmentManager_GetAlignment(long jarg1, AlignmentManager jarg1_, String jarg2, long jarg3);
   public final static native long new_SplitIndex__SWIG_0();
   public final static native long new_SplitIndex__SWIG_1(int jarg1, int jarg2, int jarg3, int jarg4);
   public final static native void SplitIndex_ZHIndex_set(long jarg1, SplitIndex jarg1_, int jarg2);

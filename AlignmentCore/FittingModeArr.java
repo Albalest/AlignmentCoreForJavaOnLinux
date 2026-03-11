@@ -59,36 +59,33 @@ public class FittingModeArr extends java.util.AbstractList<Integer> implements j
 
   public FittingModeArr(Iterable<Integer> initialElements) {
     this();
-    for (Integer element : initialElements) {
+    for (int element : initialElements) {
       add(element);
     }
   }
 
   public Integer get(int index) {
-    long cptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doGet(index));
-    return (int)cptr;
+    return doGet(index);
   }
 
   public Integer set(int index, Integer e) {
-    long oldCptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doSet(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false)));
-    return (int)oldCptr;
+    return doSet(index, e);
   }
 
   public boolean add(Integer e) {
     modCount++;
-    doAdd(new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false));
+    doAdd(e);
     return true;
   }
 
   public void add(int index, Integer e) {
     modCount++;
-    doAdd(index, new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(e.longValue(), false));
+    doAdd(index, e);
   }
 
   public Integer remove(int index) {
     modCount++;
-    long cptr = SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(doRemove(index));
-    return (int)cptr;
+    return doRemove(index);
   }
 
   protected void removeRange(int fromIndex, int toIndex) {
@@ -140,24 +137,24 @@ public class FittingModeArr extends java.util.AbstractList<Integer> implements j
     return AlignmentAllJNI.FittingModeArr_doSize(swigCPtr, this);
   }
 
-  private void doAdd(SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type x) {
-    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_0(swigCPtr, this, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(x));
+  private void doAdd(int x) {
+    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_0(swigCPtr, this, x);
   }
 
-  private void doAdd(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type x) {
-    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_1(swigCPtr, this, index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(x));
+  private void doAdd(int index, int x) {
+    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_1(swigCPtr, this, index, x);
   }
 
-  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doRemove(int index) {
-    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doRemove(swigCPtr, this, index), true);
+  private int doRemove(int index) {
+    return AlignmentAllJNI.FittingModeArr_doRemove(swigCPtr, this, index);
   }
 
-  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doGet(int index) {
-    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doGet(swigCPtr, this, index), false);
+  private int doGet(int index) {
+    return AlignmentAllJNI.FittingModeArr_doGet(swigCPtr, this, index);
   }
 
-  private SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type doSet(int index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type val) {
-    return new SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type(AlignmentAllJNI.FittingModeArr_doSet(swigCPtr, this, index, SWIGTYPE_p_std__vectorT_AlignmentFittingCore__ALFITMODE_t__value_type.getCPtr(val)), true);
+  private int doSet(int index, int val) {
+    return AlignmentAllJNI.FittingModeArr_doSet(swigCPtr, this, index, val);
   }
 
   private void doRemoveRange(int fromIndex, int toIndex) {

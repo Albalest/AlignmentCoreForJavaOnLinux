@@ -6,7 +6,7 @@ set -euo pipefail
 
 HOST_ARCH=aarch64-linux-gnu
 INSTALL_PREFIX=/usr/local/$HOST_ARCH
-JAVA_HOME=${JAVA_HOME:-/opt/jdk-11}
+JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1
@@ -25,6 +25,8 @@ if [ ! -f "$INSTALL_PREFIX/lib/libipopt.so" ] && [ ! -f "$INSTALL_PREFIX/lib/lib
   exit 2
 fi
 
+apt-get update -y && apt-get install -y libeigen3-dev
+
 echo ">>> Compiling Project (Cross, project-only)..."
 rm -rf /source/out/build/linux-arm64
 mkdir -p /source/out/build/linux-arm64
@@ -38,8 +40,8 @@ cmake -G Ninja \
   -DCMAKE_FIND_ROOT_PATH=$INSTALL_PREFIX \
   -DCMAKE_PREFIX_PATH=$INSTALL_PREFIX \
   -DJAVA_HOME=$JAVA_HOME \
-  -DJNI_INCLUDE_PATH=$JAVA_HOME/include \
-  -DJNI_INCLUDE_PATH2=$JAVA_HOME/include/linux \
+  -DJAVA_AWT_LIBRARY=NotNeeded -DJAVA_AWT_INCLUDE_PATH=NotNeeded -DJAVA_JVM_LIBRARY=NotNeeded -DJAVA_INCLUDE_PATH=$JAVA_HOME/include \
+  -DJAVA_INCLUDE_PATH2=$JAVA_HOME/include/linux \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_RPATH="\$ORIGIN" \
   -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \

@@ -34,22 +34,23 @@ if [ ! -f "/opt/cmake-3.20.0-linux-x86_64/bin/cmake" ]; then
 fi
 export PATH="/opt/cmake-3.20.0-linux-x86_64/bin:$PATH"
 
-# Install JDK 11 (ARM64)
-if [ ! -d "/opt/jdk-11" ]; then
-    echo ">>> Installing JDK 11..."
-    if [ ! -d "/usr/lib/jvm/java-11-openjdk-amd64" ]; then
+# Install JDK 17
+if [ ! -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
+    echo ">>> Installing JDK 17..."
+    if [ ! -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
         apt-get update
-        apt-get install -y openjdk-11-jdk-headless
+        apt-get install -y openjdk-17-jdk-headless
     fi
-    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 fi
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 echo ">>> Debugging JDK Installation..."
 {
-    echo "Listing /opt/jdk-11:"
-    ls -F /opt/jdk-11/ || echo "ls /opt/jdk-11 failed"
+    echo "JAVA_HOME=$JAVA_HOME"
+    echo "Listing $JAVA_HOME:"
+    ls -F "$JAVA_HOME"/ || echo "ls $JAVA_HOME failed"
     echo "Finding jni.h:"
-    find /opt/jdk-11 -name jni.h || echo "find jni.h failed"
+    find "$JAVA_HOME" -name jni.h || echo "find jni.h failed"
 } > /output/debug_jdk.txt
 
 # Set Cross-Compiler Environment
@@ -60,7 +61,7 @@ export FC=$HOST_ARCH-gfortran
 export AR=$HOST_ARCH-ar
 export RANLIB=$HOST_ARCH-ranlib
 export LD=$HOST_ARCH-ld
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # 核心优化：强制 64KB 页面对齐并显式指定 C++11 ABI 以适配银河麒麟
 export COMMON_FLAGS="-O3 -fPIC -Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536 -D_GLIBCXX_USE_CXX11_ABI=1"

@@ -52,4 +52,8 @@ public class AlignmentManager {
     return AlignmentAllJNI.AlignmentManager_RegisterAlignment(swigCPtr, this, SingleAlignmentBase.getCPtr(line), line);
   }
 
+  public boolean GetAlignment(String alignmentName, SWIGTYPE_p_p_AlignmentCore__SingleAlignmentBase line) {
+    return AlignmentAllJNI.AlignmentManager_GetAlignment(swigCPtr, this, alignmentName, SWIGTYPE_p_p_AlignmentCore__SingleAlignmentBase.getCPtr(line));
+  }
+
 }

@@ -1,0 +1,13 @@
+--- AlignmentCore.i.orig2026-03-10 17:00:00.000000000 +0800
++++ AlignmentCore.i2026-03-10 17:00:00.000000000 +0800
+@@ -99,6 +99,10 @@
+ %include "../AlignmentCore/CStandCode.h"
+ %include "../AlignmentCore/ALBaseElement.h"
+ %include "../SurveyingCore/SurveyImfo.h"
+ 
++%apply int { AlignmentCore::EVALUATION, AlignmentFittingCore::ALFITMODE };
++%typemap(jboxtype) AlignmentCore::EVALUATION "Integer"
++%typemap(jboxtype) AlignmentFittingCore::ALFITMODE "Integer"
++
+ // ===== 模板实例化（必须放在被后续 include 类引用之前）=====
+ namespace std {

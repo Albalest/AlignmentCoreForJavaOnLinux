@@ -4,14 +4,14 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # 使用阿里云镜像源（针对 Ubuntu 18.04 bionic）
-RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &&     sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &&     apt-get update &&     apt-get install -y build-essential cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gfortran-aarch64-linux-gnu     pkg-config unzip file liblapack-dev libblas-dev autoconf automake libtool     ninja-build wget openjdk-11-jdk-headless
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &&     sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &&     apt-get update &&     apt-get install -y build-essential cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gfortran-aarch64-linux-gnu     pkg-config unzip file liblapack-dev libblas-dev autoconf automake libtool     ninja-build wget libeigen3-dev patchelf openjdk-17-jdk-headless
 
 # 2. 预先安装 CMake 3.20 (解决版本过低问题)
 RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0-linux-x86_64.tar.gz &&     tar -xzf cmake-3.20.0-linux-x86_64.tar.gz -C /opt &&     rm cmake-3.20.0-linux-x86_64.tar.gz
 ENV PATH="/opt/cmake-3.20.0-linux-x86_64/bin:${PATH}"
 
 # 3. 设置交叉编译环境变量
-ENV HOST_ARCH=aarch64-linux-gnu     CC=aarch64-linux-gnu-gcc     CXX=aarch64-linux-gnu-g++     FC=aarch64-linux-gnu-gfortran     JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV HOST_ARCH=aarch64-linux-gnu     CC=aarch64-linux-gnu-gcc     CXX=aarch64-linux-gnu-g++     FC=aarch64-linux-gnu-gfortran     JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # 4. 工作目录
 WORKDIR /source

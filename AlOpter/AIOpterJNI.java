@@ -10,11 +10,21 @@ package AlOpter;
 
 public class AIOpterJNI {
   static {
-    // 显式加载依赖库，解决 undefined symbol 问题
-    System.load("/home/albalest/AlignmentTest/lib/libadolc.so");
-    System.load("/home/albalest/AlignmentTest/lib/libipopt.so");
-    System.load("/home/albalest/AlignmentTest/lib/libCOptimizer.so"); // 加载DLL，注意不要加扩展名
+    // 先加载系统 x86_64 的 adolc，避免误用工作区中的 aarch64 版本。
+    try {
+      System.load("/usr/local/lib64/libadolc.so");
+    } catch (UnsatisfiedLinkError e1) {
+      try {
+        System.load("/usr/local/lib/libadolc.so");
+      } catch (UnsatisfiedLinkError e2) {
+        throw new UnsatisfiedLinkError("Failed to load libadolc from /usr/local/lib64 or /usr/local/lib: " + e2.getMessage());
+      }
+    }
+
+    // 加载项目 JNI 主库。
+    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libCOptimizer.so");
   }
+
   public final static native long new_OptData__SWIG_0();
   public final static native long new_OptData__SWIG_1(double jarg1, double jarg2, double jarg3, double jarg4);
   public final static native long new_OptData__SWIG_2(double jarg1, double jarg2, double jarg3);

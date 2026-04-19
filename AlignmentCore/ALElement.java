@@ -189,6 +189,10 @@ public class ALElement {
     return AlignmentAllJNI.ALElement_GetRangePts(swigCPtr, this, ALPoint3dArr.getCPtr(offsetPts), offsetPts, ALVector3dArr.getCPtr(vecs), vecs, dMargin, dStartMileage, dEndMileage);
   }
 
+  public boolean IntersectWithLine(AL_Point3d linePt, AL_Vector3d lineVec, ALPoint3dArr interPts) {
+    return AlignmentAllJNI.ALElement_IntersectWithLine(swigCPtr, this, AL_Point3d.getCPtr(linePt), linePt, AL_Vector3d.getCPtr(lineVec), lineVec, ALPoint3dArr.getCPtr(interPts), interPts);
+  }
+
   public static ALElement Create(AL_Point3d stPt, AL_Vector3d stVec, double dLen, double dStLc, int type, int dir, double dRadius, double dSuperEle, int jdNumber, double dLendiff, double secondRadius) {
     long cPtr = AlignmentAllJNI.ALElement_Create__SWIG_0(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLen, dStLc, type, dir, dRadius, dSuperEle, jdNumber, dLendiff, secondRadius);
     return (cPtr == 0) ? null : new ALElement(cPtr, true);

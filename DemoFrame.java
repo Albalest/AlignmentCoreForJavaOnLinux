@@ -333,7 +333,7 @@ public class DemoFrame extends JFrame {
             return;
         }
         IntArr inArr=new IntArr();
-        if(!mySingleAlignment.ExportGeoData(filePath, inArr,false)) {
+        if(!mySingleAlignment.ExportGeoDataV2(filePath, inArr,false)) {
             System.out.println("导出线形文件失败!");
             return;
         }

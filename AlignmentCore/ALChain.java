@@ -80,4 +80,16 @@ public class ALChain {
     return AlignmentAllJNI.ALChain_m_Word_get(swigCPtr, this);
   }
 
+  public static boolean GetRmByDm(SWIGTYPE_p_double dRm, ChainArr chains, DisplayMileage dm) {
+    return AlignmentAllJNI.ALChain_GetRmByDm(SWIGTYPE_p_double.getCPtr(dRm), ChainArr.getCPtr(chains), chains, DisplayMileage.getCPtr(dm), dm);
+  }
+
+  public static boolean GetDmByRm(DisplayMileage dm, ChainArr chains, double dRm) {
+    return AlignmentAllJNI.ALChain_GetDmByRm(DisplayMileage.getCPtr(dm), dm, ChainArr.getCPtr(chains), chains, dRm);
+  }
+
+  public static boolean GetRMArrByDM(DoubleArr rm, ChainArr chains, IntArr nIndexs, double dDm) {
+    return AlignmentAllJNI.ALChain_GetRMArrByDM(DoubleArr.getCPtr(rm), rm, ChainArr.getCPtr(chains), chains, IntArr.getCPtr(nIndexs), nIndexs, dDm);
+  }
+
 }

@@ -15,7 +15,8 @@
             ],
             "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
             "env": {
-                "LD_LIBRARY_PATH": "${workspaceFolder}/lib"
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
+                "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
             },
             "preLaunchTask": "Build Java (javac)"
         },
@@ -24,7 +25,12 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "AlignmentTest_82b1920b"
+            "projectName": "AlignmentTest_82b1920b",
+            "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
+            "env": {
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
+                "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
+            }
         },
         {
             "type": "java",
@@ -34,7 +40,8 @@
             "projectName": "AlignmentTest",
             "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
             "env": {
-                "LD_LIBRARY_PATH": "${workspaceFolder}/lib"
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
+                "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
             }
         },
         {

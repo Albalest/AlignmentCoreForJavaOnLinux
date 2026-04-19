@@ -172,6 +172,126 @@ public class AlignmentFitting {
     return AlignmentAllJNI.AlignmentFitting_CalVertMargin__SWIG_2(swigCPtr, this);
   }
 
+  public boolean CalVertMarginLocal(IntIntPair rangeIndex, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_CalVertMarginLocal__SWIG_0(swigCPtr, this, IntIntPair.getCPtr(rangeIndex), rangeIndex, isStatic, type);
+  }
+
+  public boolean CalVertMarginLocal(IntIntPair rangeIndex, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_CalVertMarginLocal__SWIG_1(swigCPtr, this, IntIntPair.getCPtr(rangeIndex), rangeIndex, isStatic);
+  }
+
+  public boolean CalVertMarginLocal(IntIntPair rangeIndex) {
+    return AlignmentAllJNI.AlignmentFitting_CalVertMarginLocal__SWIG_2(swigCPtr, this, IntIntPair.getCPtr(rangeIndex), rangeIndex);
+  }
+
+  public boolean MoveGCP(double dRealLc, double dHeight, int nIndex, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_MoveGCP__SWIG_0(swigCPtr, this, dRealLc, dHeight, nIndex, isStatic, type);
+  }
+
+  public boolean MoveGCP(double dRealLc, double dHeight, int nIndex, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_MoveGCP__SWIG_1(swigCPtr, this, dRealLc, dHeight, nIndex, isStatic);
+  }
+
+  public boolean MoveGCP(double dRealLc, double dHeight, int nIndex) {
+    return AlignmentAllJNI.AlignmentFitting_MoveGCP__SWIG_2(swigCPtr, this, dRealLc, dHeight, nIndex);
+  }
+
+  public boolean MoveGCPByFixed(double dRealLc, double dHeight, int nIndex, boolean isFixedFront, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_MoveGCPByFixed__SWIG_0(swigCPtr, this, dRealLc, dHeight, nIndex, isFixedFront, isStatic, type);
+  }
+
+  public boolean MoveGCPByFixed(double dRealLc, double dHeight, int nIndex, boolean isFixedFront, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_MoveGCPByFixed__SWIG_1(swigCPtr, this, dRealLc, dHeight, nIndex, isFixedFront, isStatic);
+  }
+
+  public boolean MoveGCPByFixed(double dRealLc, double dHeight, int nIndex, boolean isFixedFront) {
+    return AlignmentAllJNI.AlignmentFitting_MoveGCPByFixed__SWIG_2(swigCPtr, this, dRealLc, dHeight, nIndex, isFixedFront);
+  }
+
+  public boolean ModifyVertRadius(double dRadius, int nIndex, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_ModifyVertRadius__SWIG_0(swigCPtr, this, dRadius, nIndex, isStatic, type);
+  }
+
+  public boolean ModifyVertRadius(double dRadius, int nIndex, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_ModifyVertRadius__SWIG_1(swigCPtr, this, dRadius, nIndex, isStatic);
+  }
+
+  public boolean ModifyVertRadius(double dRadius, int nIndex) {
+    return AlignmentAllJNI.AlignmentFitting_ModifyVertRadius__SWIG_2(swigCPtr, this, dRadius, nIndex);
+  }
+
+  public boolean DeleteGCP(int nIndex, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_DeleteGCP__SWIG_0(swigCPtr, this, nIndex, isStatic, type);
+  }
+
+  public boolean DeleteGCP(int nIndex, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_DeleteGCP__SWIG_1(swigCPtr, this, nIndex, isStatic);
+  }
+
+  public boolean DeleteGCP(int nIndex) {
+    return AlignmentAllJNI.AlignmentFitting_DeleteGCP__SWIG_2(swigCPtr, this, nIndex);
+  }
+
+  public boolean InsertGCP(ALGradeChangePoint curGCP, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_InsertGCP__SWIG_0(swigCPtr, this, ALGradeChangePoint.getCPtr(curGCP), curGCP, isStatic, type);
+  }
+
+  public boolean InsertGCP(ALGradeChangePoint curGCP, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_InsertGCP__SWIG_1(swigCPtr, this, ALGradeChangePoint.getCPtr(curGCP), curGCP, isStatic);
+  }
+
+  public boolean InsertGCP(ALGradeChangePoint curGCP) {
+    return AlignmentAllJNI.AlignmentFitting_InsertGCP__SWIG_2(swigCPtr, this, ALGradeChangePoint.getCPtr(curGCP), curGCP);
+  }
+
+  public boolean ModifySlope(double dLen, double dRate, int nIndex, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_ModifySlope__SWIG_0(swigCPtr, this, dLen, dRate, nIndex, isStatic, type);
+  }
+
+  public boolean ModifySlope(double dLen, double dRate, int nIndex, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_ModifySlope__SWIG_1(swigCPtr, this, dLen, dRate, nIndex, isStatic);
+  }
+
+  public boolean ModifySlope(double dLen, double dRate, int nIndex) {
+    return AlignmentAllJNI.AlignmentFitting_ModifySlope__SWIG_2(swigCPtr, this, dLen, dRate, nIndex);
+  }
+
+  public boolean ModifySlopeFixedBackPt(double dLen, double dRate, int nIndex, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_ModifySlopeFixedBackPt__SWIG_0(swigCPtr, this, dLen, dRate, nIndex, isStatic, type);
+  }
+
+  public boolean ModifySlopeFixedBackPt(double dLen, double dRate, int nIndex, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_ModifySlopeFixedBackPt__SWIG_1(swigCPtr, this, dLen, dRate, nIndex, isStatic);
+  }
+
+  public boolean ModifySlopeFixedBackPt(double dLen, double dRate, int nIndex) {
+    return AlignmentAllJNI.AlignmentFitting_ModifySlopeFixedBackPt__SWIG_2(swigCPtr, this, dLen, dRate, nIndex);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex, boolean isFrontFixed, boolean isBackFixed, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_UpDownSlopeHeight__SWIG_0(swigCPtr, this, dHeight, nPreIndex, isFrontFixed, isBackFixed, isStatic, type);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex, boolean isFrontFixed, boolean isBackFixed, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_UpDownSlopeHeight__SWIG_1(swigCPtr, this, dHeight, nPreIndex, isFrontFixed, isBackFixed, isStatic);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex, boolean isFrontFixed, boolean isBackFixed) {
+    return AlignmentAllJNI.AlignmentFitting_UpDownSlopeHeight__SWIG_2(swigCPtr, this, dHeight, nPreIndex, isFrontFixed, isBackFixed);
+  }
+
+  public boolean UpDownSlopeAll(double dHeight, boolean isStatic, int type) {
+    return AlignmentAllJNI.AlignmentFitting_UpDownSlopeAll__SWIG_0(swigCPtr, this, dHeight, isStatic, type);
+  }
+
+  public boolean UpDownSlopeAll(double dHeight, boolean isStatic) {
+    return AlignmentAllJNI.AlignmentFitting_UpDownSlopeAll__SWIG_1(swigCPtr, this, dHeight, isStatic);
+  }
+
+  public boolean UpDownSlopeAll(double dHeight) {
+    return AlignmentAllJNI.AlignmentFitting_UpDownSlopeAll__SWIG_2(swigCPtr, this, dHeight);
+  }
+
   public void CalSuperEle() {
     AlignmentAllJNI.AlignmentFitting_CalSuperEle(swigCPtr, this);
   }
@@ -206,6 +326,18 @@ public class AlignmentFitting {
 
   public void SetParaVert(SurveyParaVert para) {
     AlignmentAllJNI.AlignmentFitting_SetParaVert(swigCPtr, this, SurveyParaVert.getCPtr(para), para);
+  }
+
+  public boolean GetVertOrHoriMargin(DisplayMileageDoublePairVector outRes, boolean isHori, double dMargin, int nMLType) {
+    return AlignmentAllJNI.AlignmentFitting_GetVertOrHoriMargin__SWIG_0(swigCPtr, this, DisplayMileageDoublePairVector.getCPtr(outRes), outRes, isHori, dMargin, nMLType);
+  }
+
+  public boolean GetVertOrHoriMargin(DisplayMileageDoublePairVector outRes, boolean isHori, double dMargin) {
+    return AlignmentAllJNI.AlignmentFitting_GetVertOrHoriMargin__SWIG_1(swigCPtr, this, DisplayMileageDoublePairVector.getCPtr(outRes), outRes, isHori, dMargin);
+  }
+
+  public boolean GetVertOrHoriMargin(DisplayMileageDoublePairVector outRes, boolean isHori) {
+    return AlignmentAllJNI.AlignmentFitting_GetVertOrHoriMargin__SWIG_2(swigCPtr, this, DisplayMileageDoublePairVector.getCPtr(outRes), outRes, isHori);
   }
 
 }

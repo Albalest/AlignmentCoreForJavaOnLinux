@@ -81,6 +81,30 @@ public class SingleAlignmentBase {
     return new ALPoint3dArr(AlignmentAllJNI.SingleAlignmentBase_Get3DPoints(swigCPtr, this, dMargin), true);
   }
 
+  public boolean IsPlaneReady() {
+    return AlignmentAllJNI.SingleAlignmentBase_IsPlaneReady(swigCPtr, this);
+  }
+
+  public boolean CalLineMarginWith(SingleAlignmentBase otherLine, DisplayMileageIntPairVector outRes, DoubleArr dDis, double dMargin, int nMLtype) {
+    return AlignmentAllJNI.SingleAlignmentBase_CalLineMarginWith__SWIG_0(swigCPtr, this, SingleAlignmentBase.getCPtr(otherLine), otherLine, DisplayMileageIntPairVector.getCPtr(outRes), outRes, DoubleArr.getCPtr(dDis), dDis, dMargin, nMLtype);
+  }
+
+  public boolean CalLineMarginWith(SingleAlignmentBase otherLine, DisplayMileageIntPairVector outRes, DoubleArr dDis, double dMargin) {
+    return AlignmentAllJNI.SingleAlignmentBase_CalLineMarginWith__SWIG_1(swigCPtr, this, SingleAlignmentBase.getCPtr(otherLine), otherLine, DisplayMileageIntPairVector.getCPtr(outRes), outRes, DoubleArr.getCPtr(dDis), dDis, dMargin);
+  }
+
+  public boolean CalLineMarginWith(SingleAlignmentBase otherLine, DisplayMileageIntPairVector outRes, DoubleArr dDis) {
+    return AlignmentAllJNI.SingleAlignmentBase_CalLineMarginWith__SWIG_2(swigCPtr, this, SingleAlignmentBase.getCPtr(otherLine), otherLine, DisplayMileageIntPairVector.getCPtr(outRes), outRes, DoubleArr.getCPtr(dDis), dDis);
+  }
+
+  public void InvadeVertRadiusByRMRange(DisplayMileagePair inputRange, IntBoolPair outRes, int nMLtype) {
+    AlignmentAllJNI.SingleAlignmentBase_InvadeVertRadiusByRMRange__SWIG_0(swigCPtr, this, DisplayMileagePair.getCPtr(inputRange), inputRange, IntBoolPair.getCPtr(outRes), outRes, nMLtype);
+  }
+
+  public void InvadeVertRadiusByRMRange(DisplayMileagePair inputRange, IntBoolPair outRes) {
+    AlignmentAllJNI.SingleAlignmentBase_InvadeVertRadiusByRMRange__SWIG_1(swigCPtr, this, DisplayMileagePair.getCPtr(inputRange), inputRange, IntBoolPair.getCPtr(outRes), outRes);
+  }
+
   public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, int mode, boolean isBaseLine, int markSide) {
     return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_0(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode, isBaseLine, markSide);
   }
@@ -269,32 +293,84 @@ public class SingleAlignmentBase {
     return AlignmentAllJNI.SingleAlignmentBase_FindGCP__SWIG_1(swigCPtr, this, AL_Point3d.getCPtr(pt), pt);
   }
 
+  public boolean MoveGCP(double dRealLc, double dHeight, int nIndex, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_MoveGCP__SWIG_0(swigCPtr, this, dRealLc, dHeight, nIndex, IntIntPair.getCPtr(rangeIndex), rangeIndex);
+  }
+
   public boolean MoveGCP(double dRealLc, double dHeight, int nIndex) {
-    return AlignmentAllJNI.SingleAlignmentBase_MoveGCP(swigCPtr, this, dRealLc, dHeight, nIndex);
+    return AlignmentAllJNI.SingleAlignmentBase_MoveGCP__SWIG_1(swigCPtr, this, dRealLc, dHeight, nIndex);
+  }
+
+  public boolean MoveGCPByFixed(double dRealLc, double dHeight, int nIndex, boolean isFixedFront, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_MoveGCPByFixed(swigCPtr, this, dRealLc, dHeight, nIndex, isFixedFront, IntIntPair.getCPtr(rangeIndex), rangeIndex);
+  }
+
+  public boolean ModifyVertRadius(double dRadius, int nIndex, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_ModifyVertRadius__SWIG_0(swigCPtr, this, dRadius, nIndex, IntIntPair.getCPtr(rangeIndex), rangeIndex);
   }
 
   public boolean ModifyVertRadius(double dRadius, int nIndex) {
-    return AlignmentAllJNI.SingleAlignmentBase_ModifyVertRadius(swigCPtr, this, dRadius, nIndex);
+    return AlignmentAllJNI.SingleAlignmentBase_ModifyVertRadius__SWIG_1(swigCPtr, this, dRadius, nIndex);
+  }
+
+  public boolean DeleteGCP(int nIndex, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_DeleteGCP__SWIG_0(swigCPtr, this, nIndex, IntIntPair.getCPtr(rangeIndex), rangeIndex);
   }
 
   public boolean DeleteGCP(int nIndex) {
-    return AlignmentAllJNI.SingleAlignmentBase_DeleteGCP(swigCPtr, this, nIndex);
+    return AlignmentAllJNI.SingleAlignmentBase_DeleteGCP__SWIG_1(swigCPtr, this, nIndex);
   }
 
   public void ClearGCPs() {
     AlignmentAllJNI.SingleAlignmentBase_ClearGCPs(swigCPtr, this);
   }
 
+  public boolean InsertGCP(ALGradeChangePoint curGCP, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_InsertGCP__SWIG_0(swigCPtr, this, ALGradeChangePoint.getCPtr(curGCP), curGCP, IntIntPair.getCPtr(rangeIndex), rangeIndex);
+  }
+
   public boolean InsertGCP(ALGradeChangePoint curGCP) {
-    return AlignmentAllJNI.SingleAlignmentBase_InsertGCP(swigCPtr, this, ALGradeChangePoint.getCPtr(curGCP), curGCP);
+    return AlignmentAllJNI.SingleAlignmentBase_InsertGCP__SWIG_1(swigCPtr, this, ALGradeChangePoint.getCPtr(curGCP), curGCP);
   }
 
   public boolean ModifySlope(double dLen, double dRate, int nIndex) {
-    return AlignmentAllJNI.SingleAlignmentBase_ModifySlope(swigCPtr, this, dLen, dRate, nIndex);
+    return AlignmentAllJNI.SingleAlignmentBase_ModifySlope__SWIG_0(swigCPtr, this, dLen, dRate, nIndex);
+  }
+
+  public boolean ModifySlope(double dLen, double dRate, int nIndex, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_ModifySlope__SWIG_1(swigCPtr, this, dLen, dRate, nIndex, IntIntPair.getCPtr(rangeIndex), rangeIndex);
   }
 
   public boolean ModifySlopeFixedBackPt(double dLen, double dRate, int nIndex) {
-    return AlignmentAllJNI.SingleAlignmentBase_ModifySlopeFixedBackPt(swigCPtr, this, dLen, dRate, nIndex);
+    return AlignmentAllJNI.SingleAlignmentBase_ModifySlopeFixedBackPt__SWIG_0(swigCPtr, this, dLen, dRate, nIndex);
+  }
+
+  public boolean ModifySlopeFixedBackPt(double dLen, double dRate, int nIndex, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_ModifySlopeFixedBackPt__SWIG_1(swigCPtr, this, dLen, dRate, nIndex, IntIntPair.getCPtr(rangeIndex), rangeIndex);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex, boolean isFrontFixed, boolean isBackFixed) {
+    return AlignmentAllJNI.SingleAlignmentBase_UpDownSlopeHeight__SWIG_0(swigCPtr, this, dHeight, nPreIndex, isFrontFixed, isBackFixed);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex, boolean isFrontFixed) {
+    return AlignmentAllJNI.SingleAlignmentBase_UpDownSlopeHeight__SWIG_1(swigCPtr, this, dHeight, nPreIndex, isFrontFixed);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_UpDownSlopeHeight__SWIG_2(swigCPtr, this, dHeight, nPreIndex);
+  }
+
+  public boolean UpDownSlopeHeight(double dHeight, int nPreIndex, boolean isFrontFixed, boolean isBackFixed, IntIntPair rangeIndex) {
+    return AlignmentAllJNI.SingleAlignmentBase_UpDownSlopeHeight__SWIG_3(swigCPtr, this, dHeight, nPreIndex, isFrontFixed, isBackFixed, IntIntPair.getCPtr(rangeIndex), rangeIndex);
+  }
+
+  public void UpDownSlopeAll(double dHeight) {
+    AlignmentAllJNI.SingleAlignmentBase_UpDownSlopeAll__SWIG_0(swigCPtr, this, dHeight);
+  }
+
+  public void UpDownSlopeAll(double dHeight, IntIntPair rangeIndex) {
+    AlignmentAllJNI.SingleAlignmentBase_UpDownSlopeAll__SWIG_1(swigCPtr, this, dHeight, IntIntPair.getCPtr(rangeIndex), rangeIndex);
   }
 
   public DoubleDoublePair GetVertHeightRange() {
@@ -451,6 +527,14 @@ public class SingleAlignmentBase {
 
   public boolean ExportGeoData(String filePath, IntArr inValidIndexs) {
     return AlignmentAllJNI.SingleAlignmentBase_ExportGeoData__SWIG_1(swigCPtr, this, filePath, IntArr.getCPtr(inValidIndexs), inValidIndexs);
+  }
+
+  public boolean ExportGeoDataV2(String filePath, IntArr inValidIndexs, boolean isVert) {
+    return AlignmentAllJNI.SingleAlignmentBase_ExportGeoDataV2__SWIG_0(swigCPtr, this, filePath, IntArr.getCPtr(inValidIndexs), inValidIndexs, isVert);
+  }
+
+  public boolean ExportGeoDataV2(String filePath, IntArr inValidIndexs) {
+    return AlignmentAllJNI.SingleAlignmentBase_ExportGeoDataV2__SWIG_1(swigCPtr, this, filePath, IntArr.getCPtr(inValidIndexs), inValidIndexs);
   }
 
   public boolean GetMilegaeMarksbyRM(DoubleArr dRealM, IntArr nMarks, StringArr keyWord) {

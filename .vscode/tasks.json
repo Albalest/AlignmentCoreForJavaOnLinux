@@ -7,7 +7,7 @@
             "command": "bash",
             "args": [
                 "-lc",
-                "mkdir -p \"${workspaceFolder}/lib\"; src=\"$HOME/.vs/AlignmentCore/lib\"; if [ -d \"$src\" ]; then cp -a \"$src\"/* \"${workspaceFolder}/lib/\" 2>/dev/null || true; echo \"Synced .so from $src\"; else echo \"WARN: missing $src (skip sync)\"; fi"
+                "mkdir -p \"${workspaceFolder}/lib\"; src=\"$HOME/.vs/AlignmentCore/lib\"; if [ -d \"$src\" ]; then cp -a \"$src\"/libAlignmentCore.so \"$src\"/libAlignmentCoreJava.so \"$src\"/libAlignmentFittingCore.so \"$src\"/libBallastlessRailOpt.so \"$src\"/libCMatrixByEigen.so \"$src\"/libCOptimizer.so \"$src\"/libMicroNetWork.so \"$src\"/libSurveyingCore.so \"$src\"/libTQICal.so \"${workspaceFolder}/lib/\" 2>/dev/null || true; echo \"Synced project .so from $src\"; else echo \"WARN: missing $src (skip sync)\"; fi"
             ],
             "presentation": {
                 "reveal": "always",
@@ -21,7 +21,7 @@
             "command": "bash",
             "args": [
                 "-lc",
-                "export LD_LIBRARY_PATH=\"${workspaceFolder}/lib\"; /usr/lib/jvm/java-11-openjdk-amd64/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:5005 -Djava.library.path=\"${workspaceFolder}/lib\" -cp \"${workspaceFolder}\" Main"
+                "export LD_LIBRARY_PATH=\"${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64\"; export LD_PRELOAD=\"/usr/local/lib64/libadolc.so\"; /usr/lib/jvm/java-11-openjdk-amd64/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:5005 -Djava.library.path=\"${workspaceFolder}/lib\" -cp \"${workspaceFolder}\" Main"
             ],
             "presentation": {
                 "reveal": "always",
@@ -39,7 +39,7 @@
             "command": "bash",
             "args": [
                 "-lc",
-                "javac -encoding UTF-8 -d . AlignmentCore/*.java Main.java DemoFrame.java"
+                "javac -encoding UTF-8 -d . AlignmentCore/*.java AlOpter/*.java AlBallastlessRailOpter/*.java Main.java DemoFrame.java"
             ],
             "group": "build",
             "presentation": {
@@ -80,7 +80,13 @@
             "dependsOn": [
                 "Sync Native Libs (from ~/.vs)",
                 "Build Java (javac)"
-            ]
+            ],
+            "options": {
+                "env": {
+                    "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
+                    "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
+                }
+            }
         }
     ]
 }

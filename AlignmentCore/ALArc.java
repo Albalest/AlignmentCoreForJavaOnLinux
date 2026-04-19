@@ -108,4 +108,8 @@ public class ALArc extends ALElement {
     return AlignmentAllJNI.ALArc_GetRangePts(swigCPtr, this, ALPoint3dArr.getCPtr(offsetPts), offsetPts, ALVector3dArr.getCPtr(vecs), vecs, dMargin, dStartMileage, dEndMileage);
   }
 
+  public boolean IntersectWithLine(AL_Point3d linePt, AL_Vector3d lineVec, ALPoint3dArr interPts) {
+    return AlignmentAllJNI.ALArc_IntersectWithLine(swigCPtr, this, AL_Point3d.getCPtr(linePt), linePt, AL_Vector3d.getCPtr(lineVec), lineVec, ALPoint3dArr.getCPtr(interPts), interPts);
+  }
+
 }

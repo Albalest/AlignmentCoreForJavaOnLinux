@@ -89,7 +89,7 @@ public class ComCurveFitDialog extends JDialog {
         JButton btnMove = new JButton("移动关键点");
         JButton btnAuto = new JButton("自动分段");
 
-        JButton btnInit = new JButton("初始化直线和圆");
+        //JButton btnInit = new JButton("初始化直线和圆");
         JButton btnInitByKey = new JButton("根据分界点初始化");
         JButton btnShowMargin = new JButton("计算并显示偏差值");
         JButton btnRound = new JButton("取整优化");
@@ -111,7 +111,7 @@ public class ComCurveFitDialog extends JDialog {
             moveFirstClick = true;
         });
         btnAuto.addActionListener(e -> onAutoSegment());
-        btnInit.addActionListener(e -> onInitKeyPtsOnly());
+        //btnInit.addActionListener(e -> onInitKeyPtsOnly());
         btnInitByKey.addActionListener(e -> onInitByKeyPts());
         btnShowMargin.addActionListener(e -> onCalAndShowMarginWithExport());
         btnRound.addActionListener(e -> onRoundOptimize());
@@ -167,7 +167,7 @@ public class ComCurveFitDialog extends JDialog {
         JPanel g3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         g3.setBorder(BorderFactory.createTitledBorder("分段/初始化"));
         g3.add(btnAuto);
-        g3.add(btnInit);
+        //g3.add(btnInit);
         g3.add(btnInitByKey);
         g3.add(btnShowMargin);
 

@@ -17,8 +17,8 @@ hs_err_pid*.log
 # Native build artifacts
 *.o
 *.a
-*.so
-*.so.*
+# *.so
+# *.so.*
 *.dll
 *.dylib
 *.exe
@@ -32,7 +32,7 @@ hs_err_pid*.log
 /bin/
 
 # Bundled/native libs (keep repo lightweight)
-/lib/
+# /lib/
 /lib_arm64/
 /lib_arm64_legacy/
 /install_arm64/

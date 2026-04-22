@@ -1,17 +1,32 @@
-FROM ubuntu:18.04
+# 使用国内镜像源加速
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/ubuntu:18.04
 
-# 1. 基础环境配置 (只运行一次)
-ENV DEBIAN_FRONTEND=noninteractive
+# 1. 基础环境配置 (更换中科大源并预装所有必需的开发工具)
+RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
+    sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu \
+    gfortran-aarch64-linux-gnu \
+    pkg-config \
+    ca-certificates \
+    curl \
+    git \
+    libeigen3-dev \
+    openjdk-11-jdk-headless \
+    ninja-build \
+    autoconf \
+    automake \
+    libtool \
+    patchelf \
+    unzip \
+    wget \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
 
-# 使用阿里云镜像源（针对 Ubuntu 18.04 bionic）
-RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &&     sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &&     apt-get update &&     apt-get install -y build-essential cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gfortran-aarch64-linux-gnu     pkg-config unzip file liblapack-dev libblas-dev autoconf automake libtool     ninja-build wget libeigen3-dev patchelf openjdk-17-jdk-headless
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
-# 2. 预先安装 CMake 3.20 (解决版本过低问题)
-RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0-linux-x86_64.tar.gz &&     tar -xzf cmake-3.20.0-linux-x86_64.tar.gz -C /opt &&     rm cmake-3.20.0-linux-x86_64.tar.gz
-ENV PATH="/opt/cmake-3.20.0-linux-x86_64/bin:${PATH}"
-
-# 3. 设置交叉编译环境变量
-ENV HOST_ARCH=aarch64-linux-gnu     CC=aarch64-linux-gnu-gcc     CXX=aarch64-linux-gnu-g++     FC=aarch64-linux-gnu-gfortran     JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-
-# 4. 工作目录
 WORKDIR /source

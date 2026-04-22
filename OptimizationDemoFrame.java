@@ -4,11 +4,10 @@ import AlOpter.OptData;
 import AlOpter.OptDataVector;
 import AlOpter.OpterProcesser;
 import AlOpter.Splineline;
-
-import java.io.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.*;
 
 public class OptimizationDemoFrame extends Frame {
 
@@ -45,31 +44,55 @@ public class OptimizationDemoFrame extends Frame {
         setLocationRelativeTo(null);
     }
 
-    // 自定义按钮的响应函数：可自由修改其中逻辑
+    // 自定义按钮的响应函数：用于样条曲线测试
     private static void onCustomButtonClicked(Frame parent, PlotCanvas canvas) {
-       String filePath = openFileDialog(parent);
+        String filePath = openFileDialog(parent);
         if (filePath == null) return;
+        
         OptDataVector list = readCsv(filePath);
-        //list.remove(list.size());
+        if (list.isEmpty()) return;
+
+        // 初始化样条曲线
         Splineline splineline = new Splineline(list);
         splineline.Init(200);     
-        OptDataVector pickPoints=splineline.GetAllPickPts();
-         OptDataVector optdata = splineline.GetData();
-         OptDataVector resList=new OptDataVector();
-            for (int i = 0; i < optdata.size(); i++) {
-                resList.add(new OptData(optdata.get(i).getX(), optdata.get(i).getY()+list.get(i).getY(),0,0));
+        
+        // 获取样条生成的偏差调整量
+        OptDataVector optdata = splineline.GetData();
+        OptDataVector resList = new OptDataVector();
+        for (int i = 0; i < optdata.size(); i++) {
+            // 优化后偏差 = 原始偏差 + 调整量
+            resList.add(new OptData(optdata.get(i).getX(), optdata.get(i).getY() + list.get(i).getY(), list.get(i).getY_down(), list.get(i).getY_up()));
+        }
+
+        // 1. 先绘制一张偏差量前后对比图（原始偏差 vs 优化后偏差）
+        EventQueue.invokeLater(() -> showLinePlot("样条优化前后偏差对比 (蓝色:原始, 红色:优化后)", list, resList));
+
+        // 计算 10m 弦正矢
+        OptDataVector smoothBefore = new OptDataVector();
+        OptDataVector smoothAfter = new OptDataVector();
+        
+        if (AIOpter.SmoothCal(list, smoothBefore, 10) && AIOpter.SmoothCal(resList, smoothAfter, 10)) {
+            // 2. 再弹窗显示 10m 弦对比图
+            EventQueue.invokeLater(() -> showLinePlot("样条优化前后10m弦对比 (蓝色:原始, 红色:优化后)", smoothBefore, smoothAfter));
+        }
+
+        // 插入一个测试点并重新计算（保持原有逻辑演示）
+        OptDataVector pickPoints = splineline.GetAllPickPts();
+        if (pickPoints.size() > 3) {
+            OptData insertData = new OptData((pickPoints.get(2).getX() + pickPoints.get(3).getX()) / 2, 10);
+            if (splineline.InsertPickPoint(insertData)) {
+                optdata = splineline.GetData();
+                OptDataVector resListUpdated = new OptDataVector();
+                for (int i = 0; i < optdata.size(); i++) {
+                    resListUpdated.add(new OptData(optdata.get(i).getX(), optdata.get(i).getY() + list.get(i).getY(), 0, 0));
+                }
+                
+                OptDataVector smoothAfterUpdated = new OptDataVector();
+                if (AIOpter.SmoothCal(resListUpdated, smoothAfterUpdated, 10)) {
+                    EventQueue.invokeLater(() -> showLinePlot("更新测点后10m弦对比 (蓝色:原始, 红色:更新后)", smoothBefore, smoothAfterUpdated));
+                }
             }
-        showLinePlot("样条曲线",list,resList,pickPoints);
-        OptData insertData = new OptData((pickPoints.get(2).getX() + pickPoints.get(3).getX()) / 2, 10);
-        if(!splineline.InsertPickPoint(insertData))
-            return;
-        pickPoints=splineline.GetAllPickPts();
-            optdata = splineline.GetData();
-            resList=new OptDataVector();
-            for (int i = 0; i < optdata.size(); i++) {
-                resList.add(new OptData(optdata.get(i).getX(), optdata.get(i).getY()+list.get(i).getY(),0,0));
-            }
-        showLinePlot("样条曲线",list,resList,pickPoints);
+        }
     }
 
     private static void runOptimization(Frame parent, PlotCanvas targetCanvas) {
@@ -77,48 +100,51 @@ public class OptimizationDemoFrame extends Frame {
         if (filePath == null) return;
 
         OptDataVector list = readCsv(filePath);
-        list.add(new OptData(0, 0));
+        if (list.isEmpty()) return;
+
         CommonConstrain constrain = new CommonConstrain();
         constrain.setM_ShortWaveLength(20);
         constrain.setIsPlane(true);
         constrain.setM_ShortWaveLimit(3);
-        constrain.setM_factor(0.01);        //平滑系数；平滑为主取0.01.线形回归为主取1.0
+        constrain.setM_factor(0.01);        // 平滑系数；平滑为主取0.01，线形回归为主取1.0
         constrain.setM_SuperSlope(0.5);
         constrain.setIsFixed(true);
         
         OpterProcesser proceser = new OpterProcesser(list, constrain);
         if (!proceser.StartOptPro())
             return;
-        OptDataVector listResult = proceser.GetOptResult();         //调整量
-        OptDataVector resVector = new OptDataVector();              //优化后的偏差值
-        OptDataVector upVector = new OptDataVector();               //优化前的偏差值
+
+        OptDataVector listResult = proceser.GetOptResult();         // 调整量
+        OptDataVector resVector = new OptDataVector();              // 优化后的偏差值
+        OptDataVector upVector = new OptDataVector();               // 优化前的偏差值
+        
         for (int i = 0; i < listResult.size(); i++) {
             upVector.add(new OptData(list.get(i).getX(), list.get(i).getY()));
+            resVector.add(new OptData(listResult.get(i).getX(), list.get(i).getY() + listResult.get(i).getY(), 
+                                   list.get(i).getY_down(), list.get(i).getY_up()));
         }
 
-        ///计算调整前后平顺性的示例代码，以10m弦为例
-        OptDataVector smoothBefore = new OptDataVector();              //优化前的10m弦
-        //if(!AIOpter.SmoothCal(list,smoothBefore,10))
-          //  return; 
-         if(!AIOpter.SmoothCal(upVector, smoothBefore, 10))
+        // 计算优化前的 10m 弦
+        OptDataVector smoothBefore = new OptDataVector();
+        if(!AIOpter.SmoothCal(upVector, smoothBefore, 10))
             return;     
         
-        // 计算抬拨道后的轨道偏差值数据
-        for (int i = 0; i < listResult.size(); i++) {
-            resVector.add(new OptData(listResult.get(i).getX(), list.get(i).getY() + listResult.get(i).getY(),list.get(i).getY_down(),list.get(i).getY_up()));
-        }
-        //proceser.SmoothCalOpt(smoothBefore, ABORT)
-        // 平顺性（10m弦）
-        OptDataVector smoothResult = new OptDataVector();                   //优化后的10m弦
-        if(!AIOpter.SmoothCal(resVector, smoothResult,10))
+        // 计算优化后的 10m 弦
+        OptDataVector smoothResult = new OptDataVector();
+        if(!AIOpter.SmoothCal(resVector, smoothResult, 10))
             return; 
 
-    // 更新主窗口绘图
-    EventQueue.invokeLater(() -> targetCanvas.setSeries(new OptDataVector[]{upVector, resVector}));
+        // 更新主窗口绘图（原始偏差 vs 优化后偏差）
+        EventQueue.invokeLater(() -> targetCanvas.setSeries(new OptDataVector[]{upVector, resVector}));
 
-        for (int i=0;i<listResult.size();i++) {
-            System.out.println("X:"+list.get(i).getX() +"\t偏差值："+list.get(i).getY()+"\t调整量:"+ listResult.get(i).getY() +
-                    "\t调整后偏差值:"+resVector.get(i).getY()+"\t调整前10m弦:"+smoothBefore.get(i).getY()+"\t调整后10m弦:"+smoothResult.get(i).getY());
+        // 弹窗显示 10m 弦对比图（优化前 vs 优化后）
+        EventQueue.invokeLater(() -> showLinePlot("10m弦平顺性对比 (蓝色:优化前, 红色:优化后)", smoothBefore, smoothResult));
+
+        // 打印详细结果
+        for (int i = 0; i < listResult.size(); i++) {
+            System.out.printf("X: %.3f\t原始偏差: %.3f\t调整量: %.3f\t优化后偏差: %.3f\t优化前10m弦: %.3f\t优化后10m弦: %.3f%n",
+                list.get(i).getX(), list.get(i).getY(), listResult.get(i).getY(), 
+                resVector.get(i).getY(), smoothBefore.get(i).getY(), smoothResult.get(i).getY());
         }
     }
 

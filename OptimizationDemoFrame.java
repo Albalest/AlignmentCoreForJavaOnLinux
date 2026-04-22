@@ -85,7 +85,7 @@ public class OptimizationDemoFrame extends Frame {
         constrain.setM_factor(0.01);        //平滑系数；平滑为主取0.01.线形回归为主取1.0
         constrain.setM_SuperSlope(0.5);
         constrain.setIsFixed(true);
-
+        
         OpterProcesser proceser = new OpterProcesser(list, constrain);
         if (!proceser.StartOptPro())
             return;
@@ -95,18 +95,23 @@ public class OptimizationDemoFrame extends Frame {
         for (int i = 0; i < listResult.size(); i++) {
             upVector.add(new OptData(list.get(i).getX(), list.get(i).getY()));
         }
+
+        ///计算调整前后平顺性的示例代码，以10m弦为例
         OptDataVector smoothBefore = new OptDataVector();              //优化前的10m弦
-        if(!AIOpter.SmoothCal(upVector,smoothBefore,10))
-            return;
+        //if(!AIOpter.SmoothCal(list,smoothBefore,10))
+          //  return; 
+         if(!AIOpter.SmoothCal(upVector, smoothBefore, 10))
+            return;     
+        
         // 计算抬拨道后的轨道偏差值数据
         for (int i = 0; i < listResult.size(); i++) {
             resVector.add(new OptData(listResult.get(i).getX(), list.get(i).getY() + listResult.get(i).getY(),list.get(i).getY_down(),list.get(i).getY_up()));
         }
-
+        //proceser.SmoothCalOpt(smoothBefore, ABORT)
         // 平顺性（10m弦）
         OptDataVector smoothResult = new OptDataVector();                   //优化后的10m弦
-        if(!AIOpter.SmoothCal(resVector,smoothResult,10))
-            return;
+        if(!AIOpter.SmoothCal(resVector, smoothResult,10))
+            return; 
 
     // 更新主窗口绘图
     EventQueue.invokeLater(() -> targetCanvas.setSeries(new OptDataVector[]{upVector, resVector}));

@@ -11,19 +11,11 @@ package AlOpter;
 public class AIOpterJNI {
   static {
     // 先加载系统 x86_64 的 adolc，避免误用工作区中的 aarch64 版本。
-    try {
-      System.load("/usr/local/lib64/libadolc.so");
-    } catch (UnsatisfiedLinkError e1) {
-      try {
-        System.load("/usr/local/lib/libadolc.so");
-      } catch (UnsatisfiedLinkError e2) {
-        throw new UnsatisfiedLinkError("Failed to load libadolc from /usr/local/lib64 or /usr/local/lib: " + e2.getMessage());
-      }
-    }
-
+ 
     // 加载项目 JNI 主库。
     System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libCOptimizer.so");
   }
+
 
   public final static native long new_OptData__SWIG_0();
   public final static native long new_OptData__SWIG_1(double jarg1, double jarg2, double jarg3, double jarg4);
@@ -83,6 +75,8 @@ public class AIOpterJNI {
   public final static native long OpterProcesser_GetOptResult(long jarg1, OpterProcesser jarg1_);
   public final static native boolean OpterProcesser_StartOpt(long jarg1, OpterProcesser jarg1_);
   public final static native boolean OpterProcesser_StartOptPro(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_SmoothCalOpt(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);
+  public final static native boolean OpterProcesser_SmoothCalOrigin(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);
   public final static native void OpterProcesser_m_constraints_set(long jarg1, OpterProcesser jarg1_, long jarg2, CommonConstrain jarg2_);
   public final static native long OpterProcesser_m_constraints_get(long jarg1, OpterProcesser jarg1_);
   public final static native boolean SmoothCal(long jarg1, OptDataVector jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);

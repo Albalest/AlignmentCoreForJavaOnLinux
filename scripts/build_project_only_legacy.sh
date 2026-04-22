@@ -25,7 +25,7 @@ if [ ! -f "$INSTALL_PREFIX/lib/libipopt.so" ] && [ ! -f "$INSTALL_PREFIX/lib/lib
   exit 2
 fi
 
-apt-get update -y && apt-get install -y libeigen3-dev
+apt-get update -y && apt-get install -y libeigen3-dev curl
 
 echo ">>> Compiling Project (Cross, project-only)..."
 rm -rf /source/out/build/linux-arm64

@@ -64,6 +64,14 @@ public class OpterProcesser {
     return AIOpterJNI.OpterProcesser_StartOptPro(swigCPtr, this);
   }
 
+  public boolean SmoothCalOpt(OptDataVector outData, double chordLength) {
+    return AIOpterJNI.OpterProcesser_SmoothCalOpt(swigCPtr, this, OptDataVector.getCPtr(outData), outData, chordLength);
+  }
+
+  public boolean SmoothCalOrigin(OptDataVector outData, double chordLength) {
+    return AIOpterJNI.OpterProcesser_SmoothCalOrigin(swigCPtr, this, OptDataVector.getCPtr(outData), outData, chordLength);
+  }
+
   public void setM_constraints(CommonConstrain value) {
     AIOpterJNI.OpterProcesser_m_constraints_set(swigCPtr, this, CommonConstrain.getCPtr(value), value);
   }

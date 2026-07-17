@@ -8,8 +8,45 @@
 
 package AlignmentCore;
 
-public final class ALMARKSIDE {
-  public final static int MARK_LEFT = -1;
-  public final static int MARK_RIGHT = 1;
+public enum ALMARKSIDE {
+  MARK_LEFT(-1),
+  MARK_RIGHT(1);
+
+  public final int swigValue() {
+    return swigValue;
+  }
+
+  public static ALMARKSIDE swigToEnum(int swigValue) {
+    ALMARKSIDE[] swigValues = ALMARKSIDE.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (ALMARKSIDE swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + ALMARKSIDE.class + " with value " + swigValue);
+  }
+
+  @SuppressWarnings("unused")
+  private ALMARKSIDE() {
+    this.swigValue = SwigNext.next++;
+  }
+
+  @SuppressWarnings("unused")
+  private ALMARKSIDE(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
+
+  @SuppressWarnings("unused")
+  private ALMARKSIDE(ALMARKSIDE swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
+
+  private final int swigValue;
+
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

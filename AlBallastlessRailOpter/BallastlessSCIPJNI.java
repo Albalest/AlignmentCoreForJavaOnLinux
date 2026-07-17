@@ -9,10 +9,16 @@
 package AlBallastlessRailOpter;
 
 public class BallastlessSCIPJNI {
-    static {
-       String libPath = System.getProperty("user.dir") + "/lib/";
-       System.load(libPath + "libBallastlessRailOpt.so");
+
+  static {
+    try {
+        System.loadLibrary("BallastlessRailOpt");
+    } catch (UnsatisfiedLinkError e) {
+        String dir = System.getProperty("user.dir");
+        System.load(dir + "/lib/libBallastlessRailOpt.so");
     }
+  }
+
   public final static native long new_PickPt(double jarg1, double jarg2);
   public final static native void PickPt_x_set(long jarg1, PickPt jarg1_, double jarg2);
   public final static native double PickPt_x_get(long jarg1, PickPt jarg1_);
@@ -72,10 +78,10 @@ public class BallastlessSCIPJNI {
   public final static native double OptConstrain_LW_300_get(long jarg1, OptConstrain jarg1_);
   public final static native void OptConstrain_LW_300_Considered_set(long jarg1, OptConstrain jarg1_, boolean jarg2);
   public final static native boolean OptConstrain_LW_300_Considered_get(long jarg1, OptConstrain jarg1_);
-  public final static native void OptConstrain_GaugeL_set(long jarg1, OptConstrain jarg1_, double jarg2);
-  public final static native double OptConstrain_GaugeL_get(long jarg1, OptConstrain jarg1_);
-  public final static native void OptConstrain_GaugeRate_set(long jarg1, OptConstrain jarg1_, double jarg2);
-  public final static native double OptConstrain_GaugeRate_get(long jarg1, OptConstrain jarg1_);
+  public final static native void OptConstrain_Gauge_Up_set(long jarg1, OptConstrain jarg1_, double jarg2);
+  public final static native double OptConstrain_Gauge_Up_get(long jarg1, OptConstrain jarg1_);
+  public final static native void OptConstrain_Gauge_Down_set(long jarg1, OptConstrain jarg1_, double jarg2);
+  public final static native double OptConstrain_Gauge_Down_get(long jarg1, OptConstrain jarg1_);
   public final static native void OptConstrain_MarginL_set(long jarg1, OptConstrain jarg1_, double jarg2);
   public final static native double OptConstrain_MarginL_get(long jarg1, OptConstrain jarg1_);
   public final static native void OptConstrain_TwistL_set(long jarg1, OptConstrain jarg1_, double jarg2);

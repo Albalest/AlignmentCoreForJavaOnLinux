@@ -81,28 +81,28 @@ public class SurveyImfo {
     return (cPtr == 0) ? null : new AL_Point3d(cPtr, false);
   }
 
-  public void setM_H_type(int value) {
-    AlignmentAllJNI.SurveyImfo_m_H_type_set(swigCPtr, this, value);
+  public void setM_H_type(ALELETYPE value) {
+    AlignmentAllJNI.SurveyImfo_m_H_type_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_H_type() {
-    return AlignmentAllJNI.SurveyImfo_m_H_type_get(swigCPtr, this);
+  public ALELETYPE getM_H_type() {
+    return ALELETYPE.swigToEnum(AlignmentAllJNI.SurveyImfo_m_H_type_get(swigCPtr, this));
   }
 
-  public void setM_Direction(int value) {
-    AlignmentAllJNI.SurveyImfo_m_Direction_set(swigCPtr, this, value);
+  public void setM_Direction(ALDIR value) {
+    AlignmentAllJNI.SurveyImfo_m_Direction_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_Direction() {
-    return AlignmentAllJNI.SurveyImfo_m_Direction_get(swigCPtr, this);
+  public ALDIR getM_Direction() {
+    return ALDIR.swigToEnum(AlignmentAllJNI.SurveyImfo_m_Direction_get(swigCPtr, this));
   }
 
-  public void setM_V_type(int value) {
-    AlignmentAllJNI.SurveyImfo_m_V_type_set(swigCPtr, this, value);
+  public void setM_V_type(ALELETYPE value) {
+    AlignmentAllJNI.SurveyImfo_m_V_type_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_V_type() {
-    return AlignmentAllJNI.SurveyImfo_m_V_type_get(swigCPtr, this);
+  public ALELETYPE getM_V_type() {
+    return ALELETYPE.swigToEnum(AlignmentAllJNI.SurveyImfo_m_V_type_get(swigCPtr, this));
   }
 
   public void setM_mileage(double value) {

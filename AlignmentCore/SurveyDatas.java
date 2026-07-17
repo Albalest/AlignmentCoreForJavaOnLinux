@@ -44,12 +44,20 @@ public class SurveyDatas {
     this(AlignmentAllJNI.new_SurveyDatas__SWIG_0(), true);
   }
 
-  public SurveyDatas(SurveyVector datas, int type) {
-    this(AlignmentAllJNI.new_SurveyDatas__SWIG_1(SurveyVector.getCPtr(datas), datas, type), true);
+  public SurveyDatas(SurveyVector datas, SURVEYTYPE type) {
+    this(AlignmentAllJNI.new_SurveyDatas__SWIG_1(SurveyVector.getCPtr(datas), datas, type.swigValue()), true);
   }
 
   public SurveyDatas(SurveyDatas datas) {
     this(AlignmentAllJNI.new_SurveyDatas__SWIG_2(SurveyDatas.getCPtr(datas), datas), true);
+  }
+
+  public static boolean interpolate(SurveyVector data, double target_m, AL_Point3d result) {
+    return AlignmentAllJNI.SurveyDatas_interpolate(SurveyVector.getCPtr(data), data, target_m, AL_Point3d.getCPtr(result), result);
+  }
+
+  public static boolean cosineBlendingWithMileage(SurveyVector data1, SurveyVector data2, SurveyVector blendedData, SurveyVector fullData) {
+    return AlignmentAllJNI.SurveyDatas_cosineBlendingWithMileage(SurveyVector.getCPtr(data1), data1, SurveyVector.getCPtr(data2), data2, SurveyVector.getCPtr(blendedData), blendedData, SurveyVector.getCPtr(fullData), fullData);
   }
 
   public IntDoublePairVector GetCurvation(double dChordLen, double dMargin) {
@@ -114,12 +122,12 @@ public class SurveyDatas {
     return (cPtr == 0) ? null : new DoubleIntPairVector(cPtr, false);
   }
 
-  public void setM_SurveyType(int value) {
-    AlignmentAllJNI.SurveyDatas_m_SurveyType_set(swigCPtr, this, value);
+  public void setM_SurveyType(SURVEYTYPE value) {
+    AlignmentAllJNI.SurveyDatas_m_SurveyType_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_SurveyType() {
-    return AlignmentAllJNI.SurveyDatas_m_SurveyType_get(swigCPtr, this);
+  public SURVEYTYPE getM_SurveyType() {
+    return SURVEYTYPE.swigToEnum(AlignmentAllJNI.SurveyDatas_m_SurveyType_get(swigCPtr, this));
   }
 
 }

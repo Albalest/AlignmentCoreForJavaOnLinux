@@ -8,9 +8,46 @@
 
 package AlignmentCore;
 
-public final class ALDIR {
-  public final static int AL_LEFT = -1;
-  public final static int AL_CENTER = 0;
-  public final static int AL_RIGHT = 1;
+public enum ALDIR {
+  AL_LEFT(-1),
+  AL_CENTER(0),
+  AL_RIGHT(1);
+
+  public final int swigValue() {
+    return swigValue;
+  }
+
+  public static ALDIR swigToEnum(int swigValue) {
+    ALDIR[] swigValues = ALDIR.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (ALDIR swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + ALDIR.class + " with value " + swigValue);
+  }
+
+  @SuppressWarnings("unused")
+  private ALDIR() {
+    this.swigValue = SwigNext.next++;
+  }
+
+  @SuppressWarnings("unused")
+  private ALDIR(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
+
+  @SuppressWarnings("unused")
+  private ALDIR(ALDIR swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
+
+  private final int swigValue;
+
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

@@ -60,6 +60,14 @@ public class SurveyParaVert {
     return AlignmentAllJNI.SurveyParaVert_m_V_minLength_get(swigCPtr, this);
   }
 
+  public void setM_V_EndLen(double value) {
+    AlignmentAllJNI.SurveyParaVert_m_V_EndLen_set(swigCPtr, this, value);
+  }
+
+  public double getM_V_EndLen() {
+    return AlignmentAllJNI.SurveyParaVert_m_V_EndLen_get(swigCPtr, this);
+  }
+
   public void setM_V_upLimit(double value) {
     AlignmentAllJNI.SurveyParaVert_m_V_upLimit_set(swigCPtr, this, value);
   }

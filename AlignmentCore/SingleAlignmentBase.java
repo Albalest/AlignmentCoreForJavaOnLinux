@@ -105,20 +105,20 @@ public class SingleAlignmentBase {
     AlignmentAllJNI.SingleAlignmentBase_InvadeVertRadiusByRMRange__SWIG_1(swigCPtr, this, DisplayMileagePair.getCPtr(inputRange), inputRange, IntBoolPair.getCPtr(outRes), outRes);
   }
 
-  public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, int mode, boolean isBaseLine, int markSide) {
-    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_0(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode, isBaseLine, markSide);
+  public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, VERTMODE mode, boolean isBaseLine, ALMARKSIDE markSide) {
+    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_0(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode.swigValue(), isBaseLine, markSide.swigValue());
   }
 
-  public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, int mode, boolean isBaseLine) {
-    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_1(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode, isBaseLine);
+  public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, VERTMODE mode, boolean isBaseLine) {
+    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_1(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode.swigValue(), isBaseLine);
   }
 
-  public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, int mode) {
-    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_2(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode);
+  public boolean Init(InterPtArr interPts, GradeChangePointArr gcps, ChainArr chains, VERTMODE mode) {
+    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_2(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, GradeChangePointArr.getCPtr(gcps), gcps, ChainArr.getCPtr(chains), chains, mode.swigValue());
   }
 
-  public boolean Init(ALElementPtrArr horiEle, ALElementPtrArr vertEle, ChainArr chains, boolean isBaseLine, int markSide) {
-    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_3(swigCPtr, this, ALElementPtrArr.getCPtr(horiEle), horiEle, ALElementPtrArr.getCPtr(vertEle), vertEle, ChainArr.getCPtr(chains), chains, isBaseLine, markSide);
+  public boolean Init(ALElementPtrArr horiEle, ALElementPtrArr vertEle, ChainArr chains, boolean isBaseLine, ALMARKSIDE markSide) {
+    return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_3(swigCPtr, this, ALElementPtrArr.getCPtr(horiEle), horiEle, ALElementPtrArr.getCPtr(vertEle), vertEle, ChainArr.getCPtr(chains), chains, isBaseLine, markSide.swigValue());
   }
 
   public boolean Init(ALElementPtrArr horiEle, ALElementPtrArr vertEle, ChainArr chains, boolean isBaseLine) {
@@ -129,8 +129,8 @@ public class SingleAlignmentBase {
     return AlignmentAllJNI.SingleAlignmentBase_Init__SWIG_5(swigCPtr, this, ALElementPtrArr.getCPtr(horiEle), horiEle, ALElementPtrArr.getCPtr(vertEle), vertEle, ChainArr.getCPtr(chains), chains);
   }
 
-  public boolean CreateHoriByInterPts(InterPtArr interPts, ChainArr chains, boolean isBaseLine, int[] markSide) {
-    return AlignmentAllJNI.SingleAlignmentBase_CreateHoriByInterPts__SWIG_0(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, ChainArr.getCPtr(chains), chains, isBaseLine, markSide);
+  public boolean CreateHoriByInterPts(InterPtArr interPts, ChainArr chains, boolean isBaseLine, ALMARKSIDE markSide) {
+    return AlignmentAllJNI.SingleAlignmentBase_CreateHoriByInterPts__SWIG_0(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts, ChainArr.getCPtr(chains), chains, isBaseLine, markSide.swigValue());
   }
 
   public boolean CreateHoriByInterPts(InterPtArr interPts, ChainArr chains, boolean isBaseLine) {
@@ -143,6 +143,14 @@ public class SingleAlignmentBase {
 
   public boolean CreateHoriByInterPts(InterPtArr interPts) {
     return AlignmentAllJNI.SingleAlignmentBase_CreateHoriByInterPts__SWIG_3(swigCPtr, this, InterPtArr.getCPtr(interPts), interPts);
+  }
+
+  public boolean CreateHoriByVirtualInterPts(LKJInterDataArr interPts, AL_Point3d stPt, AL_Vector3d stVec, ChainArr chains, IntArr errorIndexs, DisplayMileage endML, double dCheckTol) {
+    return AlignmentAllJNI.SingleAlignmentBase_CreateHoriByVirtualInterPts__SWIG_0(swigCPtr, this, LKJInterDataArr.getCPtr(interPts), interPts, AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, ChainArr.getCPtr(chains), chains, IntArr.getCPtr(errorIndexs), errorIndexs, DisplayMileage.getCPtr(endML), endML, dCheckTol);
+  }
+
+  public boolean CreateHoriByVirtualInterPts(LKJInterDataArr interPts, AL_Point3d stPt, AL_Vector3d stVec, ChainArr chains, IntArr errorIndexs, DisplayMileage endML) {
+    return AlignmentAllJNI.SingleAlignmentBase_CreateHoriByVirtualInterPts__SWIG_1(swigCPtr, this, LKJInterDataArr.getCPtr(interPts), interPts, AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, ChainArr.getCPtr(chains), chains, IntArr.getCPtr(errorIndexs), errorIndexs, DisplayMileage.getCPtr(endML), endML);
   }
 
   public boolean CreateHoriByElement(ALElementPtrArr baseEle, ChainArr chains) {
@@ -161,12 +169,12 @@ public class SingleAlignmentBase {
     return new ChainArr(AlignmentAllJNI.SingleAlignmentBase_GetChains(swigCPtr, this), true);
   }
 
-  public boolean GetPointsOnRelease(ALPoint3dArr outPts, AL_Point3d stPt, AL_Vector3d stVec, double dRadius, double dLength, int dir, int type, double dMargin) {
-    return AlignmentAllJNI.SingleAlignmentBase_GetPointsOnRelease(swigCPtr, this, ALPoint3dArr.getCPtr(outPts), outPts, AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dRadius, dLength, dir, type, dMargin);
+  public boolean GetPointsOnRelease(ALPoint3dArr outPts, AL_Point3d stPt, AL_Vector3d stVec, double dRadius, double dLength, ALDIR dir, ALELETYPE type, double dMargin) {
+    return AlignmentAllJNI.SingleAlignmentBase_GetPointsOnRelease(swigCPtr, this, ALPoint3dArr.getCPtr(outPts), outPts, AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dRadius, dLength, dir.swigValue(), type.swigValue(), dMargin);
   }
 
-  public boolean CreateVertByGradePts(GradeChangePointArr gcps, int mode) {
-    return AlignmentAllJNI.SingleAlignmentBase_CreateVertByGradePts(swigCPtr, this, GradeChangePointArr.getCPtr(gcps), gcps, mode);
+  public boolean CreateVertByGradePts(GradeChangePointArr gcps, VERTMODE mode) {
+    return AlignmentAllJNI.SingleAlignmentBase_CreateVertByGradePts(swigCPtr, this, GradeChangePointArr.getCPtr(gcps), gcps, mode.swigValue());
   }
 
   public InterPtArr GetIntersectionsPts() {
@@ -489,8 +497,24 @@ public class SingleAlignmentBase {
     return AlignmentAllJNI.SingleAlignmentBase_GetRealHeightByRM__SWIG_0(swigCPtr, this, rm);
   }
 
-  public double GetRealHeightByRM(int[] type, double rm) {
-    return AlignmentAllJNI.SingleAlignmentBase_GetRealHeightByRM__SWIG_1(swigCPtr, this, type, rm);
+  public double GetRealHeightByRM(ALELETYPE[] type, double rm) {
+    int[] temptype = null;
+    if (type != null) {
+      temptype = new int[type.length];
+      for (int i = 0; i < type.length; i++) {
+        temptype[i] = (type[i] == null) ? 0 : type[i].swigValue();
+      }
+    }
+    try {
+      return AlignmentAllJNI.SingleAlignmentBase_GetRealHeightByRM__SWIG_1(swigCPtr, this, temptype, rm);
+    } finally {
+    if (type != null && temptype != null) {
+      int swigLength = Math.min(type.length, temptype.length);
+      for (int i = 0; i < swigLength; i++) {
+        type[i] = ALELETYPE.swigToEnum(temptype[i]);
+      }
+    }
+    }
   }
 
   public double GetDesignHeightByDM(DisplayMileage dm) {
@@ -501,8 +525,36 @@ public class SingleAlignmentBase {
     return AlignmentAllJNI.SingleAlignmentBase_GetRealHeightByDM__SWIG_0(swigCPtr, this, DisplayMileage.getCPtr(dm), dm);
   }
 
-  public double GetRealHeightByDM(int[] type, DisplayMileage dm) {
-    return AlignmentAllJNI.SingleAlignmentBase_GetRealHeightByDM__SWIG_1(swigCPtr, this, type, DisplayMileage.getCPtr(dm), dm);
+  public double GetRealHeightByDM(ALELETYPE[] type, DisplayMileage dm) {
+    int[] temptype = null;
+    if (type != null) {
+      temptype = new int[type.length];
+      for (int i = 0; i < type.length; i++) {
+        temptype[i] = (type[i] == null) ? 0 : type[i].swigValue();
+      }
+    }
+    try {
+      return AlignmentAllJNI.SingleAlignmentBase_GetRealHeightByDM__SWIG_1(swigCPtr, this, temptype, DisplayMileage.getCPtr(dm), dm);
+    } finally {
+    if (type != null && temptype != null) {
+      int swigLength = Math.min(type.length, temptype.length);
+      for (int i = 0; i < swigLength; i++) {
+        type[i] = ALELETYPE.swigToEnum(temptype[i]);
+      }
+    }
+    }
+  }
+
+  public boolean GetVertTanVecByDM(AL_Vector3d vec, DisplayMileage dm) {
+    return AlignmentAllJNI.SingleAlignmentBase_GetVertTanVecByDM(swigCPtr, this, AL_Vector3d.getCPtr(vec), vec, DisplayMileage.getCPtr(dm), dm);
+  }
+
+  public boolean GetVertTanVecByRM(AL_Vector3d vec, double rm) {
+    return AlignmentAllJNI.SingleAlignmentBase_GetVertTanVecByRM(swigCPtr, this, AL_Vector3d.getCPtr(vec), vec, rm);
+  }
+
+  public boolean GetPtAndVecFor3DByRM(AL_Point3d pt, AL_Vector3d vec, double rm) {
+    return AlignmentAllJNI.SingleAlignmentBase_GetPtAndVecFor3DByRM(swigCPtr, this, AL_Point3d.getCPtr(pt), pt, AL_Vector3d.getCPtr(vec), vec, rm);
   }
 
   public int GetClosedInterPt(AL_Point3d outPt) {

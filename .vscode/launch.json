@@ -15,8 +15,8 @@
             ],
             "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
             "env": {
-                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
-                "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/home/albalest/Ipopt_Build/install/usr/local/lib:/usr/local/lib:/usr/local/lib64",
+                "LD_PRELOAD": "/usr/local/lib64/libadolc.so:/home/albalest/Ipopt_Build/install/usr/local/lib/libipopt.so"
             },
             "preLaunchTask": "Build Java (javac)"
         },
@@ -28,8 +28,8 @@
             "projectName": "AlignmentTest_82b1920b",
             "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
             "env": {
-                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
-                "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/home/albalest/Ipopt_Build/install/usr/local/lib:/usr/local/lib:/usr/local/lib64",
+                "LD_PRELOAD": "/usr/local/lib64/libadolc.so:/home/albalest/Ipopt_Build/install/usr/local/lib/libipopt.so"
             }
         },
         {
@@ -40,8 +40,8 @@
             "projectName": "AlignmentTest",
             "vmArgs": "-Djava.library.path=${workspaceFolder}/lib",
             "env": {
-                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
-                "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
+                "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/home/albalest/Ipopt_Build/install/usr/local/lib:/usr/local/lib:/usr/local/lib64",
+                "LD_PRELOAD": "/usr/local/lib64/libadolc.so:/home/albalest/Ipopt_Build/install/usr/local/lib/libipopt.so"
             }
         },
         {

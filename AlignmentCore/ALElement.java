@@ -74,20 +74,20 @@ public class ALElement {
     return AlignmentAllJNI.ALElement_m_startMileage_get(swigCPtr, this);
   }
 
-  public void setM_type(int value) {
-    AlignmentAllJNI.ALElement_m_type_set(swigCPtr, this, value);
+  public void setM_type(ALELETYPE value) {
+    AlignmentAllJNI.ALElement_m_type_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_type() {
-    return AlignmentAllJNI.ALElement_m_type_get(swigCPtr, this);
+  public ALELETYPE getM_type() {
+    return ALELETYPE.swigToEnum(AlignmentAllJNI.ALElement_m_type_get(swigCPtr, this));
   }
 
-  public void setM_direction(int value) {
-    AlignmentAllJNI.ALElement_m_direction_set(swigCPtr, this, value);
+  public void setM_direction(ALDIR value) {
+    AlignmentAllJNI.ALElement_m_direction_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_direction() {
-    return AlignmentAllJNI.ALElement_m_direction_get(swigCPtr, this);
+  public ALDIR getM_direction() {
+    return ALDIR.swigToEnum(AlignmentAllJNI.ALElement_m_direction_get(swigCPtr, this));
   }
 
   public void setM_radius(double value) {
@@ -193,13 +193,17 @@ public class ALElement {
     return AlignmentAllJNI.ALElement_IntersectWithLine(swigCPtr, this, AL_Point3d.getCPtr(linePt), linePt, AL_Vector3d.getCPtr(lineVec), lineVec, ALPoint3dArr.getCPtr(interPts), interPts);
   }
 
-  public static ALElement Create(AL_Point3d stPt, AL_Vector3d stVec, double dLen, double dStLc, int type, int dir, double dRadius, double dSuperEle, int jdNumber, double dLendiff, double secondRadius) {
-    long cPtr = AlignmentAllJNI.ALElement_Create__SWIG_0(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLen, dStLc, type, dir, dRadius, dSuperEle, jdNumber, dLendiff, secondRadius);
+  public boolean GetVectorForVert(AL_Vector3d vec, double rm) {
+    return AlignmentAllJNI.ALElement_GetVectorForVert(swigCPtr, this, AL_Vector3d.getCPtr(vec), vec, rm);
+  }
+
+  public static ALElement Create(AL_Point3d stPt, AL_Vector3d stVec, double dLen, double dStLc, ALELETYPE type, ALDIR dir, double dRadius, double dSuperEle, int jdNumber, double dLendiff, double secondRadius) {
+    long cPtr = AlignmentAllJNI.ALElement_Create__SWIG_0(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLen, dStLc, type.swigValue(), dir.swigValue(), dRadius, dSuperEle, jdNumber, dLendiff, secondRadius);
     return (cPtr == 0) ? null : new ALElement(cPtr, true);
   }
 
-  public static ALElement Create(AL_Point3d stPt, AL_Vector3d stVec, double dLen, double dStLc, int type, int dir, double dRadius, double dSuperEle, int jdNumber, double dLendiff) {
-    long cPtr = AlignmentAllJNI.ALElement_Create__SWIG_1(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLen, dStLc, type, dir, dRadius, dSuperEle, jdNumber, dLendiff);
+  public static ALElement Create(AL_Point3d stPt, AL_Vector3d stVec, double dLen, double dStLc, ALELETYPE type, ALDIR dir, double dRadius, double dSuperEle, int jdNumber, double dLendiff) {
+    long cPtr = AlignmentAllJNI.ALElement_Create__SWIG_1(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLen, dStLc, type.swigValue(), dir.swigValue(), dRadius, dSuperEle, jdNumber, dLendiff);
     return (cPtr == 0) ? null : new ALElement(cPtr, true);
   }
 

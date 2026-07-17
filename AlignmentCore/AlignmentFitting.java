@@ -82,6 +82,18 @@ public class AlignmentFitting {
     return AlignmentAllJNI.AlignmentFitting_FittingHori_BestFit(swigCPtr, this);
   }
 
+  public boolean FittingHori_InitByScheme(ALHORIFITSCHEME scheme, boolean isBest) {
+    return AlignmentAllJNI.AlignmentFitting_FittingHori_InitByScheme__SWIG_0(swigCPtr, this, scheme.swigValue(), isBest);
+  }
+
+  public boolean FittingHori_InitByScheme(ALHORIFITSCHEME scheme) {
+    return AlignmentAllJNI.AlignmentFitting_FittingHori_InitByScheme__SWIG_1(swigCPtr, this, scheme.swigValue());
+  }
+
+  public boolean FittingHori_BestFitByScheme(ALHORIFITSCHEME scheme) {
+    return AlignmentAllJNI.AlignmentFitting_FittingHori_BestFitByScheme(swigCPtr, this, scheme.swigValue());
+  }
+
   public boolean FittingHori_BestFitByConfig(InterPtArr curInterPts, FittingModeArr types) {
     return AlignmentAllJNI.AlignmentFitting_FittingHori_BestFitByConfig(swigCPtr, this, InterPtArr.getCPtr(curInterPts), curInterPts, FittingModeArr.getCPtr(types), types);
   }
@@ -312,12 +324,28 @@ public class AlignmentFitting {
     return AlignmentAllJNI.AlignmentFitting_AutoFitVertRadius__SWIG_1(swigCPtr, this, nIndex);
   }
 
+  public boolean AutoSlopeFitting(int stIndex, int edIndex, boolean isRound) {
+    return AlignmentAllJNI.AlignmentFitting_AutoSlopeFitting__SWIG_0(swigCPtr, this, stIndex, edIndex, isRound);
+  }
+
+  public boolean AutoSlopeFitting(int stIndex, int edIndex) {
+    return AlignmentAllJNI.AlignmentFitting_AutoSlopeFitting__SWIG_1(swigCPtr, this, stIndex, edIndex);
+  }
+
   public SurveyParaHori GetParaHori() {
     return new SurveyParaHori(AlignmentAllJNI.AlignmentFitting_GetParaHori(swigCPtr, this), true);
   }
 
   public void SetParaHori(SurveyParaHori para) {
     AlignmentAllJNI.AlignmentFitting_SetParaHori(swigCPtr, this, SurveyParaHori.getCPtr(para), para);
+  }
+
+  public SurveyParaHoriCurvature GetParaHoriCurvature() {
+    return new SurveyParaHoriCurvature(AlignmentAllJNI.AlignmentFitting_GetParaHoriCurvature(swigCPtr, this), true);
+  }
+
+  public void SetParaHoriCurvature(SurveyParaHoriCurvature para) {
+    AlignmentAllJNI.AlignmentFitting_SetParaHoriCurvature(swigCPtr, this, SurveyParaHoriCurvature.getCPtr(para), para);
   }
 
   public SurveyParaVert GetParaVert() {

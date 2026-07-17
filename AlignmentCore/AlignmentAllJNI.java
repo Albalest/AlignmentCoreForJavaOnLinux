@@ -9,15 +9,15 @@
 package AlignmentCore;
 
 public class AlignmentAllJNI {
-
    static {
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libCMatrixByEigen.so");
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libAlignmentCore.so");
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libSurveyingCore.so");
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libTQICal.so");
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libAlignmentFittingCore.so");
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libAlignmentCoreJava.so");
-  }
+        System.loadLibrary("CMatrixByEigen");
+    System.loadLibrary("AlignmentCore");
+    System.loadLibrary("SurveyingCore");
+    System.loadLibrary("TQICal");
+    System.loadLibrary("AlignmentOptimizer");
+    System.loadLibrary("AlignmentFittingCore");
+    System.loadLibrary("AlignmentCoreJava");
+    }
 
   public final static native int InterType_ELE_NULL_get();
   public final static native int InterType_ELE_PRE_get();
@@ -158,6 +158,7 @@ public class AlignmentAllJNI {
   public final static native boolean ALElement_isInRange(long jarg1, ALElement jarg1_, double jarg2);
   public final static native boolean ALElement_GetRangePts(long jarg1, ALElement jarg1_, long jarg2, ALPoint3dArr jarg2_, long jarg3, ALVector3dArr jarg3_, double jarg4, double jarg5, double jarg6);
   public final static native boolean ALElement_IntersectWithLine(long jarg1, ALElement jarg1_, long jarg2, AL_Point3d jarg2_, long jarg3, AL_Vector3d jarg3_, long jarg4, ALPoint3dArr jarg4_);
+  public final static native boolean ALElement_GetVectorForVert(long jarg1, ALElement jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3);
   public final static native long ALElement_Create__SWIG_0(long jarg1, AL_Point3d jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3, double jarg4, int jarg5, int jarg6, double jarg7, double jarg8, int jarg9, double jarg10, double jarg11);
   public final static native long ALElement_Create__SWIG_1(long jarg1, AL_Point3d jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3, double jarg4, int jarg5, int jarg6, double jarg7, double jarg8, int jarg9, double jarg10);
   public final static native long new_ALLine__SWIG_0();
@@ -172,6 +173,7 @@ public class AlignmentAllJNI {
   public final static native long ALLine_Clone(long jarg1, ALLine jarg1_);
   public final static native boolean ALLine_GetRangePts(long jarg1, ALLine jarg1_, long jarg2, ALPoint3dArr jarg2_, long jarg3, ALVector3dArr jarg3_, double jarg4, double jarg5, double jarg6);
   public final static native boolean ALLine_IntersectWithLine(long jarg1, ALLine jarg1_, long jarg2, AL_Point3d jarg2_, long jarg3, AL_Vector3d jarg3_, long jarg4, ALPoint3dArr jarg4_);
+  public final static native boolean ALLine_GetVectorForVert(long jarg1, ALLine jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3);
   public final static native long new_ALRelease__SWIG_0();
   public final static native long new_ALRelease__SWIG_1(long jarg1, AL_Point3d jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3, double jarg4, double jarg5, double jarg6, int jarg7, int jarg8);
   public final static native long new_ALRelease__SWIG_2(long jarg1, AL_Point3d jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3, double jarg4, double jarg5, double jarg6, int jarg7);
@@ -187,6 +189,7 @@ public class AlignmentAllJNI {
   public final static native long ALRelease_Clone(long jarg1, ALRelease jarg1_);
   public final static native boolean ALRelease_GetRangePts(long jarg1, ALRelease jarg1_, long jarg2, ALPoint3dArr jarg2_, long jarg3, ALVector3dArr jarg3_, double jarg4, double jarg5, double jarg6);
   public final static native boolean ALRelease_IntersectWithLine(long jarg1, ALRelease jarg1_, long jarg2, AL_Point3d jarg2_, long jarg3, AL_Vector3d jarg3_, long jarg4, ALPoint3dArr jarg4_);
+  public final static native boolean ALRelease_GetVectorForVert(long jarg1, ALRelease jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3);
   public final static native void ALRelease_m_radius2_set(long jarg1, ALRelease jarg1_, double jarg2);
   public final static native double ALRelease_m_radius2_get(long jarg1, ALRelease jarg1_);
   public final static native long new_ALArc__SWIG_0();
@@ -207,6 +210,7 @@ public class AlignmentAllJNI {
   public final static native long ALArc_Clone(long jarg1, ALArc jarg1_);
   public final static native boolean ALArc_GetRangePts(long jarg1, ALArc jarg1_, long jarg2, ALPoint3dArr jarg2_, long jarg3, ALVector3dArr jarg3_, double jarg4, double jarg5, double jarg6);
   public final static native boolean ALArc_IntersectWithLine(long jarg1, ALArc jarg1_, long jarg2, AL_Point3d jarg2_, long jarg3, AL_Vector3d jarg3_, long jarg4, ALPoint3dArr jarg4_);
+  public final static native boolean ALArc_GetVectorForVert(long jarg1, ALArc jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3);
   public final static native long new_ALIntersectionPoint__SWIG_0();
   public final static native long new_ALIntersectionPoint__SWIG_1(long jarg1, AL_Point3d jarg1_, double jarg2, double jarg3, double jarg4);
   public final static native void delete_ALIntersectionPoint(long jarg1);
@@ -217,7 +221,6 @@ public class AlignmentAllJNI {
   public final static native void ALIntersectionPoint_SetSuperEleByRelease(long jarg1, ALIntersectionPoint jarg1_);
   public final static native void ALIntersectionPoint_SetSuperEleData(long jarg1, ALIntersectionPoint jarg1_, long jarg2, ALIntersectionPoint jarg2_);
   public final static native double ALIntersectionPoint_GetAngle(long jarg1, ALIntersectionPoint jarg1_);
-  public final static native void ALIntersectionPoint_GetTLen(long jarg1, ALIntersectionPoint jarg1_, long jarg2, long jarg3);
   public final static native void ALIntersectionPoint_ModifyParaByComCurve(long jarg1, ALIntersectionPoint jarg1_, long jarg2, ALIntersectionPoint jarg2_, boolean jarg3);
   public final static native void ALIntersectionPoint_ModifyMLByAdd(long jarg1, ALIntersectionPoint jarg1_, double jarg2);
   public final static native double ALIntersectionPoint_GetPreTan(long jarg1, ALIntersectionPoint jarg1_);
@@ -286,6 +289,8 @@ public class AlignmentAllJNI {
   public final static native void delete_ALGradeChangePoint(long jarg1);
   public final static native void ALGradeChangePoint_CalVertPara(long jarg1, ALGradeChangePoint jarg1_, long jarg2, ALGradeChangePoint jarg2_, long jarg3, double[] jarg4);
   public final static native void ALGradeChangePoint_Offset(long jarg1, ALGradeChangePoint jarg1_, double jarg2);
+  public final static native void ALGradeChangePoint_VerticalForRoundAndRate__SWIG_0(long jarg1, GradeChangePointArr jarg1_, double jarg2, int jarg3);
+  public final static native void ALGradeChangePoint_VerticalForRoundAndRate__SWIG_1(long jarg1, GradeChangePointArr jarg1_, double jarg2);
   public final static native void ALGradeChangePoint_m_RealMilage_set(long jarg1, ALGradeChangePoint jarg1_, double jarg2);
   public final static native double ALGradeChangePoint_m_RealMilage_get(long jarg1, ALGradeChangePoint jarg1_);
   public final static native void ALGradeChangePoint_m_Height_set(long jarg1, ALGradeChangePoint jarg1_, double jarg2);
@@ -397,6 +402,8 @@ public class AlignmentAllJNI {
   public final static native long new_SurveyDatas__SWIG_1(long jarg1, SurveyVector jarg1_, int jarg2);
   public final static native long new_SurveyDatas__SWIG_2(long jarg1, SurveyDatas jarg1_);
   public final static native void delete_SurveyDatas(long jarg1);
+  public final static native boolean SurveyDatas_interpolate(long jarg1, SurveyVector jarg1_, double jarg2, long jarg3, AL_Point3d jarg3_);
+  public final static native boolean SurveyDatas_cosineBlendingWithMileage(long jarg1, SurveyVector jarg1_, long jarg2, SurveyVector jarg2_, long jarg3, SurveyVector jarg3_, long jarg4, SurveyVector jarg4_);
   public final static native long SurveyDatas_GetCurvation__SWIG_0(long jarg1, SurveyDatas jarg1_, double jarg2, double jarg3);
   public final static native long SurveyDatas_GetCurvation__SWIG_1(long jarg1, SurveyDatas jarg1_, double jarg2);
   public final static native boolean SurveyDatas_AutoKeyPts__SWIG_0(long jarg1, SurveyDatas jarg1_, double jarg2, double jarg3);
@@ -579,6 +586,21 @@ public class AlignmentAllJNI {
   public final static native long ALElementPtrArr_doSet(long jarg1, ALElementPtrArr jarg1_, int jarg2, long jarg3, ALElement jarg3_);
   public final static native void ALElementPtrArr_doRemoveRange(long jarg1, ALElementPtrArr jarg1_, int jarg2, int jarg3);
   public final static native void delete_ALElementPtrArr(long jarg1);
+  public final static native long new_LKJInterDataArr__SWIG_0();
+  public final static native long new_LKJInterDataArr__SWIG_1(long jarg1, LKJInterDataArr jarg1_);
+  public final static native boolean LKJInterDataArr_isEmpty(long jarg1, LKJInterDataArr jarg1_);
+  public final static native void LKJInterDataArr_clear(long jarg1, LKJInterDataArr jarg1_);
+  public final static native long new_LKJInterDataArr__SWIG_2(int jarg1, long jarg2, LKJInterData jarg2_);
+  public final static native int LKJInterDataArr_doCapacity(long jarg1, LKJInterDataArr jarg1_);
+  public final static native void LKJInterDataArr_doReserve(long jarg1, LKJInterDataArr jarg1_, int jarg2);
+  public final static native int LKJInterDataArr_doSize(long jarg1, LKJInterDataArr jarg1_);
+  public final static native void LKJInterDataArr_doAdd__SWIG_0(long jarg1, LKJInterDataArr jarg1_, long jarg2, LKJInterData jarg2_);
+  public final static native void LKJInterDataArr_doAdd__SWIG_1(long jarg1, LKJInterDataArr jarg1_, int jarg2, long jarg3, LKJInterData jarg3_);
+  public final static native long LKJInterDataArr_doRemove(long jarg1, LKJInterDataArr jarg1_, int jarg2);
+  public final static native long LKJInterDataArr_doGet(long jarg1, LKJInterDataArr jarg1_, int jarg2);
+  public final static native long LKJInterDataArr_doSet(long jarg1, LKJInterDataArr jarg1_, int jarg2, long jarg3, LKJInterData jarg3_);
+  public final static native void LKJInterDataArr_doRemoveRange(long jarg1, LKJInterDataArr jarg1_, int jarg2, int jarg3);
+  public final static native void delete_LKJInterDataArr(long jarg1);
   public final static native long new_SurveyVector__SWIG_0();
   public final static native long new_SurveyVector__SWIG_1(long jarg1, SurveyVector jarg1_);
   public final static native boolean SurveyVector_isEmpty(long jarg1, SurveyVector jarg1_);
@@ -778,6 +800,24 @@ public class AlignmentAllJNI {
   public final static native long TQIValueVector_doSet(long jarg1, TQIValueVector jarg1_, int jarg2, long jarg3, TQIValue jarg3_);
   public final static native void TQIValueVector_doRemoveRange(long jarg1, TQIValueVector jarg1_, int jarg2, int jarg3);
   public final static native void delete_TQIValueVector(long jarg1);
+  public final static native void LKJInterData_stMileage_set(long jarg1, LKJInterData jarg1_, long jarg2, DisplayMileage jarg2_);
+  public final static native long LKJInterData_stMileage_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_edMileage_set(long jarg1, LKJInterData jarg1_, long jarg2, DisplayMileage jarg2_);
+  public final static native long LKJInterData_edMileage_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_angle_set(long jarg1, LKJInterData jarg1_, double jarg2);
+  public final static native double LKJInterData_angle_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_dir_set(long jarg1, LKJInterData jarg1_, int jarg2);
+  public final static native int LKJInterData_dir_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_radius_set(long jarg1, LKJInterData jarg1_, double jarg2);
+  public final static native double LKJInterData_radius_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_preLen_set(long jarg1, LKJInterData jarg1_, double jarg2);
+  public final static native double LKJInterData_preLen_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_subLen_set(long jarg1, LKJInterData jarg1_, double jarg2);
+  public final static native double LKJInterData_subLen_get(long jarg1, LKJInterData jarg1_);
+  public final static native void LKJInterData_type_set(long jarg1, LKJInterData jarg1_, int jarg2);
+  public final static native int LKJInterData_type_get(long jarg1, LKJInterData jarg1_);
+  public final static native long new_LKJInterData();
+  public final static native void delete_LKJInterData(long jarg1);
   public final static native long new_SingleAlignmentBase__SWIG_0();
   public final static native long new_SingleAlignmentBase__SWIG_1(long jarg1, SingleAlignmentBase jarg1_);
   public final static native void delete_SingleAlignmentBase(long jarg1);
@@ -801,10 +841,12 @@ public class AlignmentAllJNI {
   public final static native boolean SingleAlignmentBase_Init__SWIG_3(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ALElementPtrArr jarg3_, long jarg4, ChainArr jarg4_, boolean jarg5, int jarg6);
   public final static native boolean SingleAlignmentBase_Init__SWIG_4(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ALElementPtrArr jarg3_, long jarg4, ChainArr jarg4_, boolean jarg5);
   public final static native boolean SingleAlignmentBase_Init__SWIG_5(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ALElementPtrArr jarg3_, long jarg4, ChainArr jarg4_);
-  public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_0(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_, boolean jarg4, int[] jarg5);
+  public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_0(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_, boolean jarg4, int jarg5);
   public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_1(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_, boolean jarg4);
   public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_2(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, ChainArr jarg3_);
   public final static native boolean SingleAlignmentBase_CreateHoriByInterPts__SWIG_3(long jarg1, SingleAlignmentBase jarg1_, long jarg2, InterPtArr jarg2_);
+  public final static native boolean SingleAlignmentBase_CreateHoriByVirtualInterPts__SWIG_0(long jarg1, SingleAlignmentBase jarg1_, long jarg2, LKJInterDataArr jarg2_, long jarg3, AL_Point3d jarg3_, long jarg4, AL_Vector3d jarg4_, long jarg5, ChainArr jarg5_, long jarg6, IntArr jarg6_, long jarg7, DisplayMileage jarg7_, double jarg8);
+  public final static native boolean SingleAlignmentBase_CreateHoriByVirtualInterPts__SWIG_1(long jarg1, SingleAlignmentBase jarg1_, long jarg2, LKJInterDataArr jarg2_, long jarg3, AL_Point3d jarg3_, long jarg4, AL_Vector3d jarg4_, long jarg5, ChainArr jarg5_, long jarg6, IntArr jarg6_, long jarg7, DisplayMileage jarg7_);
   public final static native boolean SingleAlignmentBase_CreateHoriByElement(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_, long jarg3, ChainArr jarg3_);
   public final static native boolean SingleAlignmentBase_CreateVertByElement(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ALElementPtrArr jarg2_);
   public final static native boolean SingleAlignmentBase_ReplaceChains(long jarg1, SingleAlignmentBase jarg1_, long jarg2, ChainArr jarg2_);
@@ -895,6 +937,9 @@ public class AlignmentAllJNI {
   public final static native double SingleAlignmentBase_GetDesignHeightByDM(long jarg1, SingleAlignmentBase jarg1_, long jarg2, DisplayMileage jarg2_);
   public final static native double SingleAlignmentBase_GetRealHeightByDM__SWIG_0(long jarg1, SingleAlignmentBase jarg1_, long jarg2, DisplayMileage jarg2_);
   public final static native double SingleAlignmentBase_GetRealHeightByDM__SWIG_1(long jarg1, SingleAlignmentBase jarg1_, int[] jarg2, long jarg3, DisplayMileage jarg3_);
+  public final static native boolean SingleAlignmentBase_GetVertTanVecByDM(long jarg1, SingleAlignmentBase jarg1_, long jarg2, AL_Vector3d jarg2_, long jarg3, DisplayMileage jarg3_);
+  public final static native boolean SingleAlignmentBase_GetVertTanVecByRM(long jarg1, SingleAlignmentBase jarg1_, long jarg2, AL_Vector3d jarg2_, double jarg3);
+  public final static native boolean SingleAlignmentBase_GetPtAndVecFor3DByRM(long jarg1, SingleAlignmentBase jarg1_, long jarg2, AL_Point3d jarg2_, long jarg3, AL_Vector3d jarg3_, double jarg4);
   public final static native int SingleAlignmentBase_GetClosedInterPt(long jarg1, SingleAlignmentBase jarg1_, long jarg2, AL_Point3d jarg2_);
   public final static native double SingleAlignmentBase_GetSuperEleByRM(long jarg1, SingleAlignmentBase jarg1_, double jarg2);
   public final static native void SingleAlignmentBase_SetSuperEleRangeByRelease(long jarg1, SingleAlignmentBase jarg1_);
@@ -908,6 +953,32 @@ public class AlignmentAllJNI {
   public final static native long AlignmentManager_GetInstance();
   public final static native boolean AlignmentManager_RegisterAlignment(long jarg1, AlignmentManager jarg1_, long jarg2, SingleAlignmentBase jarg2_);
   public final static native boolean AlignmentManager_GetAlignment(long jarg1, AlignmentManager jarg1_, String jarg2, long jarg3);
+  public final static native long new_SurveyParaHoriCurvature();
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_ShortWindowLength_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_ShortWindowLength_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_LongWindowLength_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_LongWindowLength_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_SmoothWindowSize_set(long jarg1, SurveyParaHoriCurvature jarg1_, int jarg2);
+  public final static native int SurveyParaHoriCurvature_m_H_Curvature_SmoothWindowSize_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_LineNoiseScale_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_LineNoiseScale_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_GradientNoiseScale_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_GradientNoiseScale_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_MinCurveLength_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_MinCurveLength_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_MinSpiralLength_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_MinSpiralLength_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_MergeGapLength_set(long jarg1, SurveyParaHoriCurvature jarg1_, double jarg2);
+  public final static native double SurveyParaHoriCurvature_m_H_Curvature_MergeGapLength_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_MaxRefineTimes_set(long jarg1, SurveyParaHoriCurvature jarg1_, int jarg2);
+  public final static native int SurveyParaHoriCurvature_m_H_Curvature_MaxRefineTimes_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_BestFitMode_set(long jarg1, SurveyParaHoriCurvature jarg1_, int jarg2);
+  public final static native int SurveyParaHoriCurvature_m_H_Curvature_BestFitMode_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_EnableDebugLog_set(long jarg1, SurveyParaHoriCurvature jarg1_, boolean jarg2);
+  public final static native boolean SurveyParaHoriCurvature_m_H_Curvature_EnableDebugLog_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void SurveyParaHoriCurvature_m_H_Curvature_EnableLegacyFallback_set(long jarg1, SurveyParaHoriCurvature jarg1_, boolean jarg2);
+  public final static native boolean SurveyParaHoriCurvature_m_H_Curvature_EnableLegacyFallback_get(long jarg1, SurveyParaHoriCurvature jarg1_);
+  public final static native void delete_SurveyParaHoriCurvature(long jarg1);
   public final static native long new_SplitIndex__SWIG_0();
   public final static native long new_SplitIndex__SWIG_1(int jarg1, int jarg2, int jarg3, int jarg4);
   public final static native void SplitIndex_ZHIndex_set(long jarg1, SplitIndex jarg1_, int jarg2);
@@ -942,6 +1013,8 @@ public class AlignmentAllJNI {
   public final static native long new_SurveyParaVert();
   public final static native void SurveyParaVert_m_V_minLength_set(long jarg1, SurveyParaVert jarg1_, double jarg2);
   public final static native double SurveyParaVert_m_V_minLength_get(long jarg1, SurveyParaVert jarg1_);
+  public final static native void SurveyParaVert_m_V_EndLen_set(long jarg1, SurveyParaVert jarg1_, double jarg2);
+  public final static native double SurveyParaVert_m_V_EndLen_get(long jarg1, SurveyParaVert jarg1_);
   public final static native void SurveyParaVert_m_V_upLimit_set(long jarg1, SurveyParaVert jarg1_, double jarg2);
   public final static native double SurveyParaVert_m_V_upLimit_get(long jarg1, SurveyParaVert jarg1_);
   public final static native void SurveyParaVert_m_V_downLimit_set(long jarg1, SurveyParaVert jarg1_, double jarg2);
@@ -1057,6 +1130,9 @@ public class AlignmentAllJNI {
   public final static native boolean AlignmentFitting_FittingHori_Init__SWIG_0(long jarg1, AlignmentFitting jarg1_, boolean jarg2);
   public final static native boolean AlignmentFitting_FittingHori_Init__SWIG_1(long jarg1, AlignmentFitting jarg1_);
   public final static native boolean AlignmentFitting_FittingHori_BestFit(long jarg1, AlignmentFitting jarg1_);
+  public final static native boolean AlignmentFitting_FittingHori_InitByScheme__SWIG_0(long jarg1, AlignmentFitting jarg1_, int jarg2, boolean jarg3);
+  public final static native boolean AlignmentFitting_FittingHori_InitByScheme__SWIG_1(long jarg1, AlignmentFitting jarg1_, int jarg2);
+  public final static native boolean AlignmentFitting_FittingHori_BestFitByScheme(long jarg1, AlignmentFitting jarg1_, int jarg2);
   public final static native boolean AlignmentFitting_FittingHori_BestFitByConfig(long jarg1, AlignmentFitting jarg1_, long jarg2, InterPtArr jarg2_, long jarg3, FittingModeArr jarg3_);
   public final static native boolean AlignmentFitting_CalHoriMargin__SWIG_0(long jarg1, AlignmentFitting jarg1_, boolean jarg2);
   public final static native boolean AlignmentFitting_CalHoriMargin__SWIG_1(long jarg1, AlignmentFitting jarg1_);
@@ -1114,8 +1190,12 @@ public class AlignmentAllJNI {
   public final static native void AlignmentFitting_ReCalMileage(long jarg1, AlignmentFitting jarg1_);
   public final static native boolean AlignmentFitting_AutoFitVertRadius__SWIG_0(long jarg1, AlignmentFitting jarg1_);
   public final static native boolean AlignmentFitting_AutoFitVertRadius__SWIG_1(long jarg1, AlignmentFitting jarg1_, int jarg2);
+  public final static native boolean AlignmentFitting_AutoSlopeFitting__SWIG_0(long jarg1, AlignmentFitting jarg1_, int jarg2, int jarg3, boolean jarg4);
+  public final static native boolean AlignmentFitting_AutoSlopeFitting__SWIG_1(long jarg1, AlignmentFitting jarg1_, int jarg2, int jarg3);
   public final static native long AlignmentFitting_GetParaHori(long jarg1, AlignmentFitting jarg1_);
   public final static native void AlignmentFitting_SetParaHori(long jarg1, AlignmentFitting jarg1_, long jarg2, SurveyParaHori jarg2_);
+  public final static native long AlignmentFitting_GetParaHoriCurvature(long jarg1, AlignmentFitting jarg1_);
+  public final static native void AlignmentFitting_SetParaHoriCurvature(long jarg1, AlignmentFitting jarg1_, long jarg2, SurveyParaHoriCurvature jarg2_);
   public final static native long AlignmentFitting_GetParaVert(long jarg1, AlignmentFitting jarg1_);
   public final static native void AlignmentFitting_SetParaVert(long jarg1, AlignmentFitting jarg1_, long jarg2, SurveyParaVert jarg2_);
   public final static native boolean AlignmentFitting_GetVertOrHoriMargin__SWIG_0(long jarg1, AlignmentFitting jarg1_, long jarg2, DisplayMileageDoublePairVector jarg2_, boolean jarg3, double jarg4, int jarg5);

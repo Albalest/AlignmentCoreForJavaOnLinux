@@ -88,4 +88,8 @@ public class ALLine extends ALElement {
     return AlignmentAllJNI.ALLine_IntersectWithLine(swigCPtr, this, AL_Point3d.getCPtr(linePt), linePt, AL_Vector3d.getCPtr(lineVec), lineVec, ALPoint3dArr.getCPtr(interPts), interPts);
   }
 
+  public boolean GetVectorForVert(AL_Vector3d vec, double rm) {
+    return AlignmentAllJNI.ALLine_GetVectorForVert(swigCPtr, this, AL_Vector3d.getCPtr(vec), vec, rm);
+  }
+
 }

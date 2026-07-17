@@ -84,10 +84,6 @@ public class ALIntersectionPoint {
     return AlignmentAllJNI.ALIntersectionPoint_GetAngle(swigCPtr, this);
   }
 
-  public void GetTLen(SWIGTYPE_p_double preLen, SWIGTYPE_p_double subLen) {
-    AlignmentAllJNI.ALIntersectionPoint_GetTLen(swigCPtr, this, SWIGTYPE_p_double.getCPtr(preLen), SWIGTYPE_p_double.getCPtr(subLen));
-  }
-
   public void ModifyParaByComCurve(ALIntersectionPoint interPt, boolean isFront) {
     AlignmentAllJNI.ALIntersectionPoint_ModifyParaByComCurve(swigCPtr, this, ALIntersectionPoint.getCPtr(interPt), interPt, isFront);
   }
@@ -137,12 +133,12 @@ public class ALIntersectionPoint {
     return AlignmentAllJNI.ALIntersectionPoint_m_SubLen_get(swigCPtr, this);
   }
 
-  public void setM_Dir(int value) {
-    AlignmentAllJNI.ALIntersectionPoint_m_Dir_set(swigCPtr, this, value);
+  public void setM_Dir(ALDIR value) {
+    AlignmentAllJNI.ALIntersectionPoint_m_Dir_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_Dir() {
-    return AlignmentAllJNI.ALIntersectionPoint_m_Dir_get(swigCPtr, this);
+  public ALDIR getM_Dir() {
+    return ALDIR.swigToEnum(AlignmentAllJNI.ALIntersectionPoint_m_Dir_get(swigCPtr, this));
   }
 
   public void setM_CenterPoint(AL_Point3d value) {
@@ -338,12 +334,12 @@ public class ALIntersectionPoint {
     return AlignmentAllJNI.ALIntersectionPoint_m_Speed_Cargo_get(swigCPtr, this);
   }
 
-  public void setM_Type(int value) {
-    AlignmentAllJNI.ALIntersectionPoint_m_Type_set(swigCPtr, this, value);
+  public void setM_Type(InterType value) {
+    AlignmentAllJNI.ALIntersectionPoint_m_Type_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_Type() {
-    return AlignmentAllJNI.ALIntersectionPoint_m_Type_get(swigCPtr, this);
+  public InterType getM_Type() {
+    return InterType.swigToEnum(AlignmentAllJNI.ALIntersectionPoint_m_Type_get(swigCPtr, this));
   }
 
 }

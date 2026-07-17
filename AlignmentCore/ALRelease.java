@@ -47,20 +47,20 @@ public class ALRelease extends ALElement {
     this(AlignmentAllJNI.new_ALRelease__SWIG_0(), true);
   }
 
-  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double stMileage, double radius1, double radius2, int dir, int nIndex) {
-    this(AlignmentAllJNI.new_ALRelease__SWIG_1(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, stMileage, radius1, radius2, dir, nIndex), true);
+  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double stMileage, double radius1, double radius2, ALDIR dir, int nIndex) {
+    this(AlignmentAllJNI.new_ALRelease__SWIG_1(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, stMileage, radius1, radius2, dir.swigValue(), nIndex), true);
   }
 
-  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double stMileage, double radius1, double radius2, int dir) {
-    this(AlignmentAllJNI.new_ALRelease__SWIG_2(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, stMileage, radius1, radius2, dir), true);
+  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double stMileage, double radius1, double radius2, ALDIR dir) {
+    this(AlignmentAllJNI.new_ALRelease__SWIG_2(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, stMileage, radius1, radius2, dir.swigValue()), true);
   }
 
-  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double edMileage, double radius, int type, int dir, int nIndex) {
-    this(AlignmentAllJNI.new_ALRelease__SWIG_3(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, edMileage, radius, type, dir, nIndex), true);
+  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double edMileage, double radius, ALELETYPE type, ALDIR dir, int nIndex) {
+    this(AlignmentAllJNI.new_ALRelease__SWIG_3(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, edMileage, radius, type.swigValue(), dir.swigValue(), nIndex), true);
   }
 
-  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double edMileage, double radius, int type, int dir) {
-    this(AlignmentAllJNI.new_ALRelease__SWIG_4(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, edMileage, radius, type, dir), true);
+  public ALRelease(AL_Point3d stPt, AL_Vector3d stVec, double dLength, double edMileage, double radius, ALELETYPE type, ALDIR dir) {
+    this(AlignmentAllJNI.new_ALRelease__SWIG_4(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, dLength, edMileage, radius, type.swigValue(), dir.swigValue()), true);
   }
 
   public void SetCompDataPara(double startRadius) {
@@ -98,6 +98,10 @@ public class ALRelease extends ALElement {
 
   public boolean IntersectWithLine(AL_Point3d linePt, AL_Vector3d lineVec, ALPoint3dArr interPts) {
     return AlignmentAllJNI.ALRelease_IntersectWithLine(swigCPtr, this, AL_Point3d.getCPtr(linePt), linePt, AL_Vector3d.getCPtr(lineVec), lineVec, ALPoint3dArr.getCPtr(interPts), interPts);
+  }
+
+  public boolean GetVectorForVert(AL_Vector3d vec, double rm) {
+    return AlignmentAllJNI.ALRelease_GetVectorForVert(swigCPtr, this, AL_Vector3d.getCPtr(vec), vec, rm);
   }
 
   public void setM_radius2(double value) {

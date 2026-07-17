@@ -1,0 +1,33 @@
+ARG BASE_IMAGE=ubuntu:18.04
+FROM ${BASE_IMAGE}
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN sed -i 's|archive.ubuntu.com|old-releases.ubuntu.com|g' /etc/apt/sources.list && \
+    sed -i 's|security.ubuntu.com|old-releases.ubuntu.com|g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      gfortran \
+      pkg-config \
+      ca-certificates \
+      curl \
+      git \
+      cmake \
+      ninja-build \
+      swig \
+      patchelf \
+      libeigen3-dev \
+      openjdk-11-jdk-headless \
+      coinor-libipopt-dev \
+      coinor-libipopt1v5 \
+      libadolc-dev \
+      libcolpack-dev \
+      libblas-dev \
+      liblapack-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+WORKDIR /source

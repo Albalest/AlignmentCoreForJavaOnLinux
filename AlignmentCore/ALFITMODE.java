@@ -8,10 +8,47 @@
 
 package AlignmentCore;
 
-public final class ALFITMODE {
-  public final static int NONE = 0;
-  public final static int RADIUSFIXED = 1;
-  public final static int SPIRALFIXED = 2;
-  public final static int ALLFIXED = 3;
+public enum ALFITMODE {
+  NONE(0),
+  RADIUSFIXED(1),
+  SPIRALFIXED(2),
+  ALLFIXED(3);
+
+  public final int swigValue() {
+    return swigValue;
+  }
+
+  public static ALFITMODE swigToEnum(int swigValue) {
+    ALFITMODE[] swigValues = ALFITMODE.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (ALFITMODE swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + ALFITMODE.class + " with value " + swigValue);
+  }
+
+  @SuppressWarnings("unused")
+  private ALFITMODE() {
+    this.swigValue = SwigNext.next++;
+  }
+
+  @SuppressWarnings("unused")
+  private ALFITMODE(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
+
+  @SuppressWarnings("unused")
+  private ALFITMODE(ALFITMODE swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
+
+  private final int swigValue;
+
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

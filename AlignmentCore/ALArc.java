@@ -47,36 +47,36 @@ public class ALArc extends ALElement {
     this(AlignmentAllJNI.new_ALArc__SWIG_0(), true);
   }
 
-  public ALArc(AL_Point3d stPt, AL_Vector3d stVec, double length, double stMileage, double radius, int dir, int number) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_1(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, length, stMileage, radius, dir, number), true);
+  public ALArc(AL_Point3d stPt, AL_Vector3d stVec, double length, double stMileage, double radius, ALDIR dir, int number) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_1(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, length, stMileage, radius, dir.swigValue(), number), true);
   }
 
-  public ALArc(AL_Point3d stPt, AL_Vector3d stVec, double length, double stMileage, double radius, int dir) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_2(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, length, stMileage, radius, dir), true);
+  public ALArc(AL_Point3d stPt, AL_Vector3d stVec, double length, double stMileage, double radius, ALDIR dir) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_2(AL_Point3d.getCPtr(stPt), stPt, AL_Vector3d.getCPtr(stVec), stVec, length, stMileage, radius, dir.swigValue()), true);
   }
 
-  public ALArc(AL_Point3d edPt, AL_Vector3d edVec, double length, double edMileage, int dir, double radius, int number) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_3(AL_Point3d.getCPtr(edPt), edPt, AL_Vector3d.getCPtr(edVec), edVec, length, edMileage, dir, radius, number), true);
+  public ALArc(AL_Point3d edPt, AL_Vector3d edVec, double length, double edMileage, ALDIR dir, double radius, int number) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_3(AL_Point3d.getCPtr(edPt), edPt, AL_Vector3d.getCPtr(edVec), edVec, length, edMileage, dir.swigValue(), radius, number), true);
   }
 
-  public ALArc(AL_Point3d edPt, AL_Vector3d edVec, double length, double edMileage, int dir, double radius) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_4(AL_Point3d.getCPtr(edPt), edPt, AL_Vector3d.getCPtr(edVec), edVec, length, edMileage, dir, radius), true);
+  public ALArc(AL_Point3d edPt, AL_Vector3d edVec, double length, double edMileage, ALDIR dir, double radius) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_4(AL_Point3d.getCPtr(edPt), edPt, AL_Vector3d.getCPtr(edVec), edVec, length, edMileage, dir.swigValue(), radius), true);
   }
 
-  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double stMileage, double radius, int dir, int number) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_5(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, stMileage, radius, dir, number), true);
+  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double stMileage, double radius, ALDIR dir, int number) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_5(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, stMileage, radius, dir.swigValue(), number), true);
   }
 
-  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double stMileage, double radius, int dir) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_6(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, stMileage, radius, dir), true);
+  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double stMileage, double radius, ALDIR dir) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_6(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, stMileage, radius, dir.swigValue()), true);
   }
 
-  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double radius, int dir, int number) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_7(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, radius, dir, number), true);
+  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double radius, ALDIR dir, int number) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_7(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, radius, dir.swigValue(), number), true);
   }
 
-  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double radius, int dir) {
-    this(AlignmentAllJNI.new_ALArc__SWIG_8(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, radius, dir), true);
+  public ALArc(AL_Point3d stPt, AL_Point3d edPt, double radius, ALDIR dir) {
+    this(AlignmentAllJNI.new_ALArc__SWIG_8(AL_Point3d.getCPtr(stPt), stPt, AL_Point3d.getCPtr(edPt), edPt, radius, dir.swigValue()), true);
   }
 
   public boolean GetPointByRM(AL_Point3d pt, AL_Vector3d vec, double rm) {
@@ -110,6 +110,10 @@ public class ALArc extends ALElement {
 
   public boolean IntersectWithLine(AL_Point3d linePt, AL_Vector3d lineVec, ALPoint3dArr interPts) {
     return AlignmentAllJNI.ALArc_IntersectWithLine(swigCPtr, this, AL_Point3d.getCPtr(linePt), linePt, AL_Vector3d.getCPtr(lineVec), lineVec, ALPoint3dArr.getCPtr(interPts), interPts);
+  }
+
+  public boolean GetVectorForVert(AL_Vector3d vec, double rm) {
+    return AlignmentAllJNI.ALArc_GetVectorForVert(swigCPtr, this, AL_Vector3d.getCPtr(vec), vec, rm);
   }
 
 }

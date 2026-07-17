@@ -8,11 +8,48 @@
 
 package AlignmentCore;
 
-public final class EVALUATION {
-  public final static int NORMAL = 0;
-  public final static int DIFF = NORMAL + 1;
-  public final static int UNQULIFIED = DIFF + 1;
-  public final static int NONE = UNQULIFIED + 1;
-  public final static int LESTLEVEL = NONE + 1;
+public enum EVALUATION {
+  NORMAL(0),
+  DIFF,
+  UNQULIFIED,
+  NONE,
+  LESTLEVEL;
+
+  public final int swigValue() {
+    return swigValue;
+  }
+
+  public static EVALUATION swigToEnum(int swigValue) {
+    EVALUATION[] swigValues = EVALUATION.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (EVALUATION swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + EVALUATION.class + " with value " + swigValue);
+  }
+
+  @SuppressWarnings("unused")
+  private EVALUATION() {
+    this.swigValue = SwigNext.next++;
+  }
+
+  @SuppressWarnings("unused")
+  private EVALUATION(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
+
+  @SuppressWarnings("unused")
+  private EVALUATION(EVALUATION swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
+
+  private final int swigValue;
+
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

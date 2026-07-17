@@ -10,12 +10,13 @@ package AlOpter;
 
 public class AIOpterJNI {
   static {
-    // 先加载系统 x86_64 的 adolc，避免误用工作区中的 aarch64 版本。
- 
-    // 加载项目 JNI 主库。
-    System.load("/home/albalest/AlignmentCoreForJavaOnLinux/lib/libCOptimizer.so");
+    try {
+        System.loadLibrary("COptimizer");
+    } catch (UnsatisfiedLinkError e) {
+        String dir = System.getProperty("user.dir");
+        System.load(dir + "/lib/libCOptimizer.so");
+    }
   }
-
 
   public final static native long new_OptData__SWIG_0();
   public final static native long new_OptData__SWIG_1(double jarg1, double jarg2, double jarg3, double jarg4);
@@ -70,13 +71,52 @@ public class AIOpterJNI {
   public final static native boolean Splineline_RemovePickPoint(long jarg1, Splineline jarg1_, int jarg2);
   public final static native boolean Splineline_InsertPickPoint(long jarg1, Splineline jarg1_, long jarg2, OptData jarg2_);
   public final static native boolean Splineline_MovePickPoint(long jarg1, Splineline jarg1_, int jarg2, long jarg3, OptData jarg3_);
+  public final static native void BSplineFitInfo_isValid_set(long jarg1, BSplineFitInfo jarg1_, boolean jarg2);
+  public final static native boolean BSplineFitInfo_isValid_get(long jarg1, BSplineFitInfo jarg1_);
+  public final static native void BSplineFitInfo_numControlPts_set(long jarg1, BSplineFitInfo jarg1_, int jarg2);
+  public final static native int BSplineFitInfo_numControlPts_get(long jarg1, BSplineFitInfo jarg1_);
+  public final static native void BSplineFitInfo_rmse_set(long jarg1, BSplineFitInfo jarg1_, double jarg2);
+  public final static native double BSplineFitInfo_rmse_get(long jarg1, BSplineFitInfo jarg1_);
+  public final static native void BSplineFitInfo_maxError_set(long jarg1, BSplineFitInfo jarg1_, double jarg2);
+  public final static native double BSplineFitInfo_maxError_get(long jarg1, BSplineFitInfo jarg1_);
+  public final static native long new_BSplineFitInfo();
+  public final static native void delete_BSplineFitInfo(long jarg1);
   public final static native long new_OpterProcesser(long jarg1, OptDataVector jarg1_, long jarg2, CommonConstrain jarg2_);
   public final static native void delete_OpterProcesser(long jarg1);
   public final static native long OpterProcesser_GetOptResult(long jarg1, OpterProcesser jarg1_);
   public final static native boolean OpterProcesser_StartOpt(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_StartOptBSpline__SWIG_0(long jarg1, OpterProcesser jarg1_, int jarg2, double jarg3);
+  public final static native boolean OpterProcesser_StartOptBSpline__SWIG_1(long jarg1, OpterProcesser jarg1_, int jarg2);
+  public final static native boolean OpterProcesser_StartOptBSpline__SWIG_2(long jarg1, OpterProcesser jarg1_);
   public final static native boolean OpterProcesser_StartOptPro(long jarg1, OpterProcesser jarg1_);
   public final static native boolean OpterProcesser_SmoothCalOpt(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);
   public final static native boolean OpterProcesser_SmoothCalOrigin(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);
+  public final static native boolean OpterProcesser_FitBSpline(long jarg1, OpterProcesser jarg1_, int jarg2);
+  public final static native boolean OpterProcesser_FitBSplineAdaptive__SWIG_0(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3, int jarg4, int jarg5);
+  public final static native boolean OpterProcesser_FitBSplineAdaptive__SWIG_1(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3, int jarg4);
+  public final static native boolean OpterProcesser_FitBSplineAdaptive__SWIG_2(long jarg1, OpterProcesser jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);
+  public final static native long OpterProcesser_GetBSplineControlPoints(long jarg1, OpterProcesser jarg1_);
+  public final static native long OpterProcesser_GetBSplineFitResult(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_MoveBSplineControlPoint(long jarg1, OpterProcesser jarg1_, int jarg2, long jarg3, OptData jarg3_);
+  public final static native boolean OpterProcesser_InsertBSplineControlPoint__SWIG_0(long jarg1, OpterProcesser jarg1_, long jarg2, OptData jarg2_, int jarg3);
+  public final static native boolean OpterProcesser_InsertBSplineControlPoint__SWIG_1(long jarg1, OpterProcesser jarg1_, long jarg2, OptData jarg2_);
+  public final static native boolean OpterProcesser_RemoveBSplineControlPoint(long jarg1, OpterProcesser jarg1_, int jarg2);
+  public final static native long OpterProcesser_GetBSplineFitInfo(long jarg1, OpterProcesser jarg1_);
+  public final static native long OpterProcesser_GetBSplineAdjustedProfile(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_ApplyBSplineResult(long jarg1, OpterProcesser jarg1_);
+  public final static native long OpterProcesser_GetBSplineOptResult(long jarg1, OpterProcesser jarg1_);
+  public final static native long OpterProcesser_GetBSplineOptControlPoints(long jarg1, OpterProcesser jarg1_);
+  public final static native long OpterProcesser_GetBSplineOptProfile(long jarg1, OpterProcesser jarg1_);
+  public final static native int OpterProcesser_GetBSplineDegree(long jarg1, OpterProcesser jarg1_);
+  public final static native long OpterProcesser_GetBSplineKnots(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_GetBSplineFitCurve(long jarg1, OpterProcesser jarg1_, long jarg2, DoubleArr jarg2_, long jarg3, OptDataVector jarg3_);
+  public final static native boolean OpterProcesser_GetBSplineOptCurve(long jarg1, OpterProcesser jarg1_, long jarg2, DoubleArr jarg2_, long jarg3, OptDataVector jarg3_);
+  public final static native boolean OpterProcesser_GetBSplineCurvePoints(long jarg1, OptDataVector jarg1_, long jarg2, DoubleArr jarg2_, int jarg3, long jarg4, OptDataVector jarg4_);
+  public final static native boolean OpterProcesser_UndoBSpline(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_RedoBSpline(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_CanUndoBSpline(long jarg1, OpterProcesser jarg1_);
+  public final static native boolean OpterProcesser_CanRedoBSpline(long jarg1, OpterProcesser jarg1_);
+  public final static native void OpterProcesser_ClearBSplineUndoHistory(long jarg1, OpterProcesser jarg1_);
   public final static native void OpterProcesser_m_constraints_set(long jarg1, OpterProcesser jarg1_, long jarg2, CommonConstrain jarg2_);
   public final static native long OpterProcesser_m_constraints_get(long jarg1, OpterProcesser jarg1_);
   public final static native boolean SmoothCal(long jarg1, OptDataVector jarg1_, long jarg2, OptDataVector jarg2_, double jarg3);
@@ -96,6 +136,21 @@ public class AIOpterJNI {
   public final static native long OptDataVector_doSet(long jarg1, OptDataVector jarg1_, int jarg2, long jarg3, OptData jarg3_);
   public final static native void OptDataVector_doRemoveRange(long jarg1, OptDataVector jarg1_, int jarg2, int jarg3);
   public final static native void delete_OptDataVector(long jarg1);
+  public final static native long new_DoubleArr__SWIG_0();
+  public final static native long new_DoubleArr__SWIG_1(long jarg1, DoubleArr jarg1_);
+  public final static native boolean DoubleArr_isEmpty(long jarg1, DoubleArr jarg1_);
+  public final static native void DoubleArr_clear(long jarg1, DoubleArr jarg1_);
+  public final static native long new_DoubleArr__SWIG_2(int jarg1, double jarg2);
+  public final static native int DoubleArr_doCapacity(long jarg1, DoubleArr jarg1_);
+  public final static native void DoubleArr_doReserve(long jarg1, DoubleArr jarg1_, int jarg2);
+  public final static native int DoubleArr_doSize(long jarg1, DoubleArr jarg1_);
+  public final static native void DoubleArr_doAdd__SWIG_0(long jarg1, DoubleArr jarg1_, double jarg2);
+  public final static native void DoubleArr_doAdd__SWIG_1(long jarg1, DoubleArr jarg1_, int jarg2, double jarg3);
+  public final static native double DoubleArr_doRemove(long jarg1, DoubleArr jarg1_, int jarg2);
+  public final static native double DoubleArr_doGet(long jarg1, DoubleArr jarg1_, int jarg2);
+  public final static native double DoubleArr_doSet(long jarg1, DoubleArr jarg1_, int jarg2, double jarg3);
+  public final static native void DoubleArr_doRemoveRange(long jarg1, DoubleArr jarg1_, int jarg2, int jarg3);
+  public final static native void delete_DoubleArr(long jarg1);
   public final static native long new_BoolIntPair__SWIG_0();
   public final static native long new_BoolIntPair__SWIG_1(boolean jarg1, int jarg2);
   public final static native long new_BoolIntPair__SWIG_2(long jarg1, BoolIntPair jarg1_);

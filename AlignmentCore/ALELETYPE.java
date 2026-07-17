@@ -8,11 +8,48 @@
 
 package AlignmentCore;
 
-public final class ALELETYPE {
-  public final static int ELE_EDGE = 0;
-  public final static int ELE_CURVE = 1;
-  public final static int ELE_PRETRAN = 2;
-  public final static int ELE_SUBTRAN = 3;
-  public final static int ELE_NULL = 10;
+public enum ALELETYPE {
+  ELE_EDGE(0),
+  ELE_CURVE(1),
+  ELE_PRETRAN(2),
+  ELE_SUBTRAN(3),
+  ELE_NULL(10);
+
+  public final int swigValue() {
+    return swigValue;
+  }
+
+  public static ALELETYPE swigToEnum(int swigValue) {
+    ALELETYPE[] swigValues = ALELETYPE.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (ALELETYPE swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + ALELETYPE.class + " with value " + swigValue);
+  }
+
+  @SuppressWarnings("unused")
+  private ALELETYPE() {
+    this.swigValue = SwigNext.next++;
+  }
+
+  @SuppressWarnings("unused")
+  private ALELETYPE(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
+
+  @SuppressWarnings("unused")
+  private ALELETYPE(ALELETYPE swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
+
+  private final int swigValue;
+
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

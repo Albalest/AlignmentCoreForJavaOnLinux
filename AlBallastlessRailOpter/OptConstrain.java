@@ -92,20 +92,20 @@ public class OptConstrain {
     return BallastlessSCIPJNI.OptConstrain_LW_300_Considered_get(swigCPtr, this);
   }
 
-  public void setGaugeL(double value) {
-    BallastlessSCIPJNI.OptConstrain_GaugeL_set(swigCPtr, this, value);
+  public void setGauge_Up(double value) {
+    BallastlessSCIPJNI.OptConstrain_Gauge_Up_set(swigCPtr, this, value);
   }
 
-  public double getGaugeL() {
-    return BallastlessSCIPJNI.OptConstrain_GaugeL_get(swigCPtr, this);
+  public double getGauge_Up() {
+    return BallastlessSCIPJNI.OptConstrain_Gauge_Up_get(swigCPtr, this);
   }
 
-  public void setGaugeRate(double value) {
-    BallastlessSCIPJNI.OptConstrain_GaugeRate_set(swigCPtr, this, value);
+  public void setGauge_Down(double value) {
+    BallastlessSCIPJNI.OptConstrain_Gauge_Down_set(swigCPtr, this, value);
   }
 
-  public double getGaugeRate() {
-    return BallastlessSCIPJNI.OptConstrain_GaugeRate_get(swigCPtr, this);
+  public double getGauge_Down() {
+    return BallastlessSCIPJNI.OptConstrain_Gauge_Down_get(swigCPtr, this);
   }
 
   public void setMarginL(double value) {

@@ -8,11 +8,48 @@
 
 package AlignmentCore;
 
-public final class SURVEYTYPE {
-  public final static int LEFT = 0;
-  public final static int RIGHT = 1;
-  public final static int CENTER = 2;
-  public final static int HEIGHTRAIL = 3;
-  public final static int LOWRAIL = 4;
+public enum SURVEYTYPE {
+  LEFT(0),
+  RIGHT(1),
+  CENTER(2),
+  HEIGHTRAIL(3),
+  LOWRAIL(4);
+
+  public final int swigValue() {
+    return swigValue;
+  }
+
+  public static SURVEYTYPE swigToEnum(int swigValue) {
+    SURVEYTYPE[] swigValues = SURVEYTYPE.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (SURVEYTYPE swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + SURVEYTYPE.class + " with value " + swigValue);
+  }
+
+  @SuppressWarnings("unused")
+  private SURVEYTYPE() {
+    this.swigValue = SwigNext.next++;
+  }
+
+  @SuppressWarnings("unused")
+  private SURVEYTYPE(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
+
+  @SuppressWarnings("unused")
+  private SURVEYTYPE(SURVEYTYPE swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
+
+  private final int swigValue;
+
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

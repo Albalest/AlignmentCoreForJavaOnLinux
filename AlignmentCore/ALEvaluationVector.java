@@ -8,7 +8,7 @@
 
 package AlignmentCore;
 
-public class ALEvaluationVector extends java.util.AbstractList<Integer> implements java.util.RandomAccess {
+public class ALEvaluationVector extends java.util.AbstractList<EVALUATION> implements java.util.RandomAccess {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -48,42 +48,42 @@ public class ALEvaluationVector extends java.util.AbstractList<Integer> implemen
     }
   }
 
-  public ALEvaluationVector(int[] initialElements) {
+  public ALEvaluationVector(EVALUATION[] initialElements) {
     this();
     reserve(initialElements.length);
 
-    for (int element : initialElements) {
+    for (EVALUATION element : initialElements) {
       add(element);
     }
   }
 
-  public ALEvaluationVector(Iterable<Integer> initialElements) {
+  public ALEvaluationVector(Iterable<EVALUATION> initialElements) {
     this();
-    for (int element : initialElements) {
+    for (EVALUATION element : initialElements) {
       add(element);
     }
   }
 
-  public Integer get(int index) {
+  public EVALUATION get(int index) {
     return doGet(index);
   }
 
-  public Integer set(int index, Integer e) {
+  public EVALUATION set(int index, EVALUATION e) {
     return doSet(index, e);
   }
 
-  public boolean add(Integer e) {
+  public boolean add(EVALUATION e) {
     modCount++;
     doAdd(e);
     return true;
   }
 
-  public void add(int index, Integer e) {
+  public void add(int index, EVALUATION e) {
     modCount++;
     doAdd(index, e);
   }
 
-  public Integer remove(int index) {
+  public EVALUATION remove(int index) {
     modCount++;
     return doRemove(index);
   }
@@ -121,8 +121,8 @@ public class ALEvaluationVector extends java.util.AbstractList<Integer> implemen
     AlignmentAllJNI.ALEvaluationVector_clear(swigCPtr, this);
   }
 
-  public ALEvaluationVector(int count, int value) {
-    this(AlignmentAllJNI.new_ALEvaluationVector__SWIG_2(count, value), true);
+  public ALEvaluationVector(int count, EVALUATION value) {
+    this(AlignmentAllJNI.new_ALEvaluationVector__SWIG_2(count, value.swigValue()), true);
   }
 
   private int doCapacity() {
@@ -137,24 +137,24 @@ public class ALEvaluationVector extends java.util.AbstractList<Integer> implemen
     return AlignmentAllJNI.ALEvaluationVector_doSize(swigCPtr, this);
   }
 
-  private void doAdd(int x) {
-    AlignmentAllJNI.ALEvaluationVector_doAdd__SWIG_0(swigCPtr, this, x);
+  private void doAdd(EVALUATION x) {
+    AlignmentAllJNI.ALEvaluationVector_doAdd__SWIG_0(swigCPtr, this, x.swigValue());
   }
 
-  private void doAdd(int index, int x) {
-    AlignmentAllJNI.ALEvaluationVector_doAdd__SWIG_1(swigCPtr, this, index, x);
+  private void doAdd(int index, EVALUATION x) {
+    AlignmentAllJNI.ALEvaluationVector_doAdd__SWIG_1(swigCPtr, this, index, x.swigValue());
   }
 
-  private int doRemove(int index) {
-    return AlignmentAllJNI.ALEvaluationVector_doRemove(swigCPtr, this, index);
+  private EVALUATION doRemove(int index) {
+    return EVALUATION.swigToEnum(AlignmentAllJNI.ALEvaluationVector_doRemove(swigCPtr, this, index));
   }
 
-  private int doGet(int index) {
-    return AlignmentAllJNI.ALEvaluationVector_doGet(swigCPtr, this, index);
+  private EVALUATION doGet(int index) {
+    return EVALUATION.swigToEnum(AlignmentAllJNI.ALEvaluationVector_doGet(swigCPtr, this, index));
   }
 
-  private int doSet(int index, int val) {
-    return AlignmentAllJNI.ALEvaluationVector_doSet(swigCPtr, this, index, val);
+  private EVALUATION doSet(int index, EVALUATION val) {
+    return EVALUATION.swigToEnum(AlignmentAllJNI.ALEvaluationVector_doSet(swigCPtr, this, index, val.swigValue()));
   }
 
   private void doRemoveRange(int fromIndex, int toIndex) {

@@ -21,7 +21,7 @@
             "command": "bash",
             "args": [
                 "-lc",
-                "export LD_LIBRARY_PATH=\"${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64\"; export LD_PRELOAD=\"/usr/local/lib64/libadolc.so\"; /usr/lib/jvm/java-11-openjdk-amd64/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:5005 -Djava.library.path=\"${workspaceFolder}/lib\" -cp \"${workspaceFolder}\" Main"
+                "export LD_LIBRARY_PATH=\"${workspaceFolder}/lib:/home/albalest/Ipopt_Build/install/usr/local/lib:/usr/local/lib:/usr/local/lib64\"; export LD_PRELOAD=\"/usr/local/lib64/libadolc.so:/home/albalest/Ipopt_Build/install/usr/local/lib/libipopt.so\"; /usr/lib/jvm/java-11-openjdk-amd64/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:5005 -Djava.library.path=\"${workspaceFolder}/lib\" -cp \"${workspaceFolder}\" Main"
             ],
             "presentation": {
                 "reveal": "always",
@@ -39,7 +39,7 @@
             "command": "bash",
             "args": [
                 "-lc",
-                "javac -encoding UTF-8 -d . AlignmentCore/*.java AlOpter/*.java AlBallastlessRailOpter/*.java Main.java DemoFrame.java"
+                "javac -encoding UTF-8 -d . AlignmentCore/*.java AlOpter/*.java AlBallastlessRailOpter/*.java Main.java DemoFrame.java VerticalProfileFrame.java"
             ],
             "group": "build",
             "presentation": {
@@ -83,8 +83,8 @@
             ],
             "options": {
                 "env": {
-                    "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/usr/local/lib:/usr/local/lib64",
-                    "LD_PRELOAD": "/usr/local/lib64/libadolc.so"
+                    "LD_LIBRARY_PATH": "${workspaceFolder}/lib:/home/albalest/Ipopt_Build/install/usr/local/lib:/usr/local/lib:/usr/local/lib64",
+                    "LD_PRELOAD": "/usr/local/lib64/libadolc.so:/home/albalest/Ipopt_Build/install/usr/local/lib/libipopt.so"
                 }
             }
         }

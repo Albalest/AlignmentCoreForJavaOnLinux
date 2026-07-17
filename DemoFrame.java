@@ -1,13 +1,12 @@
-import javax.swing.*;
+import AlignmentCore.*;
 import java.awt.*;
-import java.io.File;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.FileInputStream;
-
-import AlignmentCore.*;
+import javax.swing.*;
 
 
 public class DemoFrame extends JFrame {
@@ -44,14 +43,26 @@ public class DemoFrame extends JFrame {
         JButton btn8 = new JButton("输出高程偏差量");
         btn8.addActionListener(e -> handleBtn8Click());
 
+        JButton btnProfile = new JButton("纵断面显示");
+        btnProfile.addActionListener(e -> handleBtnProfileClick());
+
         JButton btn9 = new JButton("导出线形文件");
         btn9.addActionListener(e -> handleBtn9Click());
 
         JButton btn10 = new JButton("导入线形并计算偏差量测试");
         btn10.addActionListener(e -> handleBtn10Click());
 
+        JButton btnImportCSV = new JButton("从CSV导入线路数据");
+        btnImportCSV.addActionListener(e -> handleImportFromCSVClick());
+
+        JButton btnQueryPoint = new JButton("查询里程点坐标");
+        btnQueryPoint.addActionListener(e -> handleQueryPointClick());
+
         JButton btnOpt = new JButton("轨道优化演示");
         btnOpt.addActionListener(e -> handleBtnOptClick());
+
+        JButton btnBallastless = new JButton("无砟轨道精调测试");
+        btnBallastless.addActionListener(e -> handleBtnBallastlessClick());
 
         JButton btnUndo = new JButton("Undo");
         btnUndo.addActionListener(e -> handleUndoClick());
@@ -82,12 +93,15 @@ public class DemoFrame extends JFrame {
         g3.add(btn6);
         g3.add(btn7);
         g3.add(btn8);
+        g3.add(btnProfile);
 
         // 4. 导入/导出
         JPanel g4 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
         g4.setBorder(BorderFactory.createTitledBorder("4. 导入/导出"));
         g4.add(btn9);
         g4.add(btn10);
+        g4.add(btnImportCSV);
+        g4.add(btnQueryPoint);
 
         // 5. Undo/Redo
         JPanel g5 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
@@ -100,12 +114,18 @@ public class DemoFrame extends JFrame {
         g6.setBorder(BorderFactory.createTitledBorder("6. 轨道优化演示"));
         g6.add(btnOpt);
 
+        // 7. 无砟轨道精调
+        JPanel g7 = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
+        g7.setBorder(BorderFactory.createTitledBorder("7. 无砟轨道精调测试"));
+        g7.add(btnBallastless);
+
         root.add(g1);
         root.add(g2);
         root.add(g3);
         root.add(g4);
         root.add(g5);
         root.add(g6);
+        root.add(g7);
 
         add(root);
         setSize(860, 320);
@@ -184,6 +204,11 @@ public class DemoFrame extends JFrame {
         new OptimizationDemoFrame().setVisible(true);
     }
 
+    // 按钮「无砟轨道精调测试」
+    private void handleBtnBallastlessClick() {
+        new BallastlessRailOptFrame().setVisible(true);
+    }
+
     // 自定义的按钮1响应函数
     // 按钮「导入测量数据」
     private void handleBtn1Click() {
@@ -208,7 +233,7 @@ public class DemoFrame extends JFrame {
         //System.out.println("按钮2自定义响应");
         // 夹直线拟合前可以保存当前状态
         saveSnapshot("夹直线拟合");
-        if(!myAlignmentFitting.FittingHori_Init(true))         //夹直线定位
+        if(!myAlignmentFitting.FittingHori_InitByScheme(ALHORIFITSCHEME.CURVATURE_DUAL_WINDOW,true))         //夹直线定位
         {
             System.out.println("夹直线定位失败!");
             return;
@@ -304,6 +329,27 @@ public class DemoFrame extends JFrame {
 
     }
 
+    // 按钮「纵断面显示」
+    private void handleBtnProfileClick() {
+        if (myAlignmentFitting == null) {
+            System.out.println("AlignmentFitting 未初始化!");
+            return;
+        }
+        // 如果还没有纵断面数据，先进行一次纵断面拟合
+        GradeChangePointArr gcps = myAlignmentFitting.GetAlignment().GetGradeChangePoints();
+        if (gcps == null || gcps.size() < 2) {
+            System.out.println("尚无纵断面数据，自动执行纵断面拟合...");
+            saveSnapshot("纵断面显示-自动拟合");
+            if (!myAlignmentFitting.FittingVert_Init()) {
+                System.out.println("纵断面拟合失败，无法显示!");
+                return;
+            }
+            myAlignmentFitting.CalVertMargin();
+        }
+        new VerticalProfileFrame(myAlignmentFitting).setVisible(true);
+        System.out.println("纵断面显示窗口已打开!");
+    }
+
     // 按钮「输出高程偏差量」
     private void handleBtn8Click() {
        // System.out.println("按钮2自定义响应");
@@ -385,6 +431,153 @@ public class DemoFrame extends JFrame {
         //    data.setM_V_margin(0);;
         // }
         System.out.println("导入线形文件成功!");
+    }
+
+    //导入CSV文件并生成线路
+    private void handleImportFromCSVClick() {
+        saveSnapshot("从CSV导入线路数据");
+        
+        InterPtArr interPts = new InterPtArr();
+        GradeChangePointArr gcps = new GradeChangePointArr();
+        ChainArr chains = new ChainArr();
+
+        // 1. 导入交点 (JDS)
+        try (BufferedReader br = new BufferedReader(new FileReader("TestFile/Line_JDS.csv"))) {
+            String line = br.readLine(); // skip header
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] values = line.split(",");
+                if (values.length >= 7) {
+                    try {
+                        double x = Double.parseDouble(values[1]);
+                        double y = Double.parseDouble(values[2]);
+                        double z =0;
+                        double dRadius = Double.parseDouble(values[4]);
+                        double dPreL = Double.parseDouble(values[5]);
+                        double dSubL = Double.parseDouble(values[6]);
+                        //打印看看
+                        System.out.println("交点坐标: (" + x + ", " + y + ", " + z + ")\t半径: " + dRadius + "\t前长度: " + dPreL + "\t后长度: " + dSubL);
+                        
+                        AL_Point3d pt = new AL_Point3d(x, y, z);
+                        ALIntersectionPoint ip = new ALIntersectionPoint(pt, dRadius, dPreL, dSubL);
+                        interPts.add(ip);
+                    } catch (NumberFormatException e) {
+                        System.err.println("解析 JDS 行错误: " + line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("读取 Line_JDS.csv 失败: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "读取 Line_JDS.csv 失败");
+            return;
+        }
+
+        // 2. 导入变坡点 (GCPs)
+        try (BufferedReader br = new BufferedReader(new FileReader("TestFile/Line_GCPs.csv"))) {
+            String line = br.readLine(); // skip header
+            line =br.readLine(); // 这里读取数据的第一行，注意第一行数据是特别赋值处理的
+            String[] values1 = line.split(",");
+
+            //采用里程-高程构造函数
+            ALGradeChangePoint gcp0=new ALGradeChangePoint(Double.parseDouble(values1[1]), Double.parseDouble(values1[2]), Double.parseDouble(values1[3]));
+            //之后把坡长和坡率单独赋值
+            gcp0.setM_SlopeLength(Double.parseDouble(values1[4]));
+            gcp0.setM_Gradient(Double.parseDouble(values1[5]));
+            System.out.println("里程:"+values1[1]+"\t半径:"+values1[2]+"\t坡长:"+values1[3]+"\t坡率:"+values1[4]);
+            //添加到数组中
+            gcps.add(gcp0);
+            //其他的都用里程-坡长-坡率-半径的构造函数来构造
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] values = line.split(",");
+                if (values.length >= 4) {
+                    try {
+                        double dMileage = Double.parseDouble(values[1]);
+                        double dRadius = Double.parseDouble(values[3])*1000;
+                        double dSlopeLen = Double.parseDouble(values[4]);
+                        double dSlopeRate = Double.parseDouble(values[5]);
+                        //把数据都打印到控制台看看
+                        System.out.println("里程:"+dMileage+"\t半径:"+dRadius+"\t坡长:"+dSlopeLen+"\t坡率:"+dSlopeRate);
+                        //这里采用另一个构造函数处理
+                        ALGradeChangePoint gcp=new ALGradeChangePoint(dMileage, dSlopeLen, dSlopeRate, dRadius);
+                        gcps.add(gcp);
+                    } catch (NumberFormatException e) {
+                        System.err.println("解析 GCP 行错误: " + line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("读取 Line_GCPs.csv 失败: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "读取 Line_GCPs.csv 失败");
+            return;
+        }
+
+        // 3. 导入断链 (Chain)
+        try (BufferedReader br = new BufferedReader(new FileReader("TestFile/Line_Chain.csv"))) {
+            String line = br.readLine(); // skip header
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] values = line.split(",");
+                if (values.length >= 4) {
+                    try {
+                        double dPreMileage = Double.parseDouble(values[1]);
+                        double dSubMileage = Double.parseDouble(values[2]);
+                        String strWord = values[3];
+                        
+                        ALChain chain = new ALChain(dPreMileage, dSubMileage, strWord);
+                        chains.add(chain);
+                    } catch (NumberFormatException e) {
+                        System.err.println("解析 Chain 行错误: " + line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("读取 Line_Chain.csv 失败: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "读取 Line_Chain.csv 失败");
+            return;
+        }
+
+        // 4. 生成线路
+        mySingleAlignment = new SingleAlignmentBase();          //这里最好用一个类的变量来存储，方便其他地方调用
+        //这里是生成线路的函数，采用mode=1的模式
+        if (mySingleAlignment.Init(interPts, gcps, chains,VERTMODE.LINE)) {            
+            JOptionPane.showMessageDialog(this, "从CSV导入线路数据成功！\n交点数: " + interPts.size() + "\n变坡点数: " + gcps.size() + "\n断链数: " + chains.size());
+        } else {
+            System.err.println("初始化 SingleAlignmentBase 失败。");
+            JOptionPane.showMessageDialog(this, "生成线路中心线失败，请检查数据。");
+        }
+    }
+
+    //输入任意真实里程，查询对应点的坐标和向量信息
+    private void handleQueryPointClick() {
+        String input = JOptionPane.showInputDialog(this, "请输入里程值 (Real Mileage):", "查询里程点坐标", JOptionPane.QUESTION_MESSAGE);
+        if (input == null || input.trim().isEmpty()) {
+            return; // 用户点击了取消或关闭
+        }
+
+        try {
+            double rm = Double.parseDouble(input);
+            AL_Point3d pt = new AL_Point3d();
+            AL_Vector3d vec = new AL_Vector3d();
+            if (mySingleAlignment != null && mySingleAlignment.GetPtAndVecFor3DByRM(pt, vec, rm)) {
+                //把向量也显示出来
+                String result = String.format("里程: %.3f -> 坐标: (X: %.4f, Y: %.4f, Z: %.4f), 向量: (VX: %.4f, VY: %.4f, VZ: %.4f),斜率: %.4f‰", 
+                                             rm, pt.getX(), pt.getY(), pt.getZ(), vec.getX(), vec.getY(), vec.getZ(), vec.getZ()/Math.sqrt(vec.getX()*vec.getX()+vec.getY()*vec.getY()));  
+                  
+                AL_Vector3d vec2D = new AL_Vector3d();
+                double gm=mySingleAlignment.GetGMByRM(rm);
+                mySingleAlignment.GetVertTanVecByRM(vec2D, gm);
+                //打印结果
+                result += String.format("\n切线向量: (VX: %.4f, VY: %.4f, VZ: %.4f) 斜率：%.4f‰" , vec2D.getX(), vec2D.getY(), vec2D.getZ(), vec2D.getY()/vec2D.getX());
+                System.out.println(result);
+                JOptionPane.showMessageDialog(this, result, "查询结果", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                System.out.println("无法获取里程 " + rm + " 的坐标（可能超出范围或线路未初始化）");
+                JOptionPane.showMessageDialog(this, "查询失败：里程可能超出范围或线路未初始化。", "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "请输入有效的数字里程值。", "输入错误", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public String openFileDialog(Frame parent) {

@@ -68,6 +68,14 @@ public class ALGradeChangePoint {
     AlignmentAllJNI.ALGradeChangePoint_Offset(swigCPtr, this, dDis);
   }
 
+  public static void VerticalForRoundAndRate(GradeChangePointArr gcpList, double stepMileage, int step) {
+    AlignmentAllJNI.ALGradeChangePoint_VerticalForRoundAndRate__SWIG_0(GradeChangePointArr.getCPtr(gcpList), gcpList, stepMileage, step);
+  }
+
+  public static void VerticalForRoundAndRate(GradeChangePointArr gcpList, double stepMileage) {
+    AlignmentAllJNI.ALGradeChangePoint_VerticalForRoundAndRate__SWIG_1(GradeChangePointArr.getCPtr(gcpList), gcpList, stepMileage);
+  }
+
   public void setM_RealMilage(double value) {
     AlignmentAllJNI.ALGradeChangePoint_m_RealMilage_set(swigCPtr, this, value);
   }
@@ -108,12 +116,12 @@ public class ALGradeChangePoint {
     return AlignmentAllJNI.ALGradeChangePoint_m_Gradient_get(swigCPtr, this);
   }
 
-  public void setM_dir(int value) {
-    AlignmentAllJNI.ALGradeChangePoint_m_dir_set(swigCPtr, this, value);
+  public void setM_dir(ALDIR value) {
+    AlignmentAllJNI.ALGradeChangePoint_m_dir_set(swigCPtr, this, value.swigValue());
   }
 
-  public int getM_dir() {
-    return AlignmentAllJNI.ALGradeChangePoint_m_dir_get(swigCPtr, this);
+  public ALDIR getM_dir() {
+    return ALDIR.swigToEnum(AlignmentAllJNI.ALGradeChangePoint_m_dir_get(swigCPtr, this));
   }
 
   public void setM_ZYpt(AL_Point3d value) {

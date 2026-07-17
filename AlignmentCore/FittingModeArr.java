@@ -8,7 +8,7 @@
 
 package AlignmentCore;
 
-public class FittingModeArr extends java.util.AbstractList<Integer> implements java.util.RandomAccess {
+public class FittingModeArr extends java.util.AbstractList<ALFITMODE> implements java.util.RandomAccess {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -48,42 +48,42 @@ public class FittingModeArr extends java.util.AbstractList<Integer> implements j
     }
   }
 
-  public FittingModeArr(int[] initialElements) {
+  public FittingModeArr(ALFITMODE[] initialElements) {
     this();
     reserve(initialElements.length);
 
-    for (int element : initialElements) {
+    for (ALFITMODE element : initialElements) {
       add(element);
     }
   }
 
-  public FittingModeArr(Iterable<Integer> initialElements) {
+  public FittingModeArr(Iterable<ALFITMODE> initialElements) {
     this();
-    for (int element : initialElements) {
+    for (ALFITMODE element : initialElements) {
       add(element);
     }
   }
 
-  public Integer get(int index) {
+  public ALFITMODE get(int index) {
     return doGet(index);
   }
 
-  public Integer set(int index, Integer e) {
+  public ALFITMODE set(int index, ALFITMODE e) {
     return doSet(index, e);
   }
 
-  public boolean add(Integer e) {
+  public boolean add(ALFITMODE e) {
     modCount++;
     doAdd(e);
     return true;
   }
 
-  public void add(int index, Integer e) {
+  public void add(int index, ALFITMODE e) {
     modCount++;
     doAdd(index, e);
   }
 
-  public Integer remove(int index) {
+  public ALFITMODE remove(int index) {
     modCount++;
     return doRemove(index);
   }
@@ -121,8 +121,8 @@ public class FittingModeArr extends java.util.AbstractList<Integer> implements j
     AlignmentAllJNI.FittingModeArr_clear(swigCPtr, this);
   }
 
-  public FittingModeArr(int count, int value) {
-    this(AlignmentAllJNI.new_FittingModeArr__SWIG_2(count, value), true);
+  public FittingModeArr(int count, ALFITMODE value) {
+    this(AlignmentAllJNI.new_FittingModeArr__SWIG_2(count, value.swigValue()), true);
   }
 
   private int doCapacity() {
@@ -137,24 +137,24 @@ public class FittingModeArr extends java.util.AbstractList<Integer> implements j
     return AlignmentAllJNI.FittingModeArr_doSize(swigCPtr, this);
   }
 
-  private void doAdd(int x) {
-    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_0(swigCPtr, this, x);
+  private void doAdd(ALFITMODE x) {
+    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_0(swigCPtr, this, x.swigValue());
   }
 
-  private void doAdd(int index, int x) {
-    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_1(swigCPtr, this, index, x);
+  private void doAdd(int index, ALFITMODE x) {
+    AlignmentAllJNI.FittingModeArr_doAdd__SWIG_1(swigCPtr, this, index, x.swigValue());
   }
 
-  private int doRemove(int index) {
-    return AlignmentAllJNI.FittingModeArr_doRemove(swigCPtr, this, index);
+  private ALFITMODE doRemove(int index) {
+    return ALFITMODE.swigToEnum(AlignmentAllJNI.FittingModeArr_doRemove(swigCPtr, this, index));
   }
 
-  private int doGet(int index) {
-    return AlignmentAllJNI.FittingModeArr_doGet(swigCPtr, this, index);
+  private ALFITMODE doGet(int index) {
+    return ALFITMODE.swigToEnum(AlignmentAllJNI.FittingModeArr_doGet(swigCPtr, this, index));
   }
 
-  private int doSet(int index, int val) {
-    return AlignmentAllJNI.FittingModeArr_doSet(swigCPtr, this, index, val);
+  private ALFITMODE doSet(int index, ALFITMODE val) {
+    return ALFITMODE.swigToEnum(AlignmentAllJNI.FittingModeArr_doSet(swigCPtr, this, index, val.swigValue()));
   }
 
   private void doRemoveRange(int fromIndex, int toIndex) {

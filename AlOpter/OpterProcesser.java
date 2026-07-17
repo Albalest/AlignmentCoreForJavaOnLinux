@@ -60,6 +60,18 @@ public class OpterProcesser {
     return AIOpterJNI.OpterProcesser_StartOpt(swigCPtr, this);
   }
 
+  public boolean StartOptBSpline(int numControlPts, double dpTolerance) {
+    return AIOpterJNI.OpterProcesser_StartOptBSpline__SWIG_0(swigCPtr, this, numControlPts, dpTolerance);
+  }
+
+  public boolean StartOptBSpline(int numControlPts) {
+    return AIOpterJNI.OpterProcesser_StartOptBSpline__SWIG_1(swigCPtr, this, numControlPts);
+  }
+
+  public boolean StartOptBSpline() {
+    return AIOpterJNI.OpterProcesser_StartOptBSpline__SWIG_2(swigCPtr, this);
+  }
+
   public boolean StartOptPro() {
     return AIOpterJNI.OpterProcesser_StartOptPro(swigCPtr, this);
   }
@@ -70,6 +82,110 @@ public class OpterProcesser {
 
   public boolean SmoothCalOrigin(OptDataVector outData, double chordLength) {
     return AIOpterJNI.OpterProcesser_SmoothCalOrigin(swigCPtr, this, OptDataVector.getCPtr(outData), outData, chordLength);
+  }
+
+  public boolean FitBSpline(int numControlPts) {
+    return AIOpterJNI.OpterProcesser_FitBSpline(swigCPtr, this, numControlPts);
+  }
+
+  public boolean FitBSplineAdaptive(OptDataVector data, double tolerance, int minControlPts, int maxControlPts) {
+    return AIOpterJNI.OpterProcesser_FitBSplineAdaptive__SWIG_0(swigCPtr, this, OptDataVector.getCPtr(data), data, tolerance, minControlPts, maxControlPts);
+  }
+
+  public boolean FitBSplineAdaptive(OptDataVector data, double tolerance, int minControlPts) {
+    return AIOpterJNI.OpterProcesser_FitBSplineAdaptive__SWIG_1(swigCPtr, this, OptDataVector.getCPtr(data), data, tolerance, minControlPts);
+  }
+
+  public boolean FitBSplineAdaptive(OptDataVector data, double tolerance) {
+    return AIOpterJNI.OpterProcesser_FitBSplineAdaptive__SWIG_2(swigCPtr, this, OptDataVector.getCPtr(data), data, tolerance);
+  }
+
+  public OptDataVector GetBSplineControlPoints() {
+    return new OptDataVector(AIOpterJNI.OpterProcesser_GetBSplineControlPoints(swigCPtr, this), true);
+  }
+
+  public OptDataVector GetBSplineFitResult() {
+    return new OptDataVector(AIOpterJNI.OpterProcesser_GetBSplineFitResult(swigCPtr, this), true);
+  }
+
+  public boolean MoveBSplineControlPoint(int index, OptData pt) {
+    return AIOpterJNI.OpterProcesser_MoveBSplineControlPoint(swigCPtr, this, index, OptData.getCPtr(pt), pt);
+  }
+
+  public boolean InsertBSplineControlPoint(OptData pt, int index) {
+    return AIOpterJNI.OpterProcesser_InsertBSplineControlPoint__SWIG_0(swigCPtr, this, OptData.getCPtr(pt), pt, index);
+  }
+
+  public boolean InsertBSplineControlPoint(OptData pt) {
+    return AIOpterJNI.OpterProcesser_InsertBSplineControlPoint__SWIG_1(swigCPtr, this, OptData.getCPtr(pt), pt);
+  }
+
+  public boolean RemoveBSplineControlPoint(int index) {
+    return AIOpterJNI.OpterProcesser_RemoveBSplineControlPoint(swigCPtr, this, index);
+  }
+
+  public BSplineFitInfo GetBSplineFitInfo() {
+    return new BSplineFitInfo(AIOpterJNI.OpterProcesser_GetBSplineFitInfo(swigCPtr, this), true);
+  }
+
+  public OptDataVector GetBSplineAdjustedProfile() {
+    return new OptDataVector(AIOpterJNI.OpterProcesser_GetBSplineAdjustedProfile(swigCPtr, this), true);
+  }
+
+  public boolean ApplyBSplineResult() {
+    return AIOpterJNI.OpterProcesser_ApplyBSplineResult(swigCPtr, this);
+  }
+
+  public OptDataVector GetBSplineOptResult() {
+    return new OptDataVector(AIOpterJNI.OpterProcesser_GetBSplineOptResult(swigCPtr, this), true);
+  }
+
+  public OptDataVector GetBSplineOptControlPoints() {
+    return new OptDataVector(AIOpterJNI.OpterProcesser_GetBSplineOptControlPoints(swigCPtr, this), true);
+  }
+
+  public OptDataVector GetBSplineOptProfile() {
+    return new OptDataVector(AIOpterJNI.OpterProcesser_GetBSplineOptProfile(swigCPtr, this), true);
+  }
+
+  public int GetBSplineDegree() {
+    return AIOpterJNI.OpterProcesser_GetBSplineDegree(swigCPtr, this);
+  }
+
+  public DoubleArr GetBSplineKnots() {
+    return new DoubleArr(AIOpterJNI.OpterProcesser_GetBSplineKnots(swigCPtr, this), true);
+  }
+
+  public boolean GetBSplineFitCurve(DoubleArr mileages, OptDataVector outCurve) {
+    return AIOpterJNI.OpterProcesser_GetBSplineFitCurve(swigCPtr, this, DoubleArr.getCPtr(mileages), mileages, OptDataVector.getCPtr(outCurve), outCurve);
+  }
+
+  public boolean GetBSplineOptCurve(DoubleArr mileages, OptDataVector outCurve) {
+    return AIOpterJNI.OpterProcesser_GetBSplineOptCurve(swigCPtr, this, DoubleArr.getCPtr(mileages), mileages, OptDataVector.getCPtr(outCurve), outCurve);
+  }
+
+  public static boolean GetBSplineCurvePoints(OptDataVector controlPts, DoubleArr knots, int degree, OptDataVector outCurve) {
+    return AIOpterJNI.OpterProcesser_GetBSplineCurvePoints(OptDataVector.getCPtr(controlPts), controlPts, DoubleArr.getCPtr(knots), knots, degree, OptDataVector.getCPtr(outCurve), outCurve);
+  }
+
+  public boolean UndoBSpline() {
+    return AIOpterJNI.OpterProcesser_UndoBSpline(swigCPtr, this);
+  }
+
+  public boolean RedoBSpline() {
+    return AIOpterJNI.OpterProcesser_RedoBSpline(swigCPtr, this);
+  }
+
+  public boolean CanUndoBSpline() {
+    return AIOpterJNI.OpterProcesser_CanUndoBSpline(swigCPtr, this);
+  }
+
+  public boolean CanRedoBSpline() {
+    return AIOpterJNI.OpterProcesser_CanRedoBSpline(swigCPtr, this);
+  }
+
+  public void ClearBSplineUndoHistory() {
+    AIOpterJNI.OpterProcesser_ClearBSplineUndoHistory(swigCPtr, this);
   }
 
   public void setM_constraints(CommonConstrain value) {

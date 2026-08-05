@@ -55,7 +55,9 @@ cmake -G Ninja \
   -DCMAKE_CXX_COMPILER=${HOST_ARCH}-g++ \
   -DCMAKE_C_FLAGS="-pthread" \
   -DCMAKE_CXX_FLAGS="-pthread" \
-  -DCMAKE_EXE_LINKER_FLAGS="-pthread" \
+  # 64KB 页对齐（银河麒麟等 aarch64 64KB 页系统必须）
+  -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536" \
+  -DCMAKE_EXE_LINKER_FLAGS="-pthread -Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536" \
   -DCMAKE_FIND_ROOT_PATH=$INSTALL_PREFIX \
   -DCMAKE_PREFIX_PATH=$INSTALL_PREFIX \
   -DJAVA_HOME=$JAVA_HOME \

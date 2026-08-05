@@ -217,6 +217,43 @@ fi
 
 ln -sf "$INSTALL_PREFIX/include/coin-or" "$INSTALL_PREFIX/include/coin"
 
+# --- 64KB 页对齐校验/修复（银河麒麟等 64KB 页系统需要）---
+# libipopt 若存在未对齐的 LOAD 段（vaddr%64K != offset%64K），从 libipopt.a 重链接修复
+fix_64k_alignment() {
+    local lib="$1"
+    local sofile
+    sofile=$(readlink -f "$lib" 2>/dev/null || echo "$lib")
+    [ -f "$sofile" ] || return 0
+    local bad=0 off va o v
+    while read -r off va; do
+        [ -n "$off" ] || continue
+        o=$((16#${off#0x}))
+        v=$((16#${va#0x}))
+        if [ $((v % 65536)) -ne $((o % 65536)) ]; then
+            bad=1
+        fi
+    done < <(readelf -lW "$sofile" | awk '/^  LOAD/{print $2, $3}')
+    if [ "$bad" = "1" ]; then
+        echo ">>> [align] $lib 不满足 64KB 页对齐，正在从静态库重链接修复..."
+        local workdir tmp
+        workdir=$(dirname "$sofile")
+        tmp="$workdir/.relink.$$"; rm -f "$tmp"
+        aarch64-linux-gnu-g++ -shared \
+            -Wl,-soname,libipopt.so.3 \
+            -Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536 \
+            -o "$tmp" \
+            -Wl,--whole-archive "$workdir/libipopt.a" -Wl,--no-whole-archive \
+            -L"$workdir" -ldmumps -lmumps_common -lpord -lmpiseq \
+            -L/usr/lib/aarch64-linux-gnu -llapack -lblas \
+            -ldl -lpthread -lm
+        mv -f "$tmp" "$sofile"
+        echo ">>> [align] 已修复 $lib（$(readelf -lW "$sofile" | grep -cE '^  LOAD') 个 LOAD 段）"
+    else
+        echo ">>> [align] $lib 64KB 页对齐 OK"
+    fi
+}
+fix_64k_alignment "$INSTALL_PREFIX/lib/libipopt.so"
+
 # --- 仅编译第三方时导出并退出 ---
 if [ "${SKIP_PROJECT_BUILD:-0}" = "1" ]; then
     echo ">>> SKIP_PROJECT_BUILD=1: exporting third-party artifacts to /output and exiting"

@@ -32,6 +32,10 @@ PREFIX_CACHE="$CACHE_DIR/install_prefix_aarch64"
 # thirdparty 模式下：将 Ipopt(lib/include) 保存到项目目录
 SAVE_IPOPT_DIR=""
 
+# 构建完成后默认同步 ARM64 库到 lib_arm64/（git 跟踪目录）
+LIB_ARM64_DIR="$WORKSPACE_DIR/lib_arm64"
+SYNC_LIB_ARM64=1
+
 usage() {
   cat <<'USAGE'
 用法：
@@ -42,6 +46,7 @@ usage() {
 选项：
   --project-root <path>        CMake 工程根目录（默认 ~/.vs/AlignmentCore）
   --no-deploy                  只生成 out/linux-arm64-legacy，不部署
+  --no-sync-lib-arm64          构建后不同步 ARM64 库到 lib_arm64/
   --deploy-dir <path>          部署目录（默认 /mnt/e/ARDevelop/ALCoreForLinux/API/Linux_Arm_1804）
   --rebuild-thirdparty         重新编译 Ipopt 及其依赖（会更慢）
   --force-rebuild-thirdparty   强制 clean rebuild 三方（最慢，最稳）
@@ -62,6 +67,8 @@ while [[ $# -gt 0 ]]; do
       DEPLOY_DIR="$2"; shift 2;;
     --no-deploy)
       DO_DEPLOY=0; shift;;
+    --no-sync-lib-arm64)
+      SYNC_LIB_ARM64=0; shift;;
     --rebuild-thirdparty)
       MODE="thirdparty"; shift;;
     --force-rebuild-thirdparty)
@@ -192,4 +199,12 @@ if [ "$DO_DEPLOY" = "1" ]; then
   echo "DONE: Package created."
 else
   echo "DONE: artifacts in $OUT_DIR"
+fi
+
+# 默认同步 ARM64 库到 lib_arm64/（git 跟踪目录），方便直接提交
+if [ "$SYNC_LIB_ARM64" = "1" ]; then
+  mkdir -p "$LIB_ARM64_DIR"
+  rm -f "$LIB_ARM64_DIR"/*.so* 2>/dev/null || true
+  cp -a "$OUT_DIR"/*.so* "$LIB_ARM64_DIR"/
+  echo "DONE: synced ARM64 libs to $LIB_ARM64_DIR"
 fi

@@ -33,7 +33,7 @@ hs_err_pid*.log
 
 # Bundled/native libs (keep repo lightweight)
 # /lib/
-/lib_arm64/
+# /lib_arm64/
 /lib_arm64_legacy/
 /install_arm64/
 

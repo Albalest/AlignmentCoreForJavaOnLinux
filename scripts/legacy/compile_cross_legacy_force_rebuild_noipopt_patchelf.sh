@@ -1,31 +1,27 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo ">>> Force Rebuild Implementation..."
+# Wrapper for force rebuild: run the original force rebuild script (third-party
+# clean rebuild + project build), then overwrite exported libipopt/libsipopt
+# with the original copies from the install prefix.
+#
+# Rationale: some patchelf builds can rewrite ELF program headers on aarch64 in a way
+# that breaks the Ubuntu 18.04 loader ("ELF load command address/offset not properly aligned").
+
+# 只重建第三方库（项目编译由 project 模式单独完成）
+SKIP_PROJECT_BUILD=1 /bin/bash /scripts/legacy/compile_cross_legacy_force_rebuild.sh
+
 HOST_ARCH=aarch64-linux-gnu
 INSTALL_PREFIX=/usr/local/$HOST_ARCH
-JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-11-openjdk-amd64}
 
-# 1. 修复 CMakeLists
-cd /source
-sed -i 's/add_subdirectory(source)/# add_subdirectory(source)/g' CMakeLists.txt
+for dir in "$INSTALL_PREFIX/lib64" "$INSTALL_PREFIX/lib"; do
+  [ -d "$dir" ] || continue
+  if ls "$dir"/libipopt.so* >/dev/null 2>&1 || ls "$dir"/libsipopt.so* >/dev/null 2>&1; then
+    rm -f /output/libipopt.so* /output/libsipopt.so* 2>/dev/null || true
+    cp -P "$dir"/libipopt.so* /output/ 2>/dev/null || true
+    cp -P "$dir"/libsipopt.so* /output/ 2>/dev/null || true
+  fi
+  break
+done
 
-# 2. 编译项目 (强制)
-mkdir -p out/build/linux-arm64
-cd out/build/linux-arm64
-cmake -G Ninja \
-  -DCMAKE_SYSTEM_NAME=Linux \
-  -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
-  -DCMAKE_C_COMPILER=${HOST_ARCH}-gcc \
-  -DCMAKE_CXX_COMPILER=${HOST_ARCH}-g++ \
-  -DCMAKE_FIND_ROOT_PATH=$INSTALL_PREFIX \
-  -DCMAKE_PREFIX_PATH=$INSTALL_PREFIX \
-  -DJAVA_HOME=$JAVA_HOME \
-  -DCMAKE_BUILD_TYPE=Release \
-  /source
-ninja clean || true
-ninja
-
-# 3. 收集产物
-mkdir -p /output
-find . -name "*.so*" -exec cp -vP {} /output/ \;
+echo ">>> Wrapper done: restored libipopt/libsipopt from $INSTALL_PREFIX"

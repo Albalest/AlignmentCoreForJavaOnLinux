@@ -1,6 +1,4 @@
 import AlignmentCore.*;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -12,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.*;
 
 public class ComCurveFitDialog extends JDialog {
 
@@ -501,6 +500,7 @@ public class ComCurveFitDialog extends JDialog {
         undoManager.SaveSnapshot("复曲线初始化");
 
         IntArr idx = getKeyPtIndexs();
+        System.out.println("[ComCurveFitDialog] onInitByKeyPts idx=" + intArrDebug(idx, 50));
         if (!comCurve.StartComCurveFitting(idx)) {
             JOptionPane.showMessageDialog(this, "StartComCurveFitting 失败");
             return;

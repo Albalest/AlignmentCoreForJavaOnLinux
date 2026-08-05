@@ -61,5 +61,5 @@ echo ">>> [force-rebuild] Cleaning previous exported artifacts in /output"
 rm -f /output/*.so* 2>/dev/null || true
 
 # 4) Delegate to the original build script
-echo ">>> [force-rebuild] Delegating to /build/scripts/legacy/compile_cross_legacy.sh"
-exec /bin/bash /build/scripts/legacy/compile_cross_legacy.sh
+echo ">>> [force-rebuild] Delegating to /scripts/legacy/compile_cross_legacy.sh"
+exec /bin/bash /scripts/legacy/compile_cross_legacy.sh

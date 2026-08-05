@@ -6,7 +6,8 @@ set -euo pipefail
 
 HOST_ARCH=aarch64-linux-gnu
 INSTALL_PREFIX=/usr/local/$HOST_ARCH
-JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}
+# 镜像内只有 JDK 11（JNI 头文件与版本无关）
+JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-11-openjdk-amd64}
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1
@@ -25,7 +26,22 @@ if [ ! -f "$INSTALL_PREFIX/lib/libipopt.so" ] && [ ! -f "$INSTALL_PREFIX/lib/lib
   exit 2
 fi
 
-apt-get update -y && apt-get install -y libeigen3-dev curl
+# --- 引导新版 CMake（source/CMakeLists.txt 使用 target_link_options，需要 >= 3.13）---
+if ! cmake --version 2>/dev/null | grep -Eq "cmake version 3\.(1[3-9]|[2-9][0-9])|[4-9]\."; then
+  echo ">>> System cmake too old; bootstrapping CMake 3.28.3 from /build/thirdPartySrc..."
+  if [ -f /build/thirdPartySrc/cmake-3.28.3-linux-x86_64.sh ]; then
+    mkdir -p /opt/cmake-3.28.3-linux-x86_64
+    (cd /opt/cmake-3.28.3-linux-x86_64 && /build/thirdPartySrc/cmake-3.28.3-linux-x86_64.sh --skip-license) >/dev/null 2>&1 || true
+    if [ -x /opt/cmake-3.28.3-linux-x86_64/bin/cmake ]; then
+      export PATH=/opt/cmake-3.28.3-linux-x86_64/bin:$PATH
+    fi
+  fi
+fi
+echo ">>> Using CMake: $(cmake --version | head -1)"
+
+# libeigen3-dev 已在镜像中；此处仅作兜底（网络不可用时不阻断）
+apt-get update -y >/dev/null 2>&1 || true
+apt-get install -y libeigen3-dev curl >/dev/null 2>&1 || true
 
 echo ">>> Compiling Project (Cross, project-only)..."
 rm -rf /source/out/build/linux-arm64

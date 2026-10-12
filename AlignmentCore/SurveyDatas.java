@@ -68,6 +68,10 @@ public class SurveyDatas {
     return new IntDoublePairVector(AlignmentAllJNI.SurveyDatas_GetCurvation__SWIG_1(swigCPtr, this, dChordLen), true);
   }
 
+  public boolean GetCurvation(double dChordLen, double dMargin, IntDoublePairVector curvations) {
+    return AlignmentAllJNI.SurveyDatas_GetCurvation__SWIG_2(swigCPtr, this, dChordLen, dMargin, IntDoublePairVector.getCPtr(curvations), curvations);
+  }
+
   public boolean AutoKeyPts(double dChordLen, double dMargin) {
     return AlignmentAllJNI.SurveyDatas_AutoKeyPts__SWIG_0(swigCPtr, this, dChordLen, dMargin);
   }

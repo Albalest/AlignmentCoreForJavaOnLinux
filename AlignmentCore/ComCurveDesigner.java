@@ -80,6 +80,22 @@ public class ComCurveDesigner {
     return new IntArr(AlignmentAllJNI.ComCurveDesigner_AutoKeyPts(swigCPtr, this), true);
   }
 
+  public ALPoint3dArr GetKeyPoints() {
+    return new ALPoint3dArr(AlignmentAllJNI.ComCurveDesigner_GetKeyPoints(swigCPtr, this), true);
+  }
+
+  public boolean InsertKeyPoint(double mileage) {
+    return AlignmentAllJNI.ComCurveDesigner_InsertKeyPoint(swigCPtr, this, mileage);
+  }
+
+  public boolean DeleteKeyPoint(int index) {
+    return AlignmentAllJNI.ComCurveDesigner_DeleteKeyPoint(swigCPtr, this, index);
+  }
+
+  public boolean MoveKeyPoint(int index, double mileage) {
+    return AlignmentAllJNI.ComCurveDesigner_MoveKeyPoint(swigCPtr, this, index, mileage);
+  }
+
   public boolean StartComCurveFitting(IntArr keyPts) {
     return AlignmentAllJNI.ComCurveDesigner_StartComCurveFitting(swigCPtr, this, IntArr.getCPtr(keyPts), keyPts);
   }
@@ -90,6 +106,14 @@ public class ComCurveDesigner {
 
   public boolean ComCurveOpting(double dSpiral1, double dSpiral2, double dSpiral3) {
     return AlignmentAllJNI.ComCurveDesigner_ComCurveOpting__SWIG_1(swigCPtr, this, dSpiral1, dSpiral2, dSpiral3);
+  }
+
+  public boolean ComCurveGlobalOpting(double dSpiral1, double dSpiral2, double dSpiral3, boolean isManual) {
+    return AlignmentAllJNI.ComCurveDesigner_ComCurveGlobalOpting__SWIG_0(swigCPtr, this, dSpiral1, dSpiral2, dSpiral3, isManual);
+  }
+
+  public boolean ComCurveGlobalOpting(double dSpiral1, double dSpiral2, double dSpiral3) {
+    return AlignmentAllJNI.ComCurveDesigner_ComCurveGlobalOpting__SWIG_1(swigCPtr, this, dSpiral1, dSpiral2, dSpiral3);
   }
 
   public boolean InitKeyPts(IntArr keyPts) {

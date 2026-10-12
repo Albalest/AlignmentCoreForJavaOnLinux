@@ -1,11 +1,16 @@
 import AlOpter.AIOpter;
 import AlOpter.BSplineFitInfo;
 import AlOpter.CommonConstrain;
+import AlOpter.ConstrainedParametricBSplineOptimizer;
 import AlOpter.DoubleArr;
 import AlOpter.OptData;
 import AlOpter.OptDataVector;
 import AlOpter.OpterProcesser;
+import AlOpter.ParametricBSpline2D;
+import AlOpter.ParametricBSplinePointVector;
+import AlOpter.ParametricDataPointVector;
 import AlOpter.Splineline;
+import AlOpter.StringVector;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,6 +31,10 @@ public class OptimizationDemoFrame extends Frame {
     private static OptDataVector s_bsOptOriginal = null;  // 原始偏差（测量值）
     private static OptDataVector s_bsOptResult = null;    // 调整量
     private static OptDataVector s_bsOptProfile = null;   // 最终偏差
+    // 方案三：二维参数 B 样条约束拟合
+    private static ConstrainedParametricBSplineOptimizer s_parametricOptimizer = null;
+    private static ParametricBSpline2D s_parametricCurve = null;
+    private static OptDataVector s_parametricSourceData = null;
 
     // ========== 控制点编辑模式 ==========
     private static final int CTRL_MODE_NONE = 0;
@@ -33,6 +42,7 @@ public class OptimizationDemoFrame extends Frame {
     private static final int CTRL_MODE_INSERT = 2;
     private static final int CTRL_MODE_DELETE = 3;
     private static int s_ctrlMode = CTRL_MODE_NONE;
+    private static final double BSPLINE_REMOVE_TOLERANCE_MM = 0.001;
 
     // 移动控制点时，第一次点击选中的控制点索引（-1 表示未选中）
     private static int s_moveSelectedIndex = -1;
@@ -46,22 +56,26 @@ public class OptimizationDemoFrame extends Frame {
         Button runBtn = new Button("选择文件并运行");
         Button bsplineBtn = new Button("B样条后处理拟合");
         Button bsOptBtn = new Button("直接B样条优化");
+        Button parametricFitBtn = new Button("二维参数B样条曲线拟合");
         Button customBtn = new Button("初始化样条曲线");
         Button moveCtrlBtn = new Button("移动控制点");
         Button insertCtrlBtn = new Button("插入控制点");
         Button deleteCtrlBtn = new Button("删除控制点");
         Button undoBtn = new Button("撤销");
         Button redoBtn = new Button("重做");
+        Button applyBSplineBtn = new Button("应用B样条结果");
         Button exitBtn = new Button("关闭");
         toolbar.add(runBtn);
         toolbar.add(bsplineBtn);
         toolbar.add(bsOptBtn);
+        toolbar.add(parametricFitBtn);
         toolbar.add(customBtn);
         toolbar.add(moveCtrlBtn);
         toolbar.add(insertCtrlBtn);
         toolbar.add(deleteCtrlBtn);
         toolbar.add(undoBtn);
         toolbar.add(redoBtn);
+        toolbar.add(applyBSplineBtn);
         toolbar.add(exitBtn);
         add(toolbar, BorderLayout.NORTH);
 
@@ -71,12 +85,14 @@ public class OptimizationDemoFrame extends Frame {
         runBtn.addActionListener(e -> new Thread(() -> runOptimization(this, canvas)).start());
         bsplineBtn.addActionListener(e -> new Thread(() -> runBSplineFitting(canvas)).start());
         bsOptBtn.addActionListener(e -> new Thread(() -> runBSplineOpt(canvas)).start());
+        parametricFitBtn.addActionListener(e -> new Thread(() -> runParametricBSplineFitting(this, canvas)).start());
         customBtn.addActionListener(e -> onCustomButtonClicked(this, canvas));
         moveCtrlBtn.addActionListener(e -> setCtrlMode(CTRL_MODE_MOVE, canvas));
         insertCtrlBtn.addActionListener(e -> setCtrlMode(CTRL_MODE_INSERT, canvas));
         deleteCtrlBtn.addActionListener(e -> setCtrlMode(CTRL_MODE_DELETE, canvas));
         undoBtn.addActionListener(e -> onUndo(canvas));
         redoBtn.addActionListener(e -> onRedo(canvas));
+        applyBSplineBtn.addActionListener(e -> onApplyBSplineResult(this));
 
         exitBtn.addActionListener(e -> dispose());
 
@@ -162,7 +178,13 @@ public class OptimizationDemoFrame extends Frame {
             return;
 
         s_opter = proceser;
+        s_parametricOptimizer = null;
+        s_parametricCurve = null;
+        s_parametricSourceData = null;
         s_originalData = list;
+        s_ctrlMode = CTRL_MODE_NONE;
+        s_moveSelectedIndex = -1;
+        targetCanvas.setControlPoints(null);
         s_optResult = proceser.GetOptResult();                     // 调整量
         OptDataVector listResult = s_optResult;
         OptDataVector resVector = new OptDataVector();              // 优化后的偏差值
@@ -228,9 +250,17 @@ public class OptimizationDemoFrame extends Frame {
 
         // ---- 保存结果 ----
         s_bsOptOpter = opter;
+        s_parametricOptimizer = null;
+        s_parametricCurve = null;
+        s_parametricSourceData = null;
         s_bsOptOriginal = list;
         s_bsOptResult = opter.GetBSplineOptResult();         // 调整量
         s_bsOptProfile = opter.GetBSplineOptProfile();       // 最终偏差 = 原始偏差 + 调整量
+        // 直接优化结果不是后处理拟合曲线，不能进入后处理控制点编辑接口。
+        s_opter = null;
+        s_ctrlMode = CTRL_MODE_NONE;
+        s_moveSelectedIndex = -1;
+        targetCanvas.setControlPoints(null);
 
         // ---- 查看控制点 ----
         OptDataVector ctrlPts = opter.GetBSplineOptControlPoints();
@@ -272,10 +302,14 @@ public class OptimizationDemoFrame extends Frame {
             System.out.println("请先点击「选择文件并运行」完成离散点优化");
             return;
         }
+        if (s_optDeviation == null || s_optDeviation.isEmpty()) {
+            System.out.println("未找到离散优化结果，无法执行 B 样条后处理拟合");
+            return;
+        }
 
         System.out.println("===== B 样条后处理拟合 =====");
 
-        // ---- 第2步：自适应 B 样条拟合（输入红色曲线） ----
+        // ---- 第2步：自适应 B 样条拟合（SDK 自动确定控制点数量和位置） ----
         String input = JOptionPane.showInputDialog(
             null,
             "请输入拟合容差 (mm)：",
@@ -297,7 +331,7 @@ public class OptimizationDemoFrame extends Frame {
             tolerance = 0.3;
         }
 
-        System.out.printf(">> 执行自适应 B 样条拟合 (容差 %.3fmm)...%n", tolerance);
+        System.out.printf(">> 执行自适应 B 样条拟合 (容差 %.3fmm，控制点数量由 SDK 自动确定)...%n", tolerance);
         if (!s_opter.FitBSplineAdaptive(s_optDeviation, tolerance)) {
             System.out.println("B 样条拟合失败");
             return;
@@ -327,27 +361,13 @@ public class OptimizationDemoFrame extends Frame {
         OptDataVector adjustedProfile = s_opter.GetBSplineAdjustedProfile();
         System.out.println(">> 拟合后最终偏差: " + adjustedProfile.size() + " 个点");
        
-        // ---- 将 B 样条结果写回优化结果 ----
-        s_opter.ApplyBSplineResult();
-
-        // ---- 计算并检查优化后的不平顺 ----
-        OptDataVector smoothness = new OptDataVector();
-        if (s_opter.SmoothCalOpt(smoothness, 20.0)) {
-            System.out.println(">> 20m 弦不平顺计算完成");
+        // ---- 生成绘图采样点并通过 SDK 求值 ----
+        OptDataVector evalPts = getBSplineFitCurve(s_opter, s_optDeviation, 1.0);
+        if (evalPts.isEmpty()) {
+            System.out.println("获取 B 样条绘图曲线失败");
+            return;
         }
-
-        // ---- 绘图展示（利用 GetBSplineCurvePoints 完整参数版） ----
-        int degree = s_opter.GetBSplineDegree();
-        DoubleArr knots = s_opter.GetBSplineKnots();
-        System.out.println(">> 控制点: " + ctrlPts.size() + ", degree: " + degree + ", knots: " + knots.size());
-
-        // 用红色曲线的 X 值作为求值点，native 填入 Y（B 样条拟合值）
-        OptDataVector evalPts = new OptDataVector();
-        for (int i = 0; i < s_optDeviation.size(); i++) {
-            evalPts.add(new OptData(s_optDeviation.get(i).getX(), 0, 0, 0));
-        }
-        OpterProcesser.GetBSplineCurvePoints(ctrlPts, knots, degree, evalPts);
-        System.out.println(">> GetBSplineCurvePoints: " + evalPts.size() + " 点");
+        System.out.println(">> GetBSplineFitCurve: " + evalPts.size() + " 点");
 
         System.out.println(">> 原始:" + s_originalData.size()
             + " 离散优化后:" + s_optDeviation.size()
@@ -364,6 +384,183 @@ public class OptimizationDemoFrame extends Frame {
                 denseDiscrete, evalPts));
 
         System.out.println("===== B 样条后处理拟合完成 =====");
+    }
+
+    // ========== 方案三：二维参数 B 样条后处理拟合 ==========
+    private static void runParametricBSplineFitting(Frame parent, PlotCanvas targetCanvas) {
+        // 与旧的「B样条后处理拟合」相同：输入是离散优化后的偏差曲线，而不是原始 CSV。
+        if (s_opter == null || s_originalData == null || s_optDeviation == null) {
+            JOptionPane.showMessageDialog(parent,
+                "请先点击「选择文件并运行」完成离散点优化，再进行二维参数 B 样条曲线拟合。",
+                "缺少离散优化结果", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        OptDataVector source = s_optDeviation;
+        if (source.size() < 4) {
+            JOptionPane.showMessageDialog(parent, "二维三次 B 样条拟合至少需要 4 个严格递增的离散优化点。",
+                "数据不足", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        ParametricDataPointVector data = new ParametricDataPointVector();
+        for (int i = 0; i < source.size(); i++) {
+            OptData point = source.get(i);
+            if (i > 0 && point.getX() <= source.get(i - 1).getX()) {
+                JOptionPane.showMessageDialog(parent, "离散优化结果的里程必须严格递增。", "数据无效", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            ConstrainedParametricBSplineOptimizer.DataPoint dataPoint =
+                new ConstrainedParametricBSplineOptimizer.DataPoint();
+            dataPoint.setMileage(point.getX());
+            dataPoint.setElevation(point.getY());
+            dataPoint.setWeight(1.0);
+            data.add(dataPoint);
+        }
+
+        ConstrainedParametricBSplineOptimizer optimizer = new ConstrainedParametricBSplineOptimizer();
+        if (!optimizer.SetData(data)) {
+            JOptionPane.showMessageDialog(parent, "二维参数 B 样条测量数据初始化失败。", "初始化失败", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ConstrainedParametricBSplineOptimizer.Options options =
+            new ConstrainedParametricBSplineOptimizer.Options();
+        options.setDegree(3);
+        options.setConstraintDomain(ConstrainedParametricBSplineOptimizer.ConstraintDomain.Parameter);
+        //options.setConstraintDomain(ConstrainedParametricBSplineOptimizer.ConstraintDomain.Mileage);
+        options.setFitWeight(1.0);
+        options.setXSmoothWeight(0.0);
+        //options.setYSmoothWeight(0.001);
+        options.setAutoControlPointTolerance(3.0); // mm
+        options.setYSmoothWeight(0.0);
+        options.setMaxIterations(10000);
+        options.setConstraintTolerance(1e-4); // mm，数值校验容差
+        options.setXStrictTolerance(1e-6);
+        options.setXDerivativeMinimum(1e-9);
+        options.setXTrustRegion(10.0);
+        options.setYTrustRegion(100.0);
+        options.setEnforceControlPointXOrder(true);
+        options.setEnforceDerivativePositive(true);
+
+        if (!optimizer.Initialize(options)) {
+            JOptionPane.showMessageDialog(parent, "二维参数 B 样条优化器初始化失败。", "初始化失败", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        System.out.println("===== 二维参数 B 样条拟合（控制点数量由 SDK 自动确定） =====");
+        ConstrainedParametricBSplineOptimizer.Solution solution = optimizer.Solve();
+        printParametricDiagnostics(solution);
+        if (!solution.getSuccess() || solution.getCurve() == null) {
+            JOptionPane.showMessageDialog(parent, "二维参数 B 样条拟合失败，请查看控制台诊断信息。",
+                "拟合失败", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ParametricBSpline2D curve = solution.getCurve();
+        if (!curve.IsXStrictlyIncreasing(options.getXDerivativeMinimum())) {
+            JOptionPane.showMessageDialog(parent, "拟合结果的里程映射不是严格递增，结果未被接受。",
+                "拟合失败", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        OptDataVector fittedCurve = getParametricBSplineCurve(curve, source, 1.0);
+        if (fittedCurve.isEmpty()) {
+            JOptionPane.showMessageDialog(parent, "无法按物理里程计算拟合曲线。", "绘图失败", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        s_parametricOptimizer = optimizer;
+        s_parametricCurve = curve;
+        s_parametricSourceData = source;
+        s_ctrlMode = CTRL_MODE_NONE;
+        s_moveSelectedIndex = -1;
+        targetCanvas.setControlPoints(toOptDataVector(curve.GetControlPoints()));
+        // 原始测量值、离散优化结果和新的参数曲线同屏对比。
+        targetCanvas.setSeries(new OptDataVector[]{s_originalData, source, fittedCurve});
+        OptDataVector denseDiscrete = densify(source, 1.0);
+        EventQueue.invokeLater(() -> showLinePlot(
+            "二维参数B样条曲线拟合 (蓝色:离散优化后偏差, 红色:参数B样条曲线)",
+            denseDiscrete, fittedCurve));
+        System.out.println("===== 二维参数 B 样条拟合完成 =====");
+    }
+
+    /** 在参考曲线里程范围内生成采样点，并由新版 SDK 计算后处理拟合曲线。 */
+    private static OptDataVector getBSplineFitCurve(OpterProcesser opter, OptDataVector reference, double step) {
+        OptDataVector curve = new OptDataVector();
+        if (opter == null || reference == null || reference.isEmpty() || step <= 0) return curve;
+
+        double start = reference.get(0).getX();
+        double end = reference.get(reference.size() - 1).getX();
+        if (end < start) {
+            double tmp = start;
+            start = end;
+            end = tmp;
+        }
+
+        DoubleArr mileages = new DoubleArr();
+        for (double x = start; x < end - 1e-9; x += step) {
+            mileages.add(x);
+        }
+        mileages.add(end);
+
+        if (!opter.GetBSplineFitCurve(mileages, curve)) return new OptDataVector();
+        return curve;
+    }
+
+    /** 使用二维参数 B 样条的里程反算接口生成绘图曲线。 */
+    private static OptDataVector getParametricBSplineCurve(ParametricBSpline2D curve,
+                                                             OptDataVector reference, double step) {
+        OptDataVector result = new OptDataVector();
+        if (curve == null || !curve.IsValid() || reference == null || reference.isEmpty() || step <= 0) {
+            return result;
+        }
+
+        double start = reference.get(0).getX();
+        double end = reference.get(reference.size() - 1).getX();
+        for (double mileage = start; mileage < end - 1e-9; mileage += step) {
+            ParametricBSpline2D.Point point = new ParametricBSpline2D.Point();
+            if (!curve.EvaluateAtMileage(mileage, point)) return new OptDataVector();
+            result.add(new OptData(point.getX(), point.getY(), 0, 0));
+        }
+        ParametricBSpline2D.Point lastPoint = new ParametricBSpline2D.Point();
+        if (!curve.EvaluateAtMileage(end, lastPoint)) return new OptDataVector();
+        result.add(new OptData(lastPoint.getX(), lastPoint.getY(), 0, 0));
+        return result;
+    }
+
+    /** 将二维参数 B 样条控制点转换为现有画布使用的数据类型。 */
+    private static OptDataVector toOptDataVector(ParametricBSplinePointVector points) {
+        OptDataVector result = new OptDataVector();
+        if (points == null) return result;
+        for (int i = 0; i < points.size(); i++) {
+            ParametricBSpline2D.Point point = points.get(i);
+            result.add(new OptData(point.getX(), point.getY(), 0, 0));
+        }
+        return result;
+    }
+
+    /** 输出新优化器的求解状态、物理里程残差和诊断信息。 */
+    private static void printParametricDiagnostics(ConstrainedParametricBSplineOptimizer.Solution solution) {
+        System.out.printf("二维参数 B 样条: success=%s, convexQP=%s, mileageSQP=%s, iterations=%d, objective=%.8f%n",
+            solution.getSuccess(), solution.getIsConvexQuadraticModel(),
+            solution.getUsedNonlinearMileageMapping(), solution.getIterations(), solution.getObjectiveValue());
+
+        DoubleArr residuals = solution.getPhysicalMileageConstraintResiduals();
+        if (residuals != null && !residuals.isEmpty()) {
+            double maxResidual = 0.0;
+            for (int i = 0; i < residuals.size(); i++) {
+                maxResidual = Math.max(maxResidual, Math.abs(residuals.get(i)));
+            }
+            System.out.printf("最大物理里程约束残差: %.8g%n", maxResidual);
+        }
+
+        StringVector diagnostics = solution.getDiagnostics();
+        if (diagnostics != null) {
+            for (int i = 0; i < diagnostics.size(); i++) {
+                System.out.println("[二维参数B样条] " + diagnostics.get(i));
+            }
+        }
     }
 
     /** Linear interpolation to densify sparse curve for smooth plotting. */
@@ -619,6 +816,17 @@ public class OptimizationDemoFrame extends Frame {
                 }
             }
 
+            // 控制点可能超出当前曲线取值范围；将其纳入视口，避免控制多边形被裁切。
+            if (controlPoints != null) {
+                for (int i = 0; i < controlPoints.size(); i++) {
+                    OptData point = controlPoints.get(i);
+                    minX = Math.min(minX, point.getX());
+                    maxX = Math.max(maxX, point.getX());
+                    minY = Math.min(minY, point.getY());
+                    maxY = Math.max(maxY, point.getY());
+                }
+            }
+
             if (maxX == minX) {
                 maxX += 1;
                 minX -= 1;
@@ -714,13 +922,26 @@ public class OptimizationDemoFrame extends Frame {
                 g2.drawPolyline(xPoints, yPoints, pointCount);
             }
 
-            // 绘制控制点（空心圆圈；选中时实心红色）
+            // 绘制控制多边形：虚线连接相邻控制点，展示控制点分布及其凸包趋势。
             if (controlPoints != null && controlPoints.size() >= 2) {
+                int[] controlX = new int[controlPoints.size()];
+                int[] controlY = new int[controlPoints.size()];
+                for (int i = 0; i < controlPoints.size(); i++) {
+                    OptData pt = controlPoints.get(i);
+                    controlX[i] = (int) Math.round(padding + (pt.getX() - minX) * xScale);
+                    controlY[i] = (int) Math.round(height - padding - (pt.getY() - minY) * yScale);
+                }
+                g2.setColor(new Color(145, 75, 155));
+                g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND,
+                    10.0f, new float[]{6.0f, 5.0f}, 0.0f));
+                g2.drawPolyline(controlX, controlY, controlPoints.size());
+
+                // 绘制控制点（空心圆圈；选中时实心红色）
                 g2.setStroke(new BasicStroke(1.5f));
                 for (int i = 0; i < controlPoints.size(); i++) {
                     OptData pt = controlPoints.get(i);
-                    int cx = (int) Math.round(padding + (pt.getX() - minX) * xScale);
-                    int cy = (int) Math.round(height - padding - (pt.getY() - minY) * yScale);
+                    int cx = controlX[i];
+                    int cy = controlY[i];
                     int r = 5;
                     boolean isSelected = (s_ctrlMode == CTRL_MODE_MOVE && i == s_moveSelectedIndex);
                     if (isSelected) {
@@ -768,6 +989,17 @@ public class OptimizationDemoFrame extends Frame {
                 g2.setColor(Color.BLACK);
                 g2.drawString("Series " + (i + 1), legendX + 20, legendY + i * 18);
             }
+
+            if (controlPoints != null && controlPoints.size() >= 2) {
+                int y = legendY + series.length * 18 - 8;
+                g2.setColor(new Color(145, 75, 155));
+                g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND,
+                    10.0f, new float[]{6.0f, 5.0f}, 0.0f));
+                g2.drawLine(legendX, y, legendX + 12, y);
+                g2.setColor(Color.BLACK);
+                g2.drawString("控制多边形", legendX + 20, y + 4);
+                g2.setStroke(new BasicStroke(1.0f));
+            }
         }
     }
 
@@ -799,6 +1031,19 @@ public class OptimizationDemoFrame extends Frame {
 
     /** 撤销上一次 B 样条控制点操作 */
     private static void onUndo(PlotCanvas canvas) {
+        if (s_parametricCurve != null) {
+            if (!s_parametricCurve.CanUndo()) {
+                System.out.println("已没有可撤销的二维参数 B 样条操作");
+                return;
+            }
+            if (s_parametricCurve.Undo()) {
+                System.out.println("✓ 二维参数 B 样条撤销成功");
+                s_ctrlMode = CTRL_MODE_NONE;
+                s_moveSelectedIndex = -1;
+                updateCanvasAfterParametricEdit(canvas);
+            }
+            return;
+        }
         OpterProcesser opter = getActiveOpter();
         if (opter == null) {
             System.out.println("没有可撤销的 B 样条操作");
@@ -821,6 +1066,19 @@ public class OptimizationDemoFrame extends Frame {
 
     /** 重做上一次撤销的 B 样条控制点操作 */
     private static void onRedo(PlotCanvas canvas) {
+        if (s_parametricCurve != null) {
+            if (!s_parametricCurve.CanRedo()) {
+                System.out.println("已没有可重做的二维参数 B 样条操作");
+                return;
+            }
+            if (s_parametricCurve.Redo()) {
+                System.out.println("✓ 二维参数 B 样条重做成功");
+                s_ctrlMode = CTRL_MODE_NONE;
+                s_moveSelectedIndex = -1;
+                updateCanvasAfterParametricEdit(canvas);
+            }
+            return;
+        }
         OpterProcesser opter = getActiveOpter();
         if (opter == null) {
             System.out.println("没有可重做的 B 样条操作");
@@ -848,21 +1106,12 @@ public class OptimizationDemoFrame extends Frame {
                 if (cpts != null && cpts.size() > 0) return s_opter;
             } catch (Exception ignored) { }
         }
-        if (s_bsOptOpter != null) {
-            try {
-                OptDataVector cpts = s_bsOptOpter.GetBSplineOptControlPoints();
-                if (cpts != null && cpts.size() > 0) return s_bsOptOpter;
-            } catch (Exception ignored) { }
-        }
         return null;
     }
 
-    /** 从 opter 获取控制点（适配两种方案） */
+    /** 仅后处理拟合曲线支持此处的人工控制点编辑。 */
     private static OptDataVector getOpterCtrlPts(OpterProcesser opter) {
-        if (opter == null) return null;
-        if (opter == s_opter) return opter.GetBSplineControlPoints();
-        if (opter == s_bsOptOpter) return opter.GetBSplineOptControlPoints();
-        return null;
+        return opter == null || opter != s_opter ? null : opter.GetBSplineControlPoints();
     }
 
     /** 编辑后刷新画布：更新控制点 + 重新计算 B 样条曲线 */
@@ -874,22 +1123,13 @@ public class OptimizationDemoFrame extends Frame {
 
         canvas.setControlPoints(newCtrlPts);
 
-        // 重新计算 B 样条曲线
-        int degree = opter.GetBSplineDegree();
-        DoubleArr knots = opter.GetBSplineKnots();
-
-        // 取第一个非空系列的 X 作为求值点
-        OptDataVector ref = null;
-        for (OptDataVector s : canvas.series) {
-            if (s != null && s.size() > 0) { ref = s; break; }
+        // 使用新版 SDK 按固定里程间隔重新求值，不在前端组合控制点、degree 和 knots。
+        OptDataVector reference = s_optDeviation;
+        OptDataVector evalPts = getBSplineFitCurve(opter, reference, 1.0);
+        if (evalPts.isEmpty()) {
+            System.out.println("重新获取 B 样条曲线失败");
+            return;
         }
-        if (ref == null) return;
-
-        OptDataVector evalPts = new OptDataVector();
-        for (int i = 0; i < ref.size(); i++) {
-            evalPts.add(new OptData(ref.get(i).getX(), 0, 0, 0));
-        }
-        OpterProcesser.GetBSplineCurvePoints(newCtrlPts, knots, degree, evalPts);
 
         // 构建新系列：保留前两个不动，第三个替换为新的 B 样条曲线
         int newLen = Math.max(canvas.series.length, 3);
@@ -899,12 +1139,61 @@ public class OptimizationDemoFrame extends Frame {
         }
         newSeries[2] = evalPts;
         canvas.setSeries(newSeries);
+        s_moveSelectedIndex = -1;
 
         System.out.println("画布已刷新，当前控制点 " + newCtrlPts.size() + " 个");
     }
 
+    /** 编辑二维参数 B 样条后，按物理里程重新生成绘图曲线。 */
+    private static void updateCanvasAfterParametricEdit(PlotCanvas canvas) {
+        if (canvas == null || s_parametricCurve == null || s_parametricSourceData == null) return;
+        OptDataVector controlPoints = toOptDataVector(s_parametricCurve.GetControlPoints());
+        OptDataVector fittedCurve = getParametricBSplineCurve(s_parametricCurve, s_parametricSourceData, 1.0);
+        if (fittedCurve.isEmpty()) {
+            System.out.println("重新获取二维参数 B 样条曲线失败");
+            return;
+        }
+        canvas.setControlPoints(controlPoints);
+        canvas.setSeries(new OptDataVector[]{s_originalData, s_parametricSourceData, fittedCurve});
+        s_moveSelectedIndex = -1;
+        System.out.println("画布已刷新，当前二维参数控制点 " + controlPoints.size() + " 个");
+    }
+
+    /** 用户确认后，才将当前后处理拟合结果写回优化器。 */
+    private static void onApplyBSplineResult(Frame parent) {
+        OpterProcesser opter = getActiveOpter();
+        if (opter == null) {
+            JOptionPane.showMessageDialog(parent,
+                "当前没有可应用的后处理 B 样条结果。请先完成离散优化和 B 样条拟合。",
+                "无法应用", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(parent,
+            "将当前后处理 B 样条结果写回优化结果？",
+            "应用 B 样条结果", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        if (!opter.ApplyBSplineResult()) {
+            JOptionPane.showMessageDialog(parent, "应用 B 样条结果失败。", "应用失败", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        OptDataVector smoothness = new OptDataVector();
+        if (opter.SmoothCalOpt(smoothness, 20.0)) {
+            System.out.println(">> B 样条结果已应用，20m 弦不平顺计算完成");
+        } else {
+            System.out.println(">> B 样条结果已应用；20m 弦不平顺计算失败");
+        }
+        JOptionPane.showMessageDialog(parent, "当前 B 样条结果已应用。", "应用完成", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     /** 画布点击主入口：由 PlotCanvas.onCanvasClick 调用 */
     private static void handleCanvasEdit(Frame parent, PlotCanvas canvas, int sx, int sy) {
+        if (s_parametricCurve != null) {
+            handleParametricCanvasEdit(parent, canvas, sx, sy);
+            return;
+        }
         OpterProcesser opter = getActiveOpter();
         if (opter == null) {
             JOptionPane.showMessageDialog(parent,
@@ -935,6 +1224,98 @@ public class OptimizationDemoFrame extends Frame {
         }
     }
 
+    /**
+     * 二维参数 B 样条编辑入口：移动使用 MoveControlPointXY，插入使用
+     * InsertKnot，删除使用带容差的 RemoveControlPoint。
+     */
+    private static void handleParametricCanvasEdit(Frame parent, PlotCanvas canvas, int sx, int sy) {
+        if (canvas.controlPoints == null || canvas.controlPoints.size() < 2) {
+            JOptionPane.showMessageDialog(parent, "当前没有可编辑的二维参数 B 样条控制点。",
+                "无法编辑", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        switch (s_ctrlMode) {
+            case CTRL_MODE_MOVE:
+                handleMoveParametricCtrlPt(canvas, sx, sy);
+                break;
+            case CTRL_MODE_INSERT:
+                double mileage = canvas.m_minX + (sx - canvas.m_padding) / canvas.m_xScale;
+                ParametricBSpline2D.Point evaluation = new ParametricBSpline2D.Point();
+                if (!s_parametricCurve.EvaluateAtMileage(mileage, evaluation)) {
+                    System.out.println("✗ 插入失败：里程不在二维参数 B 样条有效范围内");
+                    return;
+                }
+                // 当前 Java SWIG 封装没有提供可读取 double& OUTPUT 的便捷值对象，
+                // 因此仅在 Java 层将里程反算为参数；实际曲线修改仍由 SDK InsertKnot 完成。
+                double u = findParametricUAtMileage(s_parametricCurve, mileage);
+                if (Double.isNaN(u) || !s_parametricCurve.InsertKnot(u)) {
+                    System.out.println("✗ 二维参数 B 样条节点插入失败");
+                    return;
+                }
+                System.out.println("✓ 已插入二维参数 B 样条节点，曲线几何形状保持不变");
+                updateCanvasAfterParametricEdit(canvas);
+                break;
+            case CTRL_MODE_DELETE:
+                int idx = canvas.findNearestCtrlPt(sx, sy);
+                if (idx < 0) {
+                    System.out.println("未选中控制点，请点击控制点圆圈位置");
+                    return;
+                }
+                if (s_parametricCurve.RemoveControlPoint(idx, BSPLINE_REMOVE_TOLERANCE_MM, true)) {
+                    System.out.println("✓ 二维参数 B 样条控制点 P" + idx + " 已删除");
+                    updateCanvasAfterParametricEdit(canvas);
+                } else {
+                    System.out.println("✗ 删除失败：可能是首尾点、误差超过容差或破坏里程严格递增");
+                }
+                break;
+        }
+    }
+
+    /** 两次点击移动二维参数控制点；commit=true 时由 SDK 保存撤销快照。 */
+    private static void handleMoveParametricCtrlPt(PlotCanvas canvas, int sx, int sy) {
+        if (s_moveSelectedIndex < 0) {
+            int idx = canvas.findNearestCtrlPt(sx, sy);
+            if (idx < 0) {
+                System.out.println("未选中控制点，请点击控制点圆圈位置");
+                return;
+            }
+            s_moveSelectedIndex = idx;
+            canvas.repaint();
+            return;
+        }
+
+        int idx = s_moveSelectedIndex;
+        double targetX = canvas.m_minX + (sx - canvas.m_padding) / canvas.m_xScale;
+        double targetY = canvas.m_minY + (canvas.getHeight() - canvas.m_padding - sy) / canvas.m_yScale;
+        if (s_parametricCurve.MoveControlPointXY(idx, targetX, targetY, true, 1e-9, true)) {
+            System.out.printf("✓ 二维参数控制点 P%d 已移动至 (%.3f, %.3f)%n", idx, targetX, targetY);
+            updateCanvasAfterParametricEdit(canvas);
+        } else {
+            // SDK 会在校验失败时拒绝提交，曲线与历史记录均保持不变。
+            System.out.println("✗ 移动失败：会破坏 X(u) 严格递增约束");
+            s_moveSelectedIndex = -1;
+            canvas.repaint();
+        }
+    }
+
+    /**
+     * 通过 SDK 的 EvaluatePosition 对参数域进行反算，得到 InsertKnot 所需的 u。
+     * MileageToParam 在当前 Java SWIG 输出参数封装中无法直接读取反算结果，
+     * 因此这里仅作为 Java 侧适配层；插入操作本身仍完全使用 SDK 的 InsertKnot。
+     */
+    private static double findParametricUAtMileage(ParametricBSpline2D curve, double mileage) {
+        double low = curve.GetParamMin();
+        double high = curve.GetParamMax();
+        for (int i = 0; i < 80; i++) {
+            double middle = (low + high) * 0.5;
+            ParametricBSpline2D.Point point = curve.EvaluatePosition(middle);
+            if (Math.abs(point.getX() - mileage) <= 1e-9) return middle;
+            if (point.getX() < mileage) low = middle;
+            else high = middle;
+        }
+        return (low + high) * 0.5;
+    }
+
     private static void handleMoveCtrlPt(Frame parent, PlotCanvas canvas, OpterProcesser opter,
                                           OptDataVector ctrlPts, int sx, int sy) {
         if (s_moveSelectedIndex < 0) {
@@ -951,15 +1332,13 @@ public class OptimizationDemoFrame extends Frame {
             canvas.repaint();
         } else {
             // ——— 第 2 步：点击目标位置，移动控制点 ———
-            double targetX = canvas.m_minX + (sx - canvas.m_padding) / canvas.m_xScale;
             double targetY = canvas.m_minY + (canvas.getHeight() - canvas.m_padding - sy) / canvas.m_yScale;
             int idx = s_moveSelectedIndex;
             OptData oldPt = ctrlPts.get(idx);
-            OptData newPt = new OptData(targetX, targetY, 0, 0);
-            if (opter.MoveBSplineControlPoint(idx, newPt)) {
+            if (opter.MoveBSplineControlPointY(idx, targetY)) {
                 System.out.println("✓ 控制点 P" + idx + " 已移动: ("
                     + String.format("%.3f", oldPt.getX()) + ", " + String.format("%.3f", oldPt.getY()) + ")"
-                    + " → (" + String.format("%.3f", targetX) + ", " + String.format("%.3f", targetY) + ")");
+                    + " → (" + String.format("%.3f", oldPt.getX()) + ", " + String.format("%.3f", targetY) + ")");
                 s_moveSelectedIndex = -1;
                 updateCanvasAfterEdit(canvas, opter);
             } else {
@@ -972,21 +1351,9 @@ public class OptimizationDemoFrame extends Frame {
                                             OptDataVector ctrlPts, int sx, int sy) {
         // 屏幕坐标 → 数据坐标
         double x = canvas.m_minX + (sx - canvas.m_padding) / canvas.m_xScale;
-        double y = canvas.m_minY + (canvas.getHeight() - canvas.m_padding - sy) / canvas.m_yScale;
-
-        // 根据里程 X 找到插入位置（保持控制点按里程有序）
-        int insertIdx = ctrlPts.size(); // 默认插到最后
-        for (int i = 0; i < ctrlPts.size(); i++) {
-            if (x < ctrlPts.get(i).getX()) {
-                insertIdx = i;
-                break;
-            }
-        }
-
-        OptData newPt = new OptData(x, y, 0, 0);
-        if (opter.InsertBSplineControlPoint(newPt, insertIdx)) {
+        if (opter.InsertBSplineKnot(x)) {
             System.out.println("✓ 已在里程 " + String.format("%.3f", x)
-                + " 处插入控制点 P" + insertIdx + "，Y=" + String.format("%.3f", y));
+                + " 处插入 B 样条节点；新控制点值由节点插入算法计算");
             updateCanvasAfterEdit(canvas, opter);
         } else {
             System.out.println("✗ 插入控制点失败");
@@ -1008,11 +1375,12 @@ public class OptimizationDemoFrame extends Frame {
             "删除控制点",
             JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            if (opter.RemoveBSplineControlPoint(idx)) {
+            if (opter.RemoveBSplineKnotForControlPoint(idx, BSPLINE_REMOVE_TOLERANCE_MM)) {
                 System.out.println("✓ 控制点 P" + idx + " 已删除");
                 updateCanvasAfterEdit(canvas, opter);
             } else {
-                System.out.println("✗ 删除控制点失败");
+                System.out.println("✗ 删除控制点失败：可能是首尾点、控制点数量不足，或曲线变化超过容差 "
+                    + BSPLINE_REMOVE_TOLERANCE_MM + " mm");
             }
         }
     }

@@ -55,7 +55,6 @@ cmake -G Ninja \
   -DCMAKE_CXX_COMPILER=${HOST_ARCH}-g++ \
   -DCMAKE_C_FLAGS="-pthread" \
   -DCMAKE_CXX_FLAGS="-pthread" \
-  # 64KB 页对齐（银河麒麟等 aarch64 64KB 页系统必须）
   -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536" \
   -DCMAKE_EXE_LINKER_FLAGS="-pthread -Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536" \
   -DCMAKE_FIND_ROOT_PATH=$INSTALL_PREFIX \
@@ -115,6 +114,36 @@ if ! ls /output/libblas.so.3 /output/liblapack.so.3 >/dev/null 2>&1; then
 
   cp -a "$tmp_armlibs"/extract/usr/lib/aarch64-linux-gnu/blas/libblas.so* /output/ 2>/dev/null || true
   cp -a "$tmp_armlibs"/extract/usr/lib/aarch64-linux-gnu/lapack/liblapack.so* /output/ 2>/dev/null || true
+fi
+
+# libipopt 可能在导出时从缓存复制回旧的 4KB 对齐版本；统一从静态库重链接。
+if [ -f "$INSTALL_PREFIX/lib/libipopt.a" ] && [ -f /output/libipopt.so.3.14.16 ]; then
+  ipopt_tmp=/output/.libipopt.so.3.14.16.relink
+  aarch64-linux-gnu-g++ -shared \
+    -Wl,-soname,libipopt.so.3 \
+    -Wl,-z,max-page-size=65536 -Wl,-z,common-page-size=65536 \
+    -o "$ipopt_tmp" \
+    -Wl,--whole-archive "$INSTALL_PREFIX/lib/libipopt.a" -Wl,--no-whole-archive \
+    -L"$INSTALL_PREFIX/lib" -ldmumps -lmumps_common -lpord -lmpiseq \
+    -L/output -Wl,-l:liblapack.so.3 -Wl,-l:libblas.so.3 \
+    -ldl -lpthread -lm
+  mv -f "$ipopt_tmp" /output/libipopt.so.3.14.16
+  echo ">>> Re-linked libipopt with 64KB page alignment."
+fi
+
+# libipopt/liblapack 依赖 Ubuntu 18.04 arm64 的 libgfortran.so.4。
+if ! ls /output/libgfortran.so.4* >/dev/null 2>&1; then
+  tmp_gfortran="/tmp/arm64_gfortran"
+  rm -rf "$tmp_gfortran"
+  mkdir -p "$tmp_gfortran"
+  dpkg --add-architecture arm64 >/dev/null 2>&1 || true
+  apt-get update -y >/dev/null 2>&1 || true
+  (cd "$tmp_gfortran" && apt-get download libgfortran4:arm64 >/dev/null 2>&1 || true)
+  for deb in "$tmp_gfortran"/*.deb; do
+    [ -f "$deb" ] || continue
+    dpkg-deb -x "$deb" "$tmp_gfortran/extract" 2>/dev/null || true
+  done
+  cp -a "$tmp_gfortran"/extract/usr/lib/aarch64-linux-gnu/libgfortran.so* /output/ 2>/dev/null || true
 fi
 
 if need_cmd patchelf; then

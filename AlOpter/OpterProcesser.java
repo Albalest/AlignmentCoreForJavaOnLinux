@@ -112,6 +112,10 @@ public class OpterProcesser {
     return AIOpterJNI.OpterProcesser_MoveBSplineControlPoint(swigCPtr, this, index, OptData.getCPtr(pt), pt);
   }
 
+  public boolean MoveBSplineControlPointY(int index, double y) {
+    return AIOpterJNI.OpterProcesser_MoveBSplineControlPointY(swigCPtr, this, index, y);
+  }
+
   public boolean InsertBSplineControlPoint(OptData pt, int index) {
     return AIOpterJNI.OpterProcesser_InsertBSplineControlPoint__SWIG_0(swigCPtr, this, OptData.getCPtr(pt), pt, index);
   }
@@ -120,8 +124,24 @@ public class OpterProcesser {
     return AIOpterJNI.OpterProcesser_InsertBSplineControlPoint__SWIG_1(swigCPtr, this, OptData.getCPtr(pt), pt);
   }
 
+  public boolean InsertBSplineKnot(double mileage) {
+    return AIOpterJNI.OpterProcesser_InsertBSplineKnot(swigCPtr, this, mileage);
+  }
+
+  public boolean RemoveBSplineControlPoint(int index, double tolerance) {
+    return AIOpterJNI.OpterProcesser_RemoveBSplineControlPoint__SWIG_0(swigCPtr, this, index, tolerance);
+  }
+
   public boolean RemoveBSplineControlPoint(int index) {
-    return AIOpterJNI.OpterProcesser_RemoveBSplineControlPoint(swigCPtr, this, index);
+    return AIOpterJNI.OpterProcesser_RemoveBSplineControlPoint__SWIG_1(swigCPtr, this, index);
+  }
+
+  public boolean RemoveBSplineKnotForControlPoint(int index, double tolerance) {
+    return AIOpterJNI.OpterProcesser_RemoveBSplineKnotForControlPoint__SWIG_0(swigCPtr, this, index, tolerance);
+  }
+
+  public boolean RemoveBSplineKnotForControlPoint(int index) {
+    return AIOpterJNI.OpterProcesser_RemoveBSplineKnotForControlPoint__SWIG_1(swigCPtr, this, index);
   }
 
   public BSplineFitInfo GetBSplineFitInfo() {

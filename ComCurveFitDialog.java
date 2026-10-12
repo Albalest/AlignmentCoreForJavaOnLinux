@@ -91,6 +91,7 @@ public class ComCurveFitDialog extends JDialog {
         //JButton btnInit = new JButton("初始化直线和圆");
         JButton btnInitByKey = new JButton("根据分界点初始化");
         JButton btnShowMargin = new JButton("计算并显示偏差值");
+        JCheckBox chkShowMargin = new JCheckBox("显示偏差值", true);
         JButton btnRound = new JButton("取整优化");
 
         JButton btnUndo = new JButton("Undo");
@@ -113,6 +114,7 @@ public class ComCurveFitDialog extends JDialog {
         //btnInit.addActionListener(e -> onInitKeyPtsOnly());
         btnInitByKey.addActionListener(e -> onInitByKeyPts());
         btnShowMargin.addActionListener(e -> onCalAndShowMarginWithExport());
+        chkShowMargin.addActionListener(e -> plot.setShowMargin(chkShowMargin.isSelected()));
         btnRound.addActionListener(e -> onRoundOptimize());
         btnManualOpt.addActionListener(e -> onManualOptimize());
 
@@ -169,6 +171,7 @@ public class ComCurveFitDialog extends JDialog {
         //g3.add(btnInit);
         g3.add(btnInitByKey);
         g3.add(btnShowMargin);
+        g3.add(chkShowMargin);
 
         // --- Group 4: 缓长长度 & 优化 ---
         JPanel g4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -440,34 +443,22 @@ public class ComCurveFitDialog extends JDialog {
                 double x = Double.NaN;
                 double y = Double.NaN;
 
-                // 优先使用设计器返回的曲率点列（通常与测点 index 一一对应）
-                if (curvPts != null && idx >= 0 && idx < curvPts.size()) {
-                    AL_Point3d p = curvPts.get(idx);
-                    if (p != null) {
-                        x = p.getX();
-                        y = p.getY();
-                    }
+                // AutoKeyPts 返回的是测量点序号，关键点 X 必须从该测量点获取里程。
+                if (vec != null && idx >= 0 && idx < vec.size()) {
+                    SurveyImfo it = vec.get(idx);
+                    x = it != null ? it.getM_mileage() : Double.NaN;
+                }
+                if (!Double.isFinite(x) && idx >= 0 && idx < miles.length) {
+                    x = miles[idx];
                 }
 
-                // 兜底：从当前缓存数组 / SurveyVector 取 mileage
-                if (!Double.isFinite(x)) {
-                    if (idx >= 0 && idx < miles.length) {
-                        x = miles[idx];
-                    }
-                    if (!Double.isFinite(x) && vec != null && idx >= 0 && idx < vec.size()) {
-                        SurveyImfo it = vec.get(idx);
-                        x = it != null ? it.getM_mileage() : Double.NaN;
-                    }
+                // GetCurvation 返回的是曲率点列，不能按 AutoKeyPts 的测量点序号直接取。
+                // 使用关键点里程在曲率点列中匹配，并在相邻曲率点之间线性插值。
+                if (Double.isFinite(x)) {
+                    y = interpolateCurvatureAtX(curvPts, x);
                 }
 
-                // 兜底：从当前缓存数组取曲率
-                if (!Double.isFinite(y)) {
-                    if (idx >= 0 && idx < curv.length) {
-                        y = curv[idx];
-                    }
-                }
-
-                // 最终兜底：按 x 在曲率序列中找最近有效点
+                // 曲率点列无有效值时，最后使用当前曲率缓存按里程兜底。
                 if (!Double.isFinite(y) && Double.isFinite(x)) {
                     y = interpolateCurvatureAtX(x);
                 }
@@ -482,6 +473,59 @@ public class ComCurveFitDialog extends JDialog {
         } catch (Throwable t) {
             JOptionPane.showMessageDialog(this, "自动分段失败: " + t.getMessage());
         }
+    }
+
+    /** 根据里程在曲率点列中获取曲率，支持相邻点线性插值。 */
+    private double interpolateCurvatureAtX(ALPoint3dArr curvPts, double x) {
+        if (curvPts == null || curvPts.size() == 0 || !Double.isFinite(x)) {
+            return Double.NaN;
+        }
+
+        AL_Point3d left = null;
+        AL_Point3d right = null;
+        double leftDx = Double.POSITIVE_INFINITY;
+        double rightDx = Double.POSITIVE_INFINITY;
+
+        for (int i = 0; i < curvPts.size(); i++) {
+            AL_Point3d p = curvPts.get(i);
+            if (p == null || !Double.isFinite(p.getX()) || !Double.isFinite(p.getY())) {
+                continue;
+            }
+
+            double px = p.getX();
+            if (px <= x && x - px < leftDx) {
+                left = p;
+                leftDx = x - px;
+            }
+            if (px >= x && px - x < rightDx) {
+                right = p;
+                rightDx = px - x;
+            }
+        }
+
+        if (left != null && right != null) {
+            double dx = right.getX() - left.getX();
+            if (Math.abs(dx) > 1e-12) {
+                double t = (x - left.getX()) / dx;
+                return left.getY() + t * (right.getY() - left.getY());
+            }
+            return left.getY();
+        }
+
+        AL_Point3d nearest = null;
+        double nearestDx = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < curvPts.size(); i++) {
+            AL_Point3d p = curvPts.get(i);
+            if (p == null || !Double.isFinite(p.getX()) || !Double.isFinite(p.getY())) {
+                continue;
+            }
+            double dx = Math.abs(p.getX() - x);
+            if (dx < nearestDx) {
+                nearest = p;
+                nearestDx = dx;
+            }
+        }
+        return nearest != null ? nearest.getY() : Double.NaN;
     }
     // 按钮「初始化直线和圆」：仅初始化复曲线分界点
     private void onInitKeyPtsOnly() {
@@ -738,6 +782,7 @@ public class ComCurveFitDialog extends JDialog {
         private double[] marginX;
         private double[] marginY;
         private List<AL_Point3d> keyPts;
+        private boolean showMargin = true;
 
         private double xMin, xMax, yMin, yMax;
         private boolean boundsValid;
@@ -769,6 +814,12 @@ public class ComCurveFitDialog extends JDialog {
             this.clickHandler = handler;
         }
 
+        void setShowMargin(boolean showMargin) {
+            this.showMargin = showMargin;
+            computeBounds();
+            repaint();
+        }
+
         void setSeries(double[] x, double[] y, List<AL_Point3d> keyPts, double[] marginX, double[] marginY) {
             this.x = x != null ? x : new double[0];
             this.y = y != null ? y : new double[0];
@@ -797,8 +848,8 @@ public class ComCurveFitDialog extends JDialog {
                 ymax = Math.max(ymax, y[i]);
             }
 
-            // 如果没有曲率有效点，但有偏差点，则用偏差点 bounds
-            if (!Double.isFinite(xmin)) {
+            // 仅在偏差值可见时，才允许偏差数据参与坐标范围计算。
+            if (showMargin && !Double.isFinite(xmin)) {
                 int m = Math.min(marginX.length, marginY.length);
                 for (int i = 0; i < m; i++) {
                     if (!Double.isFinite(marginX[i]) || !Double.isFinite(marginY[i])) continue;
@@ -830,13 +881,15 @@ public class ComCurveFitDialog extends JDialog {
                 ymax = Math.max(ymax, p.getY());
             }
 
-            int m = Math.min(marginX.length, marginY.length);
-            for (int i = 0; i < m; i++) {
-                if (!Double.isFinite(marginX[i]) || !Double.isFinite(marginY[i])) continue;
-                xmin = Math.min(xmin, marginX[i]);
-                xmax = Math.max(xmax, marginX[i]);
-                ymin = Math.min(ymin, marginY[i]);
-                ymax = Math.max(ymax, marginY[i]);
+            if (showMargin) {
+                int m = Math.min(marginX.length, marginY.length);
+                for (int i = 0; i < m; i++) {
+                    if (!Double.isFinite(marginX[i]) || !Double.isFinite(marginY[i])) continue;
+                    xmin = Math.min(xmin, marginX[i]);
+                    xmax = Math.max(xmax, marginX[i]);
+                    ymin = Math.min(ymin, marginY[i]);
+                    ymax = Math.max(ymax, marginY[i]);
+                }
             }
 
             xMin = xmin;
@@ -896,7 +949,7 @@ public class ComCurveFitDialog extends JDialog {
             drawAxes(g2, r);
             drawCurvatureLine(g2);
             drawKeyPts(g2);
-            drawMarginPts(g2);
+            if (showMargin) drawMarginPts(g2);
         }
 
         private void drawAxes(Graphics2D g2, Rectangle r) {

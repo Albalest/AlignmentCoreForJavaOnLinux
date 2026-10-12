@@ -406,6 +406,7 @@ public class AlignmentAllJNI {
   public final static native boolean SurveyDatas_cosineBlendingWithMileage(long jarg1, SurveyVector jarg1_, long jarg2, SurveyVector jarg2_, long jarg3, SurveyVector jarg3_, long jarg4, SurveyVector jarg4_);
   public final static native long SurveyDatas_GetCurvation__SWIG_0(long jarg1, SurveyDatas jarg1_, double jarg2, double jarg3);
   public final static native long SurveyDatas_GetCurvation__SWIG_1(long jarg1, SurveyDatas jarg1_, double jarg2);
+  public final static native boolean SurveyDatas_GetCurvation__SWIG_2(long jarg1, SurveyDatas jarg1_, double jarg2, double jarg3, long jarg4, IntDoublePairVector jarg4_);
   public final static native boolean SurveyDatas_AutoKeyPts__SWIG_0(long jarg1, SurveyDatas jarg1_, double jarg2, double jarg3);
   public final static native boolean SurveyDatas_AutoKeyPts__SWIG_1(long jarg1, SurveyDatas jarg1_, double jarg2);
   public final static native boolean SurveyDatas_AddKeyPts(long jarg1, SurveyDatas jarg1_, long jarg2, AL_Point3d jarg2_);
@@ -1237,9 +1238,15 @@ public class AlignmentAllJNI {
   public final static native void ComCurveDesigner_SetComCurvePara(long jarg1, ComCurveDesigner jarg1_, long jarg2, ComCurvePara jarg2_);
   public final static native long ComCurveDesigner_GetCurvation(long jarg1, ComCurveDesigner jarg1_);
   public final static native long ComCurveDesigner_AutoKeyPts(long jarg1, ComCurveDesigner jarg1_);
+  public final static native long ComCurveDesigner_GetKeyPoints(long jarg1, ComCurveDesigner jarg1_);
+  public final static native boolean ComCurveDesigner_InsertKeyPoint(long jarg1, ComCurveDesigner jarg1_, double jarg2);
+  public final static native boolean ComCurveDesigner_DeleteKeyPoint(long jarg1, ComCurveDesigner jarg1_, int jarg2);
+  public final static native boolean ComCurveDesigner_MoveKeyPoint(long jarg1, ComCurveDesigner jarg1_, int jarg2, double jarg3);
   public final static native boolean ComCurveDesigner_StartComCurveFitting(long jarg1, ComCurveDesigner jarg1_, long jarg2, IntArr jarg2_);
   public final static native boolean ComCurveDesigner_ComCurveOpting__SWIG_0(long jarg1, ComCurveDesigner jarg1_, double jarg2, double jarg3, double jarg4, boolean jarg5);
   public final static native boolean ComCurveDesigner_ComCurveOpting__SWIG_1(long jarg1, ComCurveDesigner jarg1_, double jarg2, double jarg3, double jarg4);
+  public final static native boolean ComCurveDesigner_ComCurveGlobalOpting__SWIG_0(long jarg1, ComCurveDesigner jarg1_, double jarg2, double jarg3, double jarg4, boolean jarg5);
+  public final static native boolean ComCurveDesigner_ComCurveGlobalOpting__SWIG_1(long jarg1, ComCurveDesigner jarg1_, double jarg2, double jarg3, double jarg4);
   public final static native boolean ComCurveDesigner_InitKeyPts(long jarg1, ComCurveDesigner jarg1_, long jarg2, IntArr jarg2_);
   public final static native boolean ComCurveDesigner_CalHoriMargin(long jarg1, ComCurveDesigner jarg1_);
   public final static native void delete_ComCurveDesigner(long jarg1);
